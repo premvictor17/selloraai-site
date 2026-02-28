@@ -1,269 +1,147 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wireless Earbuds Pro - SelloraAI Intelligence</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-        body { font-family: 'Inter', sans-serif; }
-        .gradient-primary { background: linear-gradient(135deg, #1e293b 0%, #334155 100%); }
-        .heatmap-maharashtra { fill: #10b981; stroke: #059669; stroke-width: 1; }
-        .heatmap-karnataka { fill: #84cc16; stroke: #65a30d; stroke-width: 1; }
-        .heatmap-tamilnadu { fill: #eab308; stroke: #ca8a04; stroke-width: 1; }
-        .heatmap-others { fill: #64748b; stroke: #475569; stroke-width: 1; opacity: 0.7; }
-        .product-image { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SELLORA AI – Product Intelligence Report</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        primary: "#4f46e5"
+      }
+    }
+  }
+}
+</script>
 </head>
-<body class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white min-h-screen">
 
-    <!-- Navigation -->
-    <nav class="bg-slate-900/95 backdrop-blur-xl shadow-xl sticky top-0 z-50 border-b border-slate-700/50">
-        <div class="max-w-7xl mx-auto px-6 lg:px-8">
-            <div class="flex justify-between items-center h-16">
-                <a href="index.html" class="flex items-center space-x-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-xl flex items-center justify-center shadow-lg">
-                        <i class="fas fa-brain text-white"></i>
-                    </div>
-                    <span class="text-xl font-bold">SelloraAI</span>
-                </a>
-                <div class="hidden lg:flex items-center space-x-8">
-                    <a href="index.html" class="text-slate-300 hover:text-white px-3 py-2 text-sm font-medium transition-colors">Home</a>
-                    <a href="products.html" class="text-emerald-400 border-b-2 border-emerald-400 px-3 py-2 text-sm font-semibold">Products</a>
-                    <a href="dashboard.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg">Dashboard</a>
-                </div>
-            </div>
-        </div>
+<body class="bg-gray-50 text-gray-800">
+
+<!-- NAVBAR -->
+<header class="bg-white border-b sticky top-0 z-50">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-2xl font-bold tracking-wide">SELLORA AI</h1>
+    <nav class="hidden md:flex gap-8 text-sm font-medium">
+      <a href="index.html" class="hover:text-primary">Home</a>
+      <a href="products.html" class="hover:text-primary">Products</a>
+      <a href="dashboard.html" class="hover:text-primary">Dashboard</a>
     </nav>
+  </div>
+</header>
 
-    <div class="max-w-7xl mx-auto px-6 lg:px-8 py-12">
-        <!-- Product Header -->
-        <div class="text-center mb-16">
-            <h1 class="text-4xl lg:text-6xl font-bold bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 bg-clip-text text-transparent mb-6">
-                Wireless Earbuds Pro
-            </h1>
-            <div class="flex flex-col lg:flex-row gap-8 items-center justify-center mb-12">
-                <div class="text-3xl lg:text-5xl font-black text-white">🔥 247% MoM Growth</div>
-                <div class="flex items-center space-x-6 text-emerald-400">
-                    <span class="flex items-center"><i class="fas fa-crown text-yellow-400 mr-2"></i>#1 Trending</span>
-                    <span class="flex items-center"><i class="fas fa-bolt mr-2"></i>Elite Only Data</span>
-                </div>
-            </div>
-        </div>
+<main class="max-w-7xl mx-auto px-6 py-10">
 
-        <div class="grid lg:grid-cols-2 gap-12 items-start">
-            <!-- Product Image + Stats -->
-            <div class="space-y-8">
-                <div class="relative group">
-                    <div class="w-full h-96 bg-gradient-to-br from-slate-800 to-slate-900 rounded-3xl p-8 flex items-center justify-center shadow-2xl group-hover:shadow-3xl transition-all duration-500">
-                        <div class="text-center">
-                            <div class="w-48 h-48 product-image rounded-3xl flex items-center justify-center mx-auto mb-6 shadow-2xl">
-                                <i class="fas fa-headphones text-5xl text-white"></i>
-                            </div>
-                            <p class="text-slate-400 text-lg">TWS Earbuds w/ ANC</p>
-                        </div>
-                    </div>
-                </div>
+  <!-- PRODUCT HEADER -->
+  <div class="mb-10">
+    <h2 class="text-3xl font-bold mb-2">Moringa Powder</h2>
+    <div class="flex gap-4 items-center">
+      <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
+        Demand Score: 92%
+      </span>
+      <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
+        Export Potential: High
+      </span>
+    </div>
+  </div>
 
-                <!-- Key Stats -->
-                <div class="grid md:grid-cols-2 gap-6 bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50">
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-emerald-400 mb-2">₹499 - ₹1,299</div>
-                        <div class="text-sm text-slate-400">Avg Selling Price</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-emerald-400 mb-2">28.5%</div>
-                        <div class="text-sm text-slate-400">Margin Potential</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-emerald-400 mb-2">17K units</div>
-                        <div class="text-sm text-slate-400">India Monthly Sales</div>
-                    </div>
-                    <div class="text-center">
-                        <div class="text-3xl font-bold text-emerald-400 mb-2">$2.1M</div>
-                        <div class="text-sm text-slate-400">Global Monthly</div>
-                    </div>
-                </div>
-            </div>
+  <!-- INTELLIGENCE CARDS -->
+  <div class="grid md:grid-cols-4 gap-6 mb-10">
 
-            <!-- Demand Intelligence -->
-            <div class="space-y-8">
-                <!-- India Heatmap -->
-                <div class="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50">
-                    <h3 class="text-2xl font-bold mb-6 flex items-center"><i class="fas fa-map-marked-alt text-emerald-400 mr-3"></i>India Demand Heatmap</h3>
-                    <div id="india-map" class="h-80 rounded-2xl border-2 border-slate-700/50"></div>
-                    <div class="grid md:grid-cols-3 gap-4 mt-6">
-                        <div class="text-center p-4 bg-slate-800/50 rounded-xl">
-                            <div class="text-xl font-bold text-emerald-400">Maharashtra</div>
-                            <div class="text-2xl font-black">42%</div>
-                        </div>
-                        <div class="text-center p-4 bg-slate-800/50 rounded-xl">
-                            <div class="text-xl font-bold text-emerald-400">Karnataka</div>
-                            <div class="text-2xl font-black">28%</div>
-                        </div>
-                        <div class="text-center p-4 bg-slate-800/50 rounded-xl">
-                            <div class="text-xl font-bold text-emerald-400">Tamil Nadu</div>
-                            <div class="text-2xl font-black">19%</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Global Demand -->
-                <div class="bg-slate-900/50 backdrop-blur-xl rounded-3xl p-8 border border-slate-700/50">
-                    <h3 class="text-2xl font-bold mb-6 flex items-center"><i class="fas fa-globe text-emerald-400 mr-3"></i>Global Demand (Elite)</h3>
-                    <div class="grid md:grid-cols-2 gap-6">
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span>🇺🇸 USA</span>
-                                <span class="font-bold text-emerald-400">47%</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-3">
-                                <div class="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full" style="width: 47%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span>🇦🇪 UAE</span>
-                                <span class="font-bold text-emerald-400">22%</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-3">
-                                <div class="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full" style="width: 22%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span>🇪🇺 EU</span>
-                                <span class="font-bold text-emerald-400">18%</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-3">
-                                <div class="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full" style="width: 18%"></div>
-                            </div>
-                        </div>
-                        <div>
-                            <div class="flex items-center justify-between mb-2">
-                                <span>🇦🇺 Australia</span>
-                                <span class="font-bold text-emerald-400">13%</span>
-                            </div>
-                            <div class="w-full bg-slate-800 rounded-full h-3">
-                                <div class="bg-gradient-to-r from-emerald-400 to-teal-500 h-3 rounded-full" style="width: 13%"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Suppliers Section (Elite Only) -->
-        <div class="mt-24">
-            <div class="bg-gradient-to-r from-emerald-600/20 to-teal-600/20 backdrop-blur-xl rounded-3xl p-12 border-2 border-emerald-500/30">
-                <h2 class="text-3xl lg:text-4xl font-bold text-emerald-400 mb-12 text-center flex items-center justify-center mx-auto w-fit">
-                    <i class="fas fa-handshake mr-4"></i>10 Verified Suppliers
-                </h2>
-                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Supplier 1 -->
-                    <div class="group bg-slate-900/70 backdrop-blur-xl rounded-2xl p-8 border border-slate-700 hover:border-emerald-500/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                        <div class="flex items-center space-x-4 mb-6">
-                            <div class="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-xl">S1</div>
-                            <div>
-                                <h4 class="font-bold text-xl">Shenzhen AudioTech</h4>
-                                <p class="text-emerald-400">⭐⭐⭐⭐⭐ (127 reviews)</p>
-                            </div>
-                        </div>
-                        <div class="space-y-3 mb-6">
-                            <div class="flex justify-between"><span>MOQ:</span><span class="font-bold">50 units</span></div>
-                            <div class="flex justify-between"><span>FOB:</span><span class="font-bold">$2.80</span></div>
-                            <div class="flex justify-between"><span>Lead Time:</span><span class="font-bold">7-10 days</span></div>
-                        </div>
-                        <div class="flex space-x-3">
-                            <a href="https://wa.me/8613802774852" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl text-center font-semibold transition-all">
-                                <i class="fab fa-whatsapp mr-2"></i>WhatsApp
-                            </a>
-                            <a href="mailto:sales@audiotech.cn" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 px-4 rounded-xl text-center font-semibold transition-all">
-                                <i class="fas fa-envelope mr-2"></i>Email
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Repeat for 9 more suppliers with different details -->
-                    <div class="group bg-slate-900/70 backdrop-blur-xl rounded-2xl p-8 border border-slate-700 hover:border-emerald-500/50 hover:shadow-2xl transition-all duration-300 hover:-translate-y-2">
-                        <div class="flex items-center space-x-4 mb-6">
-                            <div class="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-2xl font-bold text-white shadow-xl">S2</div>
-                            <div>
-                                <h4 class="font-bold text-xl">Dongguan SoundWave</h4>
-                                <p class="text-emerald-400">⭐⭐⭐⭐ (89 reviews)</p>
-                            </div>
-                        </div>
-                        <div class="space-y-3 mb-6">
-                            <div class="flex justify-between"><span>MOQ:</span><span class="font-bold">100 units</span></div>
-                            <div class="flex justify-between"><span>FOB:</span><span class="font-bold">$2.65</span></div>
-                            <div class="flex justify-between"><span>Lead Time:</span><span class="font-bold">10-14 days</span></div>
-                        </div>
-                        <div class="flex space-x-3">
-                            <a href="https://wa.me/8613925721846" class="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white py-3 px-4 rounded-xl text-center font-semibold transition-all">
-                                <i class="fab fa-whatsapp mr-2"></i>WhatsApp
-                            </a>
-                            <a href="mailto:export@soundwave.cn" class="flex-1 bg-slate-700 hover:bg-slate-600 text-white py-3 px-4 rounded-xl text-center font-semibold transition-all">
-                                <i class="fas fa-envelope mr-2"></i>Email
-                            </a>
-                        </div>
-                    </div>
-                    <!-- Add 8 more similar supplier cards -->
-                </div>
-            </div>
-        </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm">
+      <p class="text-gray-500 text-sm">Demand Trend</p>
+      <h3 class="text-xl font-bold mt-2">Rising</h3>
     </div>
 
-    <!-- CTA Bar -->
-    <div class="bg-gradient-to-r from-emerald-600 to-teal-600 text-white py-12 mt-24">
-        <div class="max-w-4xl mx-auto text-center">
-            <h2 class="text-3xl lg:text-4xl font-bold mb-6">Ready to Source Wireless Earbuds?</h2>
-            <p class="text-xl mb-8 opacity-90">India's #1 trending product - 247% growth detected</p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
-                <a href="dashboard.html" class="bg-white text-emerald-700 hover:bg-gray-100 px-12 py-5 rounded-3xl text-xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-300">
-                    <i class="fas fa-tachometer-alt mr-3"></i>Add to Dashboard
-                </a>
-                <a href="products.html" class="border-2 border-white/50 hover:border-white text-white hover:bg-white/20 px-12 py-5 rounded-3xl text-xl font-semibold transition-all">
-                    <i class="fas fa-arrow-left mr-3"></i>View More Products
-                </a>
-            </div>
-        </div>
+    <div class="bg-white p-6 rounded-xl shadow-sm">
+      <p class="text-gray-500 text-sm">Competition</p>
+      <h3 class="text-xl font-bold mt-2">Moderate</h3>
     </div>
 
-    <script>
-        // Initialize India Heatmap
-        let map = L.map('india-map').setView([20.5937, 78.9629], 5);
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(map);
+    <div class="bg-white p-6 rounded-xl shadow-sm">
+      <p class="text-gray-500 text-sm">Margin Potential</p>
+      <h3 class="text-xl font-bold mt-2">28% Avg</h3>
+    </div>
 
-        // Add state polygons (simplified)
-        const maharashtra = L.polygon([
-            [19.35120, 72.83458], [20.9535, 76.7083], [21.12, 78.95]
-        ], {className: 'heatmap-maharashtra'}).bindPopup('Maharashtra: 42% demand');
-        const karnataka = L.polygon([
-            [12.9716, 77.5946], [15.3173, 75.7139], [13.0827, 77.5953]
-        ], {className: 'heatmap-karnataka'}).bindPopup('Karnataka: 28% demand');
-        const tamilnadu = L.polygon([
-            [13.0827, 80.2707], [12.9239, 77.6863], [8.0873, 77.5582]
-        ], {className: 'heatmap-tamilnadu'}).bindPopup('Tamil Nadu: 19% demand');
+    <div class="bg-white p-6 rounded-xl shadow-sm">
+      <p class="text-gray-500 text-sm">Risk Level</p>
+      <h3 class="text-xl font-bold mt-2 text-yellow-600">Medium</h3>
+    </div>
 
-        maharashtra.addTo(map);
-        karnataka.addTo(map);
-        tamilnadu.addTo(map);
+  </div>
 
-        // Smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
-    </script>
+  <!-- HEATMAP SECTION -->
+  <div class="bg-white p-6 rounded-xl shadow-sm mb-10">
+    <h3 class="text-xl font-semibold mb-4">India Demand Distribution</h3>
+    <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
+      India Heatmap Placeholder
+    </div>
+  </div>
+
+  <!-- SUPPLIER TABLE -->
+  <div class="bg-white p-6 rounded-xl shadow-sm mb-10">
+    <h3 class="text-xl font-semibold mb-6">Verified Suppliers</h3>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="border-b">
+          <tr class="text-gray-500">
+            <th class="text-left py-3">Supplier</th>
+            <th class="text-left py-3">Location</th>
+            <th class="text-left py-3">MOQ</th>
+            <th class="text-left py-3">Contact</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="border-b">
+            <td class="py-3">GreenLeaf Exports</td>
+            <td>Maharashtra</td>
+            <td>500 kg</td>
+            <td>+91 98765 43210</td>
+          </tr>
+
+          <tr class="border-b">
+            <td class="py-3">Herbal India Pvt Ltd</td>
+            <td>Tamil Nadu</td>
+            <td>300 kg</td>
+            <td>+91 91234 56789</td>
+          </tr>
+
+          <tr class="border-b">
+            <td class="py-3">Organic Roots Co.</td>
+            <td>Karnataka</td>
+            <td>400 kg</td>
+            <td>+91 99887 77665</td>
+          </tr>
+
+          <tr>
+            <td class="py-3">Nature Harvest Ltd</td>
+            <td>Gujarat</td>
+            <td>250 kg</td>
+            <td>+91 90909 90909</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE INSIGHT -->
+  <div class="bg-primary text-white p-8 rounded-xl">
+    <h3 class="text-xl font-semibold mb-4">SELLORA AI Executive Insight</h3>
+    <p>
+      Moringa Powder shows sustained demand growth across Maharashtra, Tamil Nadu, and Karnataka.
+      Moderate competition and healthy export margins make this a strong candidate for
+      international health & wellness markets.
+    </p>
+  </div>
+
+</main>
+
 </body>
 </html>
