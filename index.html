@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrendPro SaaS - AI Product Trend Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .glass { backdrop-filter: blur(20px); background: rgba(255,255,255,0.1); }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white/80 backdrop-blur-xl shadow-lg sticky top-0 z-50 border-b border-slate-200/50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0">
+                        <h1 class="text-2xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+                            <i class="fas fa-chart-line mr-2"></i>TrendPro
+                        </h1>
+                    </div>
+                </div>
+                <div class="hidden md:block">
+                    <div class="ml-10 flex items-baseline space-x-4">
+                        <a href="#features" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-all">Features</a>
+                        <a href="#pricing" class="text-gray-700 hover:text-purple-600 px-3 py-2 rounded-md text-sm font-medium transition-all">Pricing</a>
+                        <a href="dashboard.html" class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-all shadow-lg">Dashboard</a>
+                    </div>
+                </div>
+                <div class="-mr-2 flex md:hidden">
+                    <button id="mobile-menu-button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-purple-600 hover:bg-gray-100">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto text-center">
+            <div class="max-w-4xl mx-auto">
+                <h1 class="text-5xl md:text-7xl font-bold bg-gradient-to-r from-gray-900 via-gray-800 to-purple-900 bg-clip-text text-transparent mb-8 leading-tight">
+                    AI-Powered Product Trend Intelligence
+                </h1>
+                <p class="text-xl md:text-2xl text-gray-600 mb-12 max-w-3xl mx-auto leading-relaxed">
+                    Discover trending products before they explode. Get India heatmaps, global demand data, and verified suppliers in one platform.
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
+                    <a href="#pricing" class="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-12 py-4 rounded-2xl text-xl font-semibold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-300">
+                        <i class="fas fa-rocket mr-2"></i>Start Free Trial
+                    </a>
+                    <a href="#features" class="border-2 border-gray-200 hover:border-purple-300 text-gray-800 hover:text-purple-600 px-12 py-4 rounded-2xl text-xl font-semibold hover:bg-white/50 backdrop-blur-sm transition-all duration-300">
+                        <i class="fas fa-play-circle mr-2"></i>Watch Demo
+                    </a>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto mt-20">
+                    <div class="text-center p-8 bg-white/60 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 hover:shadow-2xl transition-all">
+                        <div class="w-20 h-20 bg-gradient-to-r from-emerald-400 to-green-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fas fa-chart-line text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Real-Time Trends</h3>
+                        <p class="text-gray-600">India + Global demand data updated every 24 hours</p>
+                    </div>
+                    <div class="text-center p-8 bg-white/60 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 hover:shadow-2xl transition-all">
+                        <div class="w-20 h-20 bg-gradient-to-r from-blue-400 to-indigo-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fas fa-map-marked-alt text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">State Heatmaps</h3>
+                        <p class="text-gray-600">Pinpoint exact demand by state and city</p>
+                    </div>
+                    <div class="text-center p-8 bg-white/60 backdrop-blur-sm rounded-3xl shadow-xl border border-white/50 hover:shadow-2xl transition-all">
+                        <div class="w-20 h-20 bg-gradient-to-r from-purple-400 to-pink-500 rounded-2xl flex items-center justify-center mx-auto mb-6 text-2xl">
+                            <i class="fas fa-handshake text-white"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-gray-900 mb-4">Verified Suppliers</h3>
+                        <p class="text-gray-600">10+ vetted suppliers with contact details</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features" class="py-24 px-4 sm:px-6 lg:px-8 bg-white/50">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-purple-900 bg-clip-text text-transparent mb-6">
+                    Everything You Need to Win
+                </h2>
+                <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    From trend discovery to supplier connections - complete import/export intelligence in one dashboard
+                </p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12 items-center">
+                <div class="space-y-12">
+                    <div class="flex items-start space-x-6 p-8 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl">
+                        <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-2xl flex items-center justify-center text-2xl text-white flex-shrink-0 mt-1">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Lightning Fast Trends</h3>
+                            <p class="text-lg text-gray-600 leading-relaxed">
+                                AI analyzes 10M+ data points daily across e-commerce platforms, social media, and search trends.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6 p-8 bg-gradient-to-r from-emerald-50 to-green-50 rounded-3xl">
+                        <div class="w-16 h-16 bg-gradient-to-r from-emerald-500 to-green-600 rounded-2xl flex items-center justify-center text-2xl text-white flex-shrink-0 mt-1">
+                            <i class="fas fa-map"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">India-First Intelligence</h3>
+                            <p class="text-lg text-gray-600 leading-relaxed">
+                                State-wise heatmaps + city-level demand. Know exactly where products are exploding.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="flex items-start space-x-6 p-8 bg-gradient-to-r from-purple-50 to-pink-50 rounded-3xl">
+                        <div class="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center text-2xl text-white flex-shrink-0 mt-1">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div>
+                            <h3 class="text-2xl font-bold text-gray-900 mb-4">Global Supplier Network</h3>
+                            <p class="text-lg text-gray-600 leading-relaxed">
+                                10+ verified suppliers per product with direct WhatsApp/email contacts and MOQ details.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="relative">
+                    <div class="bg-gradient-to-br from-purple-500/10 to-blue-500/10 backdrop-blur-xl rounded-3xl p-12 border border-white/30 shadow-2xl">
+                        <img src="https://images.unsplash.com/photo-1551288049-b1f4a6e4ff5d?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80" alt="Dashboard" class="rounded-2xl shadow-2xl w-full h-96 object-cover">
+                        <div class="absolute -top-6 -right-6 w-32 h-32 bg-gradient-to-r from-emerald-400 to-green-500 rounded-full opacity-20 animate-pulse"></div>
+                        <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full opacity-20 animate-pulse delay-1000"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing" class="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-white/70 to-slate-100/50">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-20">
+                <span class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium bg-purple-100 text-purple-800 mb-8">
+                    <i class="fas fa-crown mr-1"></i>Most Popular
+                </span>
+                <h2 class="text-4xl md:text-5xl font-bold bg-gradient-to-r from-gray-900 to-purple-900 bg-clip-text text-transparent mb-6">
+                    Simple, Transparent Pricing
+                </h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    Cancel anytime. No setup fees. Results guaranteed or your money back.
+                </p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <!-- Pro Plan -->
+                <div class="group relative bg-white/70 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border-2 border-white/50 hover:shadow-3xl hover:border-purple-200/50 transition-all duration-500 hover:-translate-y-2">
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2">
+                        <span class="px-6 py-2 bg-gradient-to-r from-orange-400 to-orange-500 text-white text-sm font-bold rounded-2xl shadow-lg">
+                            MOST POPULAR
+                        </span>
+                    </div>
+                    <div class="text-center mb-8">
+                        <h3 class="text-3xl font-bold text-gray-900 mb-4">Pro</h3>
+                        <div class="text-5xl font-bold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent mb-2">₹2,999</div>
+                        <p class="text-gray-600">billed yearly (₹250/mo)</p>
+                    </div>
+                    <ul class="space-y-4 mb-10 text-left">
+                        <li class="flex items-center text-gray-900"><i class="fas fa-check-circle text-emerald-500 mr-3"></i>250 trending products/month</li>
+                        <li class="flex items-center text-gray-900"><i class="fas fa-check-circle text-emerald-500 mr-3"></i>India state heatmaps</li>
+                        <li class="flex items-center text-gray-900"><i class="fas fa-check-circle text-emerald-500 mr-3"></i>5 suppliers per product</li>
+                        <li class="flex items-center text-gray-900"><i class="fas fa-check-circle text-emerald-500 mr-3"></i>Basic analytics dashboard</li>
+                        <li class="flex items-start text-gray-500 mt-2"><i class="fas fa-times-circle text-gray-400 mr-3 mt-1"></i>No global demand data</li>
+                    </ul>
+                    <button onclick="initiatePayment('pro')" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white py-4 px-8 rounded-2xl text-xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
+                        <i class="fas fa-credit-card mr-2"></i>Get Pro
+                    </button>
+                </div>
+
+                <!-- Elite Plan -->
+                <div class="group lg:col-span-2 md:col-span-1 bg-gradient-to-br from-purple-600 via-blue-600 to-indigo-600 text-white rounded-3xl p-10 shadow-3xl border-2 border-white/20 hover:shadow-4xl transition-all duration-500 hover:-translate-y-3 lg:col-start-2">
+                    <div class="absolute -top-6 left-1/2 transform -translate-x-1/2 w-full">
+                        <span class="px-8 py-3 bg-white/20 backdrop-blur-xl text-white text-lg font-bold rounded-2xl shadow-2xl border border-white/30">
+                            <i class="fas fa-crown mr-2"></i>ELITE
+                        </span>
+                    </div>
+                    <div class="text-center mb-8">
+                        <h3 class="text-3xl lg:text-4xl font-bold mb-4">Elite</h3>
+                        <div class="text-6xl lg:text-7xl font-black mb-2">₹4,999</div>
+                        <p class="opacity-90">billed yearly (₹416/mo)</p>
+                    </div>
+                    <ul class="space-y-4 mb-10 text-left">
+                        <li class="flex items-center"><i class="fas fa-check-circle text-emerald-300 mr-3"></i>Unlimited trending products</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-emerald-300 mr-3"></i>India + Global heatmaps (USA/UAE/EU/AUS)</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-emerald-300 mr-3"></i>10+ suppliers per product</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-emerald-300 mr-3"></i>Advanced analytics + export reports</li>
+                        <li class="flex items-center"><i class="fas fa-check-circle text-emerald-300 mr-3"></i>Priority support + custom research</li>
+                    </ul>
+                    <button onclick="initiatePayment('elite')" class="w-full bg-white/20 backdrop-blur-xl hover:bg-white/30 border-2 border-white/30 text-white py-5 px-8 rounded-3xl text-2xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-300">
+                        <i class="fas fa-diamond mr-2"></i>Get Elite Now
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="py-24 px-4 sm:px-6 lg:px-8 bg-gradient-to-r from-purple-600 via-blue-600 to-indigo-600 text-white">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-4xl md:text-5xl font-bold mb-6">Ready to Find Your Next Winner?</h2>
+            <p class="text-xl md:text-2xl mb-12 opacity-90 max-w-2xl mx-auto">
+                Join 5,000+ importers crushing it with TrendPro intelligence
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+                <button onclick="initiatePayment('elite')" class="bg-white text-purple-600 hover:bg-gray-100 px-12 py-5 rounded-3xl text-xl font-bold shadow-2xl hover:shadow-3xl transition-all duration-300 transform hover:-translate-y-1">
+                    <i class="fas fa-rocket mr-3"></i>Start Elite Trial
+                </button>
+                <a href="products.html" class="border-2 border-white/40 hover:border-white text-white hover:bg-white/20 px-12 py-5 rounded-3xl text-xl font-semibold backdrop-blur-sm transition-all duration-300">
+                    <i class="fas fa-eye mr-3"></i>View Products
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900/90 text-white/90 py-16 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto grid md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-2xl font-bold bg-gradient-to-r from-purple-400 to-blue-400 bg-clip-text text-transparent mb-6">
+                    <i class="fas fa-chart-line mr-2"></i>TrendPro
+                </h3>
+                <p class="text-slate-400 mb-6">AI-powered trend intelligence for importers and exporters.</p>
+                <div class="flex space-x-4">
+                    <a href="#" class="w-10 h-10 bg-slate-800/50 hover:bg-purple-600 rounded-xl flex items-center justify-center transition-all"><i class="fab fa-whatsapp"></i></a>
+                    <a href="#" class="w-10 h-10 bg-slate-800/50 hover:bg-blue-600 rounded-xl flex items-center justify-center transition-all"><i class="fab fa-telegram"></i></a>
+                    <a href="#" class="w-10 h-10 bg-slate-800/50 hover:bg-green-600 rounded-xl flex items-center justify-center transition-all"><i class="fab fa-whatsapp"></i></a>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-6">Product</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="products.html" class="hover:text-white transition-colors">Trending Products</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Heatmaps</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Suppliers</a></li>
+                    <li><a href="dashboard.html" class="hover:text-white transition-colors">Dashboard</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-6">Company</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">About</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Blog</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Careers</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-6">Legal</h4>
+                <ul class="space-y-3 text-sm">
+                    <li><a href="#" class="hover:text-white transition-colors">Privacy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Terms</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Refund Policy</a></li>
+                    <li><a href="#" class="hover:text-white transition-colors">Security</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="border-t border-slate-800 mt-12 pt-12 text-center text-sm text-slate-500">
+            <p>&copy; 2026 TrendPro SaaS. All rights reserved. Made in 🇮🇳</p>
+        </div>
+    </footer>
+
+    <script>
+        // Supabase initialization (your existing config)
+        const supabaseUrl = 'YOUR_SUPABASE_URL';
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = Supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Razorpay payment initiation
+        function initiatePayment(plan) {
+            const options = {
+                key: 'rzp_test_YOUR_KEY', // Replace with your live key
+                amount: plan === 'pro' ? 299900 : 499900, // Amount in paise
+                currency: 'INR',
+                name: 'TrendPro SaaS',
+                description: `${plan.toUpperCase()} Plan - Annual`,
+                image: 'https://your-logo-url.com/logo.png',
+                handler: function(response) {
+                    // Payment success - update user plan in Supabase
+                    updateUserPlan(plan, response.razorpay_payment_id);
+                },
+                prefill: {
+                    name: 'Prem Victor',
+                    email: 'premvictor@gmail.com',
+                    contact: '9740454321'
+                },
+                theme: {
+                    color: '#7c3aed'
+                }
+            };
+            const rzp = new Razorpay(options);
+            rzp.open();
+        }
+
+        async function updateUserPlan(plan, paymentId) {
+            try {
+                const { data, error } = await supabase
+                    .from('users')
+                    .update({ 
+                        plan: plan,
+                        razorpay_payment_id: paymentId,
+                        updated_at: new Date().toISOString()
+                    })
+                    .eq('email', 'premvictor@gmail.com');
+                
+                if (error) throw error;
+                alert(`🎉 ${plan.toUpperCase()} plan activated! Redirecting to dashboard...`);
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Payment recorded but plan activation failed. Contact support.');
+            }
+        }
+
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            // Mobile menu logic
+        });
+
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Animate on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fadeInUp');
+                }
+            });
+        });
+        
+        document.querySelectorAll('.group, [class*="bg-gradient"]').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>
