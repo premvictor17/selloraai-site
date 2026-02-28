@@ -3,16 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SELLORA AI – Product Intelligence Report</title>
+<title>SELLORA AI – Executive Dashboard</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        primary: "#4f46e5"
+        darkbg: "#0f172a",
+        card: "#1e293b",
+        accent: "#4f46e5"
       }
     }
   }
@@ -20,128 +23,154 @@ tailwind.config = {
 </script>
 </head>
 
-<body class="bg-gray-50 text-gray-800">
+<body class="bg-darkbg text-gray-200">
 
 <!-- NAVBAR -->
-<header class="bg-white border-b sticky top-0 z-50">
+<header class="bg-card border-b border-gray-700">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold tracking-wide">SELLORA AI</h1>
-    <nav class="hidden md:flex gap-8 text-sm font-medium">
-      <a href="index.html" class="hover:text-primary">Home</a>
-      <a href="products.html" class="hover:text-primary">Products</a>
-      <a href="dashboard.html" class="hover:text-primary">Dashboard</a>
+    <h1 class="text-xl font-semibold tracking-wide">SELLORA AI</h1>
+    <nav class="flex gap-6 text-sm">
+      <a href="index.html" class="hover:text-white">Home</a>
+      <a href="products.html" class="hover:text-white">Products</a>
+      <a href="dashboard.html" class="text-white font-semibold">Dashboard</a>
     </nav>
   </div>
 </header>
 
 <main class="max-w-7xl mx-auto px-6 py-10">
 
-  <!-- PRODUCT HEADER -->
+  <!-- HEADER -->
   <div class="mb-10">
-    <h2 class="text-3xl font-bold mb-2">Moringa Powder</h2>
-    <div class="flex gap-4 items-center">
-      <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">
-        Demand Score: 92%
-      </span>
-      <span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm font-semibold">
-        Export Potential: High
-      </span>
-    </div>
+    <h2 class="text-3xl font-bold mb-2">Executive Intelligence Overview</h2>
+    <p class="text-gray-400">Live export opportunity insights powered by AI analytics.</p>
   </div>
 
-  <!-- INTELLIGENCE CARDS -->
+  <!-- KPI CARDS -->
   <div class="grid md:grid-cols-4 gap-6 mb-10">
 
-    <div class="bg-white p-6 rounded-xl shadow-sm">
-      <p class="text-gray-500 text-sm">Demand Trend</p>
-      <h3 class="text-xl font-bold mt-2">Rising</h3>
+    <div class="bg-card p-6 rounded-xl">
+      <p class="text-gray-400 text-sm">Active Products</p>
+      <h3 class="text-2xl font-bold mt-2">128</h3>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-sm">
-      <p class="text-gray-500 text-sm">Competition</p>
-      <h3 class="text-xl font-bold mt-2">Moderate</h3>
+    <div class="bg-card p-6 rounded-xl">
+      <p class="text-gray-400 text-sm">High Demand</p>
+      <h3 class="text-2xl font-bold mt-2">37</h3>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-sm">
-      <p class="text-gray-500 text-sm">Margin Potential</p>
-      <h3 class="text-xl font-bold mt-2">28% Avg</h3>
+    <div class="bg-card p-6 rounded-xl">
+      <p class="text-gray-400 text-sm">Verified Suppliers</p>
+      <h3 class="text-2xl font-bold mt-2">542</h3>
     </div>
 
-    <div class="bg-white p-6 rounded-xl shadow-sm">
-      <p class="text-gray-500 text-sm">Risk Level</p>
-      <h3 class="text-xl font-bold mt-2 text-yellow-600">Medium</h3>
+    <div class="bg-card p-6 rounded-xl">
+      <p class="text-gray-400 text-sm">Avg Export Score</p>
+      <h3 class="text-2xl font-bold mt-2">89%</h3>
     </div>
 
   </div>
 
-  <!-- HEATMAP SECTION -->
-  <div class="bg-white p-6 rounded-xl shadow-sm mb-10">
-    <h3 class="text-xl font-semibold mb-4">India Demand Distribution</h3>
-    <div class="h-48 bg-gray-100 rounded-lg flex items-center justify-center text-gray-400">
-      India Heatmap Placeholder
+  <!-- CHARTS -->
+  <div class="grid md:grid-cols-2 gap-8 mb-10">
+
+    <!-- Demand Trend -->
+    <div class="bg-card p-6 rounded-xl">
+      <h4 class="font-semibold mb-4">Demand Trend (Last 6 Months)</h4>
+      <canvas id="demandChart"></canvas>
     </div>
+
+    <!-- Category Distribution -->
+    <div class="bg-card p-6 rounded-xl">
+      <h4 class="font-semibold mb-4">Product Category Distribution</h4>
+      <canvas id="categoryChart"></canvas>
+    </div>
+
   </div>
 
-  <!-- SUPPLIER TABLE -->
-  <div class="bg-white p-6 rounded-xl shadow-sm mb-10">
-    <h3 class="text-xl font-semibold mb-6">Verified Suppliers</h3>
+  <!-- TABLE -->
+  <div class="bg-card p-6 rounded-xl">
+    <h4 class="font-semibold mb-6">Top Export Opportunities</h4>
 
     <div class="overflow-x-auto">
       <table class="w-full text-sm">
-        <thead class="border-b">
-          <tr class="text-gray-500">
-            <th class="text-left py-3">Supplier</th>
-            <th class="text-left py-3">Location</th>
-            <th class="text-left py-3">MOQ</th>
-            <th class="text-left py-3">Contact</th>
+        <thead class="text-gray-400 border-b border-gray-700">
+          <tr>
+            <th class="text-left py-3">Product</th>
+            <th class="text-left py-3">Demand Score</th>
+            <th class="text-left py-3">Export Potential</th>
+            <th class="text-left py-3">Suppliers</th>
           </tr>
         </thead>
         <tbody>
-
-          <tr class="border-b">
-            <td class="py-3">GreenLeaf Exports</td>
-            <td>Maharashtra</td>
-            <td>500 kg</td>
-            <td>+91 98765 43210</td>
+          <tr class="border-b border-gray-800">
+            <td class="py-3">Moringa Powder</td>
+            <td>92%</td>
+            <td class="text-green-400">High</td>
+            <td>14</td>
           </tr>
-
-          <tr class="border-b">
-            <td class="py-3">Herbal India Pvt Ltd</td>
-            <td>Tamil Nadu</td>
-            <td>300 kg</td>
-            <td>+91 91234 56789</td>
+          <tr class="border-b border-gray-800">
+            <td class="py-3">Millet Snacks</td>
+            <td>88%</td>
+            <td class="text-green-400">High</td>
+            <td>9</td>
           </tr>
-
-          <tr class="border-b">
-            <td class="py-3">Organic Roots Co.</td>
-            <td>Karnataka</td>
-            <td>400 kg</td>
-            <td>+91 99887 77665</td>
-          </tr>
-
           <tr>
-            <td class="py-3">Nature Harvest Ltd</td>
-            <td>Gujarat</td>
-            <td>250 kg</td>
-            <td>+91 90909 90909</td>
+            <td class="py-3">Turmeric Extract</td>
+            <td>91%</td>
+            <td class="text-green-400">High</td>
+            <td>11</td>
           </tr>
-
         </tbody>
       </table>
     </div>
-  </div>
 
-  <!-- EXECUTIVE INSIGHT -->
-  <div class="bg-primary text-white p-8 rounded-xl">
-    <h3 class="text-xl font-semibold mb-4">SELLORA AI Executive Insight</h3>
-    <p>
-      Moringa Powder shows sustained demand growth across Maharashtra, Tamil Nadu, and Karnataka.
-      Moderate competition and healthy export margins make this a strong candidate for
-      international health & wellness markets.
-    </p>
   </div>
 
 </main>
+
+<script>
+const demandCtx = document.getElementById('demandChart');
+
+new Chart(demandCtx, {
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [{
+      label: 'Demand Index',
+      data: [65, 72, 78, 81, 88, 94],
+      borderColor: '#4f46e5',
+      backgroundColor: 'rgba(79,70,229,0.2)',
+      tension: 0.4,
+      fill: true
+    }]
+  },
+  options: {
+    plugins: { legend: { labels: { color: '#ffffff' } } },
+    scales: {
+      x: { ticks: { color: '#9ca3af' } },
+      y: { ticks: { color: '#9ca3af' } }
+    }
+  }
+});
+
+const categoryCtx = document.getElementById('categoryChart');
+
+new Chart(categoryCtx, {
+  type: 'doughnut',
+  data: {
+    labels: ['Health', 'Organic Foods', 'Spices', 'Eco Products'],
+    datasets: [{
+      data: [35, 25, 20, 20],
+      backgroundColor: ['#4f46e5', '#7c3aed', '#22c55e', '#f59e0b']
+    }]
+  },
+  options: {
+    plugins: {
+      legend: { labels: { color: '#ffffff' } }
+    }
+  }
+});
+</script>
 
 </body>
 </html>
