@@ -15,7 +15,8 @@ tailwind.config = {
       colors: {
         darkbg: "#0f172a",
         card: "#1e293b",
-        accent: "#4f46e5"
+        accent: "#4f46e5",
+        elite: "#7c3aed"
       }
     }
   }
@@ -25,14 +26,25 @@ tailwind.config = {
 
 <body class="bg-darkbg text-gray-200">
 
+<!-- AUTH PROTECTION -->
+<script>
+if(localStorage.getItem("sellora_logged_in") !== "true") {
+  window.location.href = "login.html";
+}
+</script>
+
 <!-- NAVBAR -->
 <header class="bg-card border-b border-gray-700">
   <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-    <h1 class="text-lg font-semibold tracking-wide">SELLORA AI</h1>
-    <nav class="flex gap-6 text-sm">
+    <div class="flex items-center gap-4">
+      <h1 class="text-lg font-semibold tracking-wide">SELLORA AI</h1>
+      <span id="planBadge" class="text-xs px-3 py-1 rounded-full bg-accent"></span>
+    </div>
+    <nav class="flex gap-6 text-sm items-center">
       <a href="index.html" class="hover:text-white">Home</a>
       <a href="products.html" class="hover:text-white">Products</a>
       <a href="dashboard.html" class="text-white font-semibold">Dashboard</a>
+      <button onclick="logout()" class="text-red-400 hover:text-red-300">Logout</button>
     </nav>
   </div>
 </header>
@@ -68,7 +80,7 @@ tailwind.config = {
     </div>
   </div>
 
-  <!-- ANALYTICS GRID (Compact 3 Column) -->
+  <!-- ANALYTICS GRID -->
   <div class="grid lg:grid-cols-3 gap-4 mb-6">
 
     <!-- Demand Trend -->
@@ -79,8 +91,8 @@ tailwind.config = {
       </div>
     </div>
 
-    <!-- Category Distribution -->
-    <div class="bg-card p-4 rounded-lg">
+    <!-- Category Distribution (ELITE ONLY) -->
+    <div id="eliteChartCard" class="bg-card p-4 rounded-lg hidden">
       <h4 class="text-xs font-semibold mb-2">Category Split</h4>
       <div class="h-44">
         <canvas id="categoryChart"></canvas>
@@ -92,31 +104,22 @@ tailwind.config = {
       <h4 class="text-xs font-semibold mb-2">India Demand</h4>
       <div class="h-44 flex items-center justify-center">
         <svg viewBox="0 0 300 350" class="w-full max-w-xs">
-
           <path d="M110 160 L140 150 L160 180 L130 200 Z"
-            fill="#4f46e5"
-            class="hover:opacity-80 cursor-pointer">
+            fill="#4f46e5">
             <title>Maharashtra - 94%</title>
           </path>
-
           <path d="M160 240 L185 250 L175 280 L150 270 Z"
-            fill="#22c55e"
-            class="hover:opacity-80 cursor-pointer">
+            fill="#22c55e">
             <title>Tamil Nadu - 89%</title>
           </path>
-
           <path d="M135 210 L160 215 L150 240 L125 235 Z"
-            fill="#7c3aed"
-            class="hover:opacity-80 cursor-pointer">
+            fill="#7c3aed">
             <title>Karnataka - 91%</title>
           </path>
-
           <path d="M70 140 L95 130 L105 160 L80 170 Z"
-            fill="#f59e0b"
-            class="hover:opacity-80 cursor-pointer">
+            fill="#f59e0b">
             <title>Gujarat - 84%</title>
           </path>
-
         </svg>
       </div>
     </div>
@@ -126,7 +129,6 @@ tailwind.config = {
   <!-- TABLE -->
   <div class="bg-card p-4 rounded-lg">
     <h4 class="text-sm font-semibold mb-4">Top Export Opportunities</h4>
-
     <div class="overflow-x-auto">
       <table class="w-full text-xs">
         <thead class="text-gray-400 border-b border-gray-700">
@@ -144,17 +146,11 @@ tailwind.config = {
             <td class="text-green-400">High</td>
             <td>14</td>
           </tr>
-          <tr class="border-b border-gray-800">
+          <tr>
             <td class="py-2">Millet Snacks</td>
             <td>88%</td>
             <td class="text-green-400">High</td>
             <td>9</td>
-          </tr>
-          <tr>
-            <td class="py-2">Turmeric Extract</td>
-            <td>91%</td>
-            <td class="text-green-400">High</td>
-            <td>11</td>
           </tr>
         </tbody>
       </table>
@@ -164,12 +160,31 @@ tailwind.config = {
 </main>
 
 <script>
+const plan = localStorage.getItem("sellora_plan") || "pro";
+const badge = document.getElementById("planBadge");
+const eliteCard = document.getElementById("eliteChartCard");
+
+if(plan === "elite"){
+  badge.innerText = "ELITE PLAN";
+  badge.classList.add("bg-elite");
+  eliteCard.classList.remove("hidden");
+} else {
+  badge.innerText = "PRO PLAN";
+  badge.classList.add("bg-accent");
+}
+
+function logout(){
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+/* Charts */
+
 new Chart(document.getElementById('demandChart'), {
   type: 'line',
   data: {
     labels: ['Jan','Feb','Mar','Apr','May','Jun'],
     datasets: [{
-      label: 'Demand Index',
       data: [65,72,78,81,88,94],
       borderColor: '#4f46e5',
       backgroundColor: 'rgba(79,70,229,0.15)',
@@ -186,19 +201,21 @@ new Chart(document.getElementById('demandChart'), {
   }
 });
 
-new Chart(document.getElementById('categoryChart'), {
-  type: 'doughnut',
-  data: {
-    labels: ['Health','Organic','Spices','Eco'],
-    datasets: [{
-      data: [35,25,20,20],
-      backgroundColor:['#4f46e5','#7c3aed','#22c55e','#f59e0b']
-    }]
-  },
-  options:{
-    plugins:{legend:{labels:{color:'#ffffff', boxWidth:10}}}
-  }
-});
+if(plan === "elite"){
+  new Chart(document.getElementById('categoryChart'), {
+    type: 'doughnut',
+    data: {
+      labels: ['Health','Organic','Spices','Eco'],
+      datasets: [{
+        data: [35,25,20,20],
+        backgroundColor:['#4f46e5','#7c3aed','#22c55e','#f59e0b']
+      }]
+    },
+    options:{
+      plugins:{legend:{labels:{color:'#ffffff', boxWidth:10}}}
+    }
+  });
+}
 </script>
 
 </body>
