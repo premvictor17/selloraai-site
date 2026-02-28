@@ -27,8 +27,8 @@ tailwind.config = {
 
 <!-- NAVBAR -->
 <header class="bg-card border-b border-gray-700">
-  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-xl font-semibold tracking-wide">SELLORA AI</h1>
+  <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+    <h1 class="text-lg font-semibold tracking-wide">SELLORA AI</h1>
     <nav class="flex gap-6 text-sm">
       <a href="index.html" class="hover:text-white">Home</a>
       <a href="products.html" class="hover:text-white">Products</a>
@@ -37,124 +37,121 @@ tailwind.config = {
   </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-6 py-10">
+<main class="max-w-7xl mx-auto px-6 py-6">
 
   <!-- TITLE -->
-  <div class="mb-10">
-    <h2 class="text-3xl font-bold mb-2">Executive Intelligence Overview</h2>
-    <p class="text-gray-400">Live export opportunity insights powered by SELLORA AI analytics.</p>
+  <div class="mb-6">
+    <h2 class="text-2xl font-bold mb-1">Executive Intelligence Overview</h2>
+    <p class="text-gray-400 text-sm">Live export opportunity insights powered by SELLORA AI analytics.</p>
   </div>
 
   <!-- KPI CARDS -->
-  <div class="grid md:grid-cols-4 gap-6 mb-10">
-    <div class="bg-card p-6 rounded-xl">
-      <p class="text-gray-400 text-sm">Active Products</p>
-      <h3 class="text-2xl font-bold mt-2">128</h3>
+  <div class="grid md:grid-cols-4 gap-4 mb-6">
+    <div class="bg-card p-4 rounded-lg">
+      <p class="text-gray-400 text-xs">Active Products</p>
+      <h3 class="text-xl font-bold mt-1">128</h3>
     </div>
 
-    <div class="bg-card p-6 rounded-xl">
-      <p class="text-gray-400 text-sm">High Demand</p>
-      <h3 class="text-2xl font-bold mt-2">37</h3>
+    <div class="bg-card p-4 rounded-lg">
+      <p class="text-gray-400 text-xs">High Demand</p>
+      <h3 class="text-xl font-bold mt-1">37</h3>
     </div>
 
-    <div class="bg-card p-6 rounded-xl">
-      <p class="text-gray-400 text-sm">Verified Suppliers</p>
-      <h3 class="text-2xl font-bold mt-2">542</h3>
+    <div class="bg-card p-4 rounded-lg">
+      <p class="text-gray-400 text-xs">Verified Suppliers</p>
+      <h3 class="text-xl font-bold mt-1">542</h3>
     </div>
 
-    <div class="bg-card p-6 rounded-xl">
-      <p class="text-gray-400 text-sm">Avg Export Score</p>
-      <h3 class="text-2xl font-bold mt-2">89%</h3>
+    <div class="bg-card p-4 rounded-lg">
+      <p class="text-gray-400 text-xs">Avg Export Score</p>
+      <h3 class="text-xl font-bold mt-1">89%</h3>
     </div>
   </div>
 
-  <!-- CHARTS -->
-  <div class="grid md:grid-cols-2 gap-8 mb-10">
+  <!-- ANALYTICS GRID (Compact 3 Column) -->
+  <div class="grid lg:grid-cols-3 gap-4 mb-6">
 
-    <div class="bg-card p-6 rounded-xl">
-      <h4 class="font-semibold mb-4">Demand Trend (Last 6 Months)</h4>
-      <canvas id="demandChart"></canvas>
+    <!-- Demand Trend -->
+    <div class="bg-card p-4 rounded-lg">
+      <h4 class="text-xs font-semibold mb-2">Demand Trend</h4>
+      <div class="h-44">
+        <canvas id="demandChart"></canvas>
+      </div>
     </div>
 
-    <div class="bg-card p-6 rounded-xl">
-      <h4 class="font-semibold mb-4">Category Distribution</h4>
-      <canvas id="categoryChart"></canvas>
+    <!-- Category Distribution -->
+    <div class="bg-card p-4 rounded-lg">
+      <h4 class="text-xs font-semibold mb-2">Category Split</h4>
+      <div class="h-44">
+        <canvas id="categoryChart"></canvas>
+      </div>
     </div>
 
-  </div>
+    <!-- Heatmap -->
+    <div class="bg-card p-4 rounded-lg">
+      <h4 class="text-xs font-semibold mb-2">India Demand</h4>
+      <div class="h-44 flex items-center justify-center">
+        <svg viewBox="0 0 300 350" class="w-full max-w-xs">
 
-  <!-- INDIA HEATMAP -->
-  <div class="bg-card p-6 rounded-xl mb-10">
-    <h4 class="font-semibold mb-6">India Demand Heatmap</h4>
+          <path d="M110 160 L140 150 L160 180 L130 200 Z"
+            fill="#4f46e5"
+            class="hover:opacity-80 cursor-pointer">
+            <title>Maharashtra - 94%</title>
+          </path>
 
-    <div class="relative w-full max-w-3xl mx-auto">
+          <path d="M160 240 L185 250 L175 280 L150 270 Z"
+            fill="#22c55e"
+            class="hover:opacity-80 cursor-pointer">
+            <title>Tamil Nadu - 89%</title>
+          </path>
 
-      <svg viewBox="0 0 500 600" class="w-full">
+          <path d="M135 210 L160 215 L150 240 L125 235 Z"
+            fill="#7c3aed"
+            class="hover:opacity-80 cursor-pointer">
+            <title>Karnataka - 91%</title>
+          </path>
 
-        <path d="M180 350 L230 340 L260 380 L210 400 Z"
-          fill="#4f46e5"
-          class="hover:opacity-80 cursor-pointer">
-          <title>Maharashtra - Demand Score: 94%</title>
-        </path>
+          <path d="M70 140 L95 130 L105 160 L80 170 Z"
+            fill="#f59e0b"
+            class="hover:opacity-80 cursor-pointer">
+            <title>Gujarat - 84%</title>
+          </path>
 
-        <path d="M260 470 L300 480 L290 520 L250 510 Z"
-          fill="#22c55e"
-          class="hover:opacity-80 cursor-pointer">
-          <title>Tamil Nadu - Demand Score: 89%</title>
-        </path>
-
-        <path d="M220 420 L260 430 L250 470 L210 460 Z"
-          fill="#7c3aed"
-          class="hover:opacity-80 cursor-pointer">
-          <title>Karnataka - Demand Score: 91%</title>
-        </path>
-
-        <path d="M120 320 L160 300 L170 340 L130 350 Z"
-          fill="#f59e0b"
-          class="hover:opacity-80 cursor-pointer">
-          <title>Gujarat - Demand Score: 84%</title>
-        </path>
-
-        <rect x="50" y="100" width="400" height="450"
-          fill="none" stroke="#334155" stroke-width="2"/>
-      </svg>
-
-      <p class="text-gray-400 text-sm mt-4 text-center">
-        Hover over states to view demand score.
-      </p>
-
+        </svg>
+      </div>
     </div>
+
   </div>
 
   <!-- TABLE -->
-  <div class="bg-card p-6 rounded-xl">
-    <h4 class="font-semibold mb-6">Top Export Opportunities</h4>
+  <div class="bg-card p-4 rounded-lg">
+    <h4 class="text-sm font-semibold mb-4">Top Export Opportunities</h4>
 
     <div class="overflow-x-auto">
-      <table class="w-full text-sm">
+      <table class="w-full text-xs">
         <thead class="text-gray-400 border-b border-gray-700">
           <tr>
-            <th class="text-left py-3">Product</th>
-            <th class="text-left py-3">Demand Score</th>
-            <th class="text-left py-3">Export Potential</th>
-            <th class="text-left py-3">Suppliers</th>
+            <th class="text-left py-2">Product</th>
+            <th class="text-left py-2">Demand</th>
+            <th class="text-left py-2">Potential</th>
+            <th class="text-left py-2">Suppliers</th>
           </tr>
         </thead>
         <tbody>
           <tr class="border-b border-gray-800">
-            <td class="py-3">Moringa Powder</td>
+            <td class="py-2">Moringa Powder</td>
             <td>92%</td>
             <td class="text-green-400">High</td>
             <td>14</td>
           </tr>
           <tr class="border-b border-gray-800">
-            <td class="py-3">Millet Snacks</td>
+            <td class="py-2">Millet Snacks</td>
             <td>88%</td>
             <td class="text-green-400">High</td>
             <td>9</td>
           </tr>
           <tr>
-            <td class="py-3">Turmeric Extract</td>
+            <td class="py-2">Turmeric Extract</td>
             <td>91%</td>
             <td class="text-green-400">High</td>
             <td>11</td>
@@ -175,13 +172,13 @@ new Chart(document.getElementById('demandChart'), {
       label: 'Demand Index',
       data: [65,72,78,81,88,94],
       borderColor: '#4f46e5',
-      backgroundColor: 'rgba(79,70,229,0.2)',
+      backgroundColor: 'rgba(79,70,229,0.15)',
       tension: 0.4,
       fill: true
     }]
   },
   options: {
-    plugins:{legend:{labels:{color:'#ffffff'}}},
+    plugins:{legend:{display:false}},
     scales:{
       x:{ticks:{color:'#9ca3af'}},
       y:{ticks:{color:'#9ca3af'}}
@@ -199,7 +196,7 @@ new Chart(document.getElementById('categoryChart'), {
     }]
   },
   options:{
-    plugins:{legend:{labels:{color:'#ffffff'}}}
+    plugins:{legend:{labels:{color:'#ffffff', boxWidth:10}}}
   }
 });
 </script>
