@@ -1,121 +1,145 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <script src="https://cdn.tailwindcss.com"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SELLORA AI – Executive Dashboard</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        darkbg: "#0f172a",
+        card: "#1e293b",
+        accent: "#4f46e5"
+      }
+    }
+  }
+}
+</script>
 </head>
-<body class="min-h-screen bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white">
-  
-  <!-- Login Screen (FAKE - just UI) -->
-  <div id="loginScreen" class="min-h-screen flex items-center justify-center p-8">
-    <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-12 max-w-md w-full text-center">
-      <h1 class="text-5xl font-bold mb-8">🔐 TrendPro Dashboard</h1>
-      <input id="userEmail" type="email" placeholder="premvictor@gmail.com" class="w-full p-4 bg-white/20 rounded-2xl mb-6 text-xl text-white placeholder-white/70">
-      <input id="userPhone" type="tel" placeholder="9740454321" class="w-full p-4 bg-white/20 rounded-2xl mb-6 text-xl text-white placeholder-white/70">
-      <button onclick="loginUser()" class="w-full bg-emerald-500 hover:bg-emerald-600 p-6 rounded-2xl text-2xl font-bold transition-all duration-300">Enter Dashboard</button>
-      <button onclick="goBack()" class="mt-4 text-sm underline hover:text-emerald-300">← Back to Products</button>
-    </div>
+
+<body class="bg-darkbg text-gray-200">
+
+<!-- NAVBAR -->
+<header class="bg-card border-b border-gray-700">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-semibold tracking-wide">SELLORA AI</h1>
+    <nav class="flex gap-6 text-sm">
+      <a href="index.html" class="hover:text-white">Home</a>
+      <a href="products.html" class="hover:text-white">Products</a>
+      <a href="dashboard.html" class="text-white font-semibold">Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="max-w-7xl mx-auto px-6 py-10">
+
+  <!-- TITLE -->
+  <div class="mb-10">
+    <h2 class="text-3xl font-bold mb-2">Executive Intelligence Overview</h2>
+    <p class="text-gray-400">Real-time export opportunity insights powered by SELLORA AI.</p>
   </div>
 
-  <!-- Dashboard (FAKE DATA - WORKS INSTANTLY) -->
-  <div id="dashboardScreen" class="hidden min-h-screen p-8">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex justify-between items-center mb-12">
-        <div class="flex items-center space-x-4">
-          <button onclick="goBack()" class="p-3 bg-white/20 rounded-2xl hover:bg-white/30">← Back</button>
-          <h1 class="text-6xl font-black bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent drop-shadow-2xl">🚀 Product Intelligence</h1>
-        </div>
-        <div id="planBadge" class="px-6 py-3 bg-emerald-500 rounded-2xl text-2xl font-bold">PRO</div>
-      </div>
+  <!-- KPI CARDS -->
+  <div class="grid md:grid-cols-4 gap-6 mb-10">
 
-      <div class="grid md:grid-cols-4 gap-8 mb-12">
-        <input id="searchInput" placeholder="🔍 Search products (earbuds, charger...)" class="md:col-span-2 p-8 bg-white/10 backdrop-blur-xl rounded-3xl text-2xl text-white placeholder-white/70">
-        <div class="p-8 bg-white/10 backdrop-blur-xl rounded-3xl text-center text-2xl font-bold text-green-400">₹1.94L Total Profit</div>
-        <button onclick="logout()" class="p-8 bg-red-500 hover:bg-red-600 rounded-3xl text-2xl font-bold">🚪 Logout</button>
-      </div>
-
-      <!-- FAKE PRODUCTS GRID -->
-      <div id="productsGrid" class="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
-        <div class="group bg-white/10 backdrop-blur-xl p-8 rounded-3xl hover:scale-105 hover:bg-white/20 transition-all cursor-pointer border-2 border-transparent hover:border-green-400">
-          <h3 class="text-2xl font-bold mb-4">🔥 Wireless Earbuds</h3>
-          <div class="space-y-2 mb-6">
-            <p>🇮🇳 Buy: <span class="text-green-400 font-bold">₹450</span></p>
-            <p>🌍 Sell: <span class="text-blue-400 font-bold">₹999</span></p>
-            <p class="text-3xl font-black text-green-400">₹549 PROFIT</p>
-          </div>
-          <div class="flex justify-between text-sm opacity-75">
-            <span>MH: 85% 🔥</span><span>📈 Trending</span>
-          </div>
-        </div>
-        <div class="group bg-white/10 backdrop-blur-xl p-8 rounded-3xl hover:scale-105 hover:bg-white/20 transition-all cursor-pointer border-2 border-transparent hover:border-green-400">
-          <h3 class="text-2xl font-bold mb-4">📱 Mobile Charger</h3>
-          <div class="space-y-2 mb-6">
-            <p>🇮🇳 Buy: <span class="text-green-400 font-bold">₹120</span></p>
-            <p>🌍 Sell: <span class="text-blue-400 font-bold">₹399</span></p>
-            <p class="text-3xl font-black text-green-400">₹279 PROFIT</p>
-          </div>
-          <div class="flex justify-between text-sm opacity-75">
-            <span>DL: 92% 🔥</span><span>📈 Trending</span>
-          </div>
-        </div>
-        <div class="group bg-white/10 backdrop-blur-xl p-8 rounded-3xl hover:scale-105 hover:bg-white/20 transition-all cursor-pointer border-2 border-transparent hover:border-green-400">
-          <h3 class="text-2xl font-bold mb-4">💡 LED Bulb</h3>
-          <div class="space-y-2 mb-6">
-            <p>🇮🇳 Buy: <span class="text-green-400 font-bold">₹85</span></p>
-            <p>🌍 Sell: <span class="text-blue-400 font-bold">₹199</span></p>
-            <p class="text-3xl font-black text-green-400">₹114 PROFIT</p>
-          </div>
-          <div class="flex justify-between text-sm opacity-75">
-            <span>KA: 78% 🔥</span><span>📈 Trending</span>
-          </div>
-        </div>
-      </div>
+    <div class="bg-card p-6 rounded-xl">
+      <p class="text-gray-400 text-sm">Active Products</p>
+      <h3 class="text-2xl font-bold mt-2">128</h3>
     </div>
+
+    <div class="bg-card p-6 rounded-xl">
+      <p class="text-gray-400 text-sm">High Demand</p>
+      <h3 class="text-2xl font-bold mt-2">37</h3>
+    </div>
+
+    <div class="bg-card p-6 rounded-xl">
+      <p class="text-gray-400 text-sm">Verified Suppliers</p>
+      <h3 class="text-2xl font-bold mt-2">542</h3>
+    </div>
+
+    <div class="bg-card p-6 rounded-xl">
+      <p class="text-gray-400 text-sm">Avg Export Score</p>
+      <h3 class="text-2xl font-bold mt-2">89%</h3>
+    </div>
+
   </div>
 
-  <script>
-    // AUTO-FILL FROM RAZORPAY URL
-    window.addEventListener('load', function() {
-      const urlParams = new URLSearchParams(window.location.search);
-      const email = urlParams.get('email');
-      const phone = urlParams.get('phone');
-      
-      if (email && phone) {
-        document.getElementById('userEmail').value = decodeURIComponent(email);
-        document.getElementById('userPhone').value = decodeURIComponent(phone);
-        // Auto-login instantly
-        setTimeout(loginUser, 500);
-      }
-    });
+  <!-- ANALYTICS ROW -->
+  <div class="grid md:grid-cols-2 gap-6 mb-10">
 
-    function loginUser() {
-      // FAKE LOGIN - WORKS ALWAYS
-      const email = document.getElementById('userEmail').value;
-      const phone = document.getElementById('userPhone').value;
-      
-      if (email && phone) {
-        document.getElementById('planBadge').textContent = 'PRO';
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('dashboardScreen').classList.remove('hidden');
-        
-        // Fake search
-        document.getElementById('searchInput').addEventListener('input', function() {
-          // Search works visually
-        });
-      } else {
-        alert('Enter email + phone!');
-      }
-    }
+    <div class="bg-card p-6 rounded-xl">
+      <h4 class="font-semibold mb-4">Demand Trend Overview</h4>
+      <div class="h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500">
+        Chart Placeholder
+      </div>
+    </div>
 
-    function logout() {
-      document.getElementById('loginScreen').classList.remove('hidden');
-      document.getElementById('dashboardScreen').classList.add('hidden');
-      document.getElementById('userEmail').value = '';
-      document.getElementById('userPhone').value = '';
-    }
+    <div class="bg-card p-6 rounded-xl">
+      <h4 class="font-semibold mb-4">India Demand Heatmap</h4>
+      <div class="h-40 bg-gray-800 rounded-lg flex items-center justify-center text-gray-500">
+        Heatmap Placeholder
+      </div>
+    </div>
 
-    function goBack() {
-      window.location.href = 'products.html';
-    }
-  </script>
+  </div>
+
+  <!-- TABLE -->
+  <div class="bg-card p-6 rounded-xl">
+    <h4 class="font-semibold mb-6">Top Export Opportunities</h4>
+
+    <div class="overflow-x-auto">
+      <table class="w-full text-sm">
+        <thead class="text-gray-400 border-b border-gray-700">
+          <tr>
+            <th class="text-left py-3">Product</th>
+            <th class="text-left py-3">Demand Score</th>
+            <th class="text-left py-3">Export Potential</th>
+            <th class="text-left py-3">Suppliers</th>
+          </tr>
+        </thead>
+        <tbody>
+
+          <tr class="border-b border-gray-800">
+            <td class="py-3">Moringa Powder</td>
+            <td>92%</td>
+            <td class="text-green-400">High</td>
+            <td>14</td>
+          </tr>
+
+          <tr class="border-b border-gray-800">
+            <td class="py-3">Millet Snacks</td>
+            <td>88%</td>
+            <td class="text-green-400">High</td>
+            <td>9</td>
+          </tr>
+
+          <tr class="border-b border-gray-800">
+            <td class="py-3">Turmeric Extract</td>
+            <td>91%</td>
+            <td class="text-green-400">High</td>
+            <td>11</td>
+          </tr>
+
+          <tr>
+            <td class="py-3">Dehydrated Fruits</td>
+            <td>84%</td>
+            <td class="text-yellow-400">Medium</td>
+            <td>7</td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+</main>
+
 </body>
 </html>
