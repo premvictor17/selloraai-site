@@ -44,11 +44,27 @@ tailwind.config = {
   50% { transform: scale(1.15); opacity: 1; }
   100% { transform: scale(1); opacity: 0.8; }
 }
+
+.ticker {
+  animation: fadeSlide 0.5s ease;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
 </style>
 
 </head>
 
 <body class="bg-gray-50 text-gray-800">
+
+<!-- LIVE DEMAND TICKER -->
+<div class="bg-primary text-white text-center py-2 text-sm font-medium">
+  <span id="tickerText" class="ticker">
+    🔥 128 exporters viewing Moringa Powder right now
+  </span>
+</div>
 
 <!-- NAVBAR -->
 <header class="bg-white border-b sticky top-0 z-50">
@@ -77,19 +93,15 @@ tailwind.config = {
 
 <!-- PRODUCTS GRID -->
 <section class="max-w-7xl mx-auto px-6 pb-20">
-
 <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-<!-- CARD -->
 <div class="unlock-card relative bg-white p-6 rounded-2xl shadow overflow-hidden cursor-pointer">
-
   <div class="blur-layer transition-all duration-500">
     <h3 class="text-xl font-semibold mb-2">Moringa Powder</h3>
     <p class="text-sm text-gray-600">Demand Score: 92%</p>
     <p class="text-sm text-gray-600">Growth Rate: +18%</p>
     <p class="text-sm text-gray-600">Export Score: 89</p>
   </div>
-
   <div class="overlay absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl">
     <span class="lock-icon text-4xl mb-3">🔒</span>
     <p class="text-sm font-semibold mb-3">Pro Plan Required</p>
@@ -98,19 +110,15 @@ tailwind.config = {
        Unlock Access
     </a>
   </div>
-
 </div>
 
-<!-- CARD -->
 <div class="unlock-card relative bg-white p-6 rounded-2xl shadow overflow-hidden cursor-pointer">
-
   <div class="blur-layer transition-all duration-500">
     <h3 class="text-xl font-semibold mb-2">Millet Snacks</h3>
     <p class="text-sm text-gray-600">Demand Score: 88%</p>
     <p class="text-sm text-gray-600">Growth Rate: +15%</p>
     <p class="text-sm text-gray-600">Export Score: 85</p>
   </div>
-
   <div class="overlay absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl">
     <span class="lock-icon text-4xl mb-3">🔒</span>
     <p class="text-sm font-semibold mb-3">Pro Plan Required</p>
@@ -119,19 +127,15 @@ tailwind.config = {
        Subscribe Now
     </a>
   </div>
-
 </div>
 
-<!-- CARD -->
 <div class="unlock-card relative bg-white p-6 rounded-2xl shadow overflow-hidden cursor-pointer">
-
   <div class="blur-layer transition-all duration-500">
     <h3 class="text-xl font-semibold mb-2">Turmeric Extract</h3>
     <p class="text-sm text-gray-600">Demand Score: 91%</p>
     <p class="text-sm text-gray-600">Growth Rate: +22%</p>
     <p class="text-sm text-gray-600">Export Score: 93</p>
   </div>
-
   <div class="overlay absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl">
     <span class="lock-icon text-4xl mb-3">🔒</span>
     <p class="text-sm font-semibold mb-3">Elite Analytics Inside</p>
@@ -140,7 +144,6 @@ tailwind.config = {
        Upgrade to Elite
     </a>
   </div>
-
 </div>
 
 </div>
@@ -156,6 +159,36 @@ tailwind.config = {
      View Pricing
   </a>
 </section>
+
+<script>
+// ===== LIVE DEMAND TICKER ENGINE =====
+
+const products = [
+  "Moringa Powder",
+  "Millet Snacks",
+  "Turmeric Extract",
+  "Plant Protein Mix",
+  "Eco Packaging Kits"
+];
+
+let viewerCount = 120;
+
+function updateTicker() {
+  viewerCount += Math.floor(Math.random() * 3);
+
+  const randomProduct = products[Math.floor(Math.random() * products.length)];
+
+  const ticker = document.getElementById("tickerText");
+  ticker.classList.remove("ticker");
+  void ticker.offsetWidth; // force reflow
+  ticker.classList.add("ticker");
+
+  ticker.innerText =
+    `🔥 ${viewerCount} exporters viewing ${randomProduct} right now`;
+}
+
+setInterval(updateTicker, 3000);
+</script>
 
 </body>
 </html>
