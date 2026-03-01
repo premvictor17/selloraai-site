@@ -29,14 +29,13 @@ tailwind.config = {
   </a>
 
   <h2 class="text-2xl font-bold mt-4 mb-2 text-center">SELLORA AI</h2>
-  <p class="text-gray-500 text-sm text-center mb-8">
-    Sign in to access your export intelligence dashboard
+  <p class="text-gray-500 text-sm text-center mb-6">
+    Sign in or create your account
   </p>
 
-  <!-- PLAN STATUS -->
-  <div id="planStatus" class="text-center text-sm mb-6"></div>
+  <div id="messageBox" class="text-center text-sm mb-4"></div>
 
-  <form onsubmit="login(event)" class="space-y-4">
+  <form id="authForm" class="space-y-4">
 
     <div>
       <label class="text-sm text-gray-600">Email</label>
@@ -52,73 +51,98 @@ tailwind.config = {
         required>
     </div>
 
-    <button
+    <button type="submit"
       class="w-full bg-primary text-white py-3 rounded-lg hover:bg-indigo-600 transition">
       Login
     </button>
 
   </form>
 
-  <!-- SUBSCRIBE BUTTON -->
-  <div id="subscribeBox" class="hidden text-center mt-6">
-    <p class="text-sm text-gray-500 mb-3">
-      You don’t have an active subscription.
+  <div class="text-center mt-6">
+    <p class="text-sm text-gray-500">
+      Don’t have an account?
     </p>
-    <a href="index.html#pricing"
-       class="bg-primary text-white px-6 py-2 rounded-lg text-sm hover:bg-indigo-600">
-       View Plans
-    </a>
+    <button id="signupBtn"
+      class="mt-2 text-primary font-medium hover:underline text-sm">
+      Create Account
+    </button>
   </div>
 
 </div>
 
-<script>
+<!-- FIREBASE AUTH SCRIPT -->
+<script type="module">
 
-const plan = localStorage.getItem("sellora_plan");
-const expiry = localStorage.getItem("sellora_subscription_expiry");
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { 
+  getAuth, 
+  signInWithEmailAndPassword, 
+  createUserWithEmailAndPassword,
+  onAuthStateChanged 
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
-const planStatus = document.getElementById("planStatus");
-const subscribeBox = document.getElementById("subscribeBox");
+// Your Firebase config
+const firebaseConfig = {
+  apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
+  authDomain: "sellora-ai.firebaseapp.com",
+  projectId: "sellora-ai",
+  storageBucket: "sellora-ai.firebasestorage.app",
+  messagingSenderId: "7850591690",
+  appId: "1:7850591690:web:346fccc5531288fb2a3b33",
+  measurementId: "G-NG0NE3L8XH"
+};
 
-// Check subscription status
-if(plan && expiry){
-  const expiryDate = new Date(expiry);
-  const today = new Date();
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
 
-  if(today < expiryDate){
-    planStatus.innerHTML =
-      `<span class="text-green-600 font-medium">
-        Active Plan: ${plan.toUpperCase()}
-      </span>`;
-  } else {
-    planStatus.innerHTML =
-      `<span class="text-red-500 font-medium">
-        Subscription Expired
-      </span>`;
-    subscribeBox.classList.remove("hidden");
+const form = document.getElementById("authForm");
+const signupBtn = document.getElementById("signupBtn");
+const messageBox = document.getElementById("messageBox");
+
+// Auto redirect if already logged in
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.href = "dashboard.html";
   }
+});
 
-} else {
-  planStatus.innerHTML =
-    `<span class="text-gray-500 font-medium">
-      No Active Subscription
-    </span>`;
-  subscribeBox.classList.remove("hidden");
-}
-
-function login(event){
-  event.preventDefault();
+// LOGIN
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
 
   const email = document.getElementById("email").value;
   const password = document.getElementById("password").value;
 
-  // Store login session
-  localStorage.setItem("sellora_logged_in", "true");
-  localStorage.setItem("sellora_email", email);
-  localStorage.setItem("sellora_password", password);
+  try {
+    await signInWithEmailAndPassword(auth, email, password);
+    messageBox.innerHTML = "<span class='text-green-600'>Login successful!</span>";
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    messageBox.innerHTML = "<span class='text-red-500'>" + error.message + "</span>";
+  }
+});
 
-  window.location.href = "dashboard.html";
-}
+// SIGN UP
+signupBtn.addEventListener("click", async () => {
+
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  if (!email || !password) {
+    messageBox.innerHTML = "<span class='text-red-500'>Enter email & password first.</span>";
+    return;
+  }
+
+  try {
+    await createUserWithEmailAndPassword(auth, email, password);
+    messageBox.innerHTML = "<span class='text-green-600'>Account created successfully!</span>";
+    window.location.href = "dashboard.html";
+  } catch (error) {
+    messageBox.innerHTML = "<span class='text-red-500'>" + error.message + "</span>";
+  }
+
+});
 
 </script>
 
