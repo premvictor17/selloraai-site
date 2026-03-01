@@ -165,12 +165,20 @@ function payPro() {
     currency: "INR",
     name: "SELLORA AI - Pro",
     description: "Pro Monthly Subscription",
-    handler: function (response){
-      localStorage.setItem("sellora_logged_in", "true");
-      localStorage.setItem("sellora_plan", "pro");
-      localStorage.setItem("sellora_payment_id", response.razorpay_payment_id);
-      window.location.href = "dashboard.html";
-    }
+handler: function (response){
+
+  const now = new Date();
+  const expiry = new Date();
+  expiry.setDate(now.getDate() + 30);
+
+  localStorage.setItem("sellora_plan", "pro");
+  localStorage.setItem("sellora_logged_in", "true");
+  localStorage.setItem("sellora_subscription_start", now);
+  localStorage.setItem("sellora_subscription_expiry", expiry);
+
+  alert("Pro Subscription Activated!");
+  window.location.href = "dashboard.html";
+}
   };
   var rzp = new Razorpay(options);
   rzp.open();
@@ -183,12 +191,20 @@ function payElite() {
     currency: "INR",
     name: "SELLORA AI - Elite",
     description: "Elite Monthly Subscription",
-    handler: function (response){
-      localStorage.setItem("sellora_logged_in", "true");
-      localStorage.setItem("sellora_plan", "elite");
-      localStorage.setItem("sellora_payment_id", response.razorpay_payment_id);
-      window.location.href = "dashboard.html";
-    }
+  handler: function (response){
+
+  const now = new Date();
+  const expiry = new Date();
+  expiry.setDate(now.getDate() + 30);
+
+  localStorage.setItem("sellora_plan", "elite");
+  localStorage.setItem("sellora_logged_in", "true");
+  localStorage.setItem("sellora_subscription_start", now);
+  localStorage.setItem("sellora_subscription_expiry", expiry);
+
+  alert("Elite Subscription Activated!");
+  window.location.href = "dashboard.html";
+}
   };
   var rzp = new Razorpay(options);
   rzp.open();
@@ -197,4 +213,5 @@ function payElite() {
 
 </body>
 </html>
+
 
