@@ -6,6 +6,7 @@
 <title>SELLORA AI – App</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 tailwind.config = {
@@ -27,7 +28,8 @@ tailwind.config = {
 <body class="bg-darkbg text-gray-200 text-sm">
 
 <script>
-// ===== AUTH GUARD =====
+/* ---------------- AUTH GUARD ---------------- */
+
 const loggedIn = localStorage.getItem("sellora_logged_in");
 const plan = localStorage.getItem("sellora_plan");
 const expiryStored = localStorage.getItem("sellora_subscription_expiry");
@@ -55,11 +57,11 @@ if(expiryStored){
   <div>
 
     <div class="flex justify-between items-center mb-8">
-      <h1 id="logoText" class="text-lg font-bold">SELLORA</h1>
+      <h1 class="text-lg font-bold">SELLORA</h1>
       <button onclick="toggleSidebar()" class="text-gray-400 text-xs">☰</button>
     </div>
 
-    <nav class="space-y-2 text-sm">
+    <nav class="space-y-2">
 
       <button onclick="showTab('overview', this)"
         class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
@@ -98,6 +100,7 @@ if(expiryStored){
 <!-- MAIN -->
 <div class="flex-1 flex flex-col">
 
+<!-- HEADER -->
 <header class="bg-sidebar border-b border-gray-700 px-8 py-4 flex justify-between items-center">
 
   <h2 id="pageTitle" class="font-semibold text-base">Executive Overview</h2>
@@ -109,35 +112,47 @@ if(expiryStored){
 
 </header>
 
-<main class="flex-1 p-8">
+<main class="flex-1 p-8 space-y-6">
 
 <!-- OVERVIEW -->
 <section id="overview" class="tab">
-  <div class="bg-card p-6 rounded">
-    <h3 class="text-lg font-semibold mb-2">Welcome to SELLORA AI</h3>
-    <p class="text-gray-400 text-xs">
-      Your export intelligence command center.
-    </p>
+  <div class="grid grid-cols-4 gap-4">
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Active Products</p>
+      <h3 class="text-lg font-bold">128</h3>
+    </div>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">High Demand</p>
+      <h3 class="text-lg font-bold">37</h3>
+    </div>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Suppliers</p>
+      <h3 class="text-lg font-bold">542</h3>
+    </div>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Export Score</p>
+      <h3 class="text-lg font-bold">89%</h3>
+    </div>
   </div>
 </section>
 
 <!-- TRENDING -->
 <section id="trending" class="tab hidden">
-  <div id="trendingGrid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+  <div class="bg-card p-6 rounded">
+    Trending products engine (Pro & Elite)
+  </div>
 </section>
 
 <!-- SUPPLIERS -->
 <section id="suppliers" class="tab hidden">
   <div class="bg-card p-6 rounded">
-    Supplier intelligence coming soon.
+    Verified supplier database
   </div>
 </section>
 
 <!-- ANALYTICS -->
 <section id="analytics" class="tab hidden">
-  <div class="bg-card p-6 rounded">
-    Advanced AI export analytics (Elite only).
-  </div>
+  <div id="analyticsContent"></div>
 </section>
 
 <!-- BILLING -->
@@ -171,50 +186,15 @@ if(expiryStored){
 
 <script>
 
-// ===== PRODUCT ENGINE =====
-const selloraProducts = [
-  {name:"Moringa Powder", category:"Health", demand:92, growth:18, suppliers:14, exportScore:89, elite:false},
-  {name:"Millet Snacks", category:"Organic", demand:88, growth:15, suppliers:9, exportScore:85, elite:false},
-  {name:"Turmeric Extract", category:"Spices", demand:91, growth:22, suppliers:11, exportScore:93, elite:false},
-  {name:"Plant Protein Mix", category:"Health", demand:95, growth:28, suppliers:18, exportScore:96, elite:true},
-  {name:"Eco Packaging Kits", category:"Eco", demand:84, growth:19, suppliers:12, exportScore:90, elite:true}
-];
+/* ---------------- USER INFO ---------------- */
 
-function renderTrending(){
-  const container = document.getElementById("trendingGrid");
-  container.innerHTML = "";
-
-  selloraProducts.forEach(product => {
-
-    if(product.elite && plan === "pro"){
-      return;
-    }
-
-    container.innerHTML += `
-      <div class="bg-card p-4 rounded">
-        <h3 class="font-semibold mb-2">${product.name}</h3>
-        <p class="text-xs text-gray-400">Category: ${product.category}</p>
-        <p class="text-xs">Demand Score: ${product.demand}%</p>
-        <p class="text-xs">Growth: +${product.growth}%</p>
-        <p class="text-xs">Suppliers: ${product.suppliers}</p>
-        <p class="text-xs text-green-400 mt-2">
-          Export Score: ${product.exportScore}
-        </p>
-      </div>
-    `;
-  });
-}
-
-renderTrending();
-
-// ===== USER INFO =====
 const email = localStorage.getItem("sellora_email");
 const expiryDateStored = localStorage.getItem("sellora_subscription_expiry");
-const autoRenew = localStorage.getItem("sellora_auto_renew") || "off";
 
 document.getElementById("userEmail").innerText = email || "";
 
-// ===== BILLING LOGIC =====
+/* ---------------- EXPIRY ---------------- */
+
 if(expiryDateStored){
 
   const expiryDate = new Date(expiryDateStored);
@@ -224,63 +204,120 @@ if(expiryDateStored){
   document.getElementById("billingPlan").innerText = plan.toUpperCase();
   document.getElementById("billingExpiry").innerText = expiryDate.toDateString();
 
-  if(diffDays > 3){
-    document.getElementById("subscriptionStatus").innerText = "Active";
-  } else if(diffDays > 0){
-    document.getElementById("subscriptionStatus").innerText = "Expiring Soon";
-  } else {
-    window.location.href = "billing.html";
-  }
-
   document.getElementById("expiryInfo").innerText =
     diffDays + " days remaining";
-}
 
-document.getElementById("autoRenewBtn").innerText =
-  autoRenew === "on" ? "Auto Renew: ON" : "Auto Renew: OFF";
-
-function toggleAutoRenew(){
-  localStorage.setItem(
-    "sellora_auto_renew",
-    autoRenew === "on" ? "off" : "on"
-  );
-  location.reload();
-}
-
-// ===== TAB SWITCH =====
-function showTab(tab, btn){
-
-  if(tab === "analytics" && plan === "pro"){
-    alert("Upgrade to Elite to access Analytics.");
-    return;
+  if(diffDays > 3){
+    document.getElementById("subscriptionStatus").innerText = "Active";
+    document.getElementById("subscriptionStatus").className = "text-green-400";
+  } else {
+    document.getElementById("subscriptionStatus").innerText = "Expiring Soon";
+    document.getElementById("subscriptionStatus").className = "text-yellow-400";
   }
+}
 
+/* ---------------- ANALYTICS ENGINE ---------------- */
+
+const analyticsContainer = document.getElementById("analyticsContent");
+
+if(plan === "elite"){
+
+  analyticsContainer.innerHTML = `
+    <div class="grid md:grid-cols-2 gap-6">
+
+      <div class="bg-card p-6 rounded-lg">
+        <h3 class="font-semibold mb-4">Global Demand Trend</h3>
+        <canvas id="eliteChart"></canvas>
+      </div>
+
+      <div class="bg-card p-6 rounded-lg">
+        <h3 class="font-semibold mb-4">AI Export Score Breakdown</h3>
+        <ul class="space-y-2 text-gray-300 text-sm">
+          <li>Market Demand: 92%</li>
+          <li>Competition Index: Low</li>
+          <li>Margin Potential: High</li>
+          <li>Supplier Stability: Strong</li>
+        </ul>
+      </div>
+
+    </div>
+  `;
+
+  new Chart(document.getElementById('eliteChart'), {
+    type: 'bar',
+    data: {
+      labels: ['USA','UAE','UK','Canada','Australia'],
+      datasets: [{
+        data: [88,92,85,79,83],
+        backgroundColor: '#7c3aed'
+      }]
+    },
+    options:{plugins:{legend:{display:false}}}
+  });
+
+} else {
+
+  analyticsContainer.innerHTML = `
+    <div class="bg-card p-6 rounded-lg text-center">
+      <h3 class="text-lg font-semibold mb-3">Elite Feature</h3>
+      <p class="text-gray-400 mb-4">
+        Advanced AI export analytics available only in Elite plan.
+      </p>
+      <button onclick="window.location.href='index.html#pricing'"
+        class="bg-elite px-6 py-2 rounded text-white">
+        Upgrade to Elite
+      </button>
+    </div>
+  `;
+}
+
+/* ---------------- PAYMENT HISTORY ---------------- */
+
+const payments = JSON.parse(localStorage.getItem("sellora_payments")) || [];
+const table = document.getElementById("paymentHistory");
+
+payments.reverse().forEach(p => {
+  table.innerHTML += `
+    <tr class="border-b border-gray-700">
+      <td class="py-2">${p.id}</td>
+      <td>${p.plan.toUpperCase()}</td>
+      <td>₹${p.amount}</td>
+      <td>${new Date(p.date).toLocaleDateString()}</td>
+      <td>${p.status}</td>
+    </tr>
+  `;
+});
+
+/* ---------------- FUNCTIONS ---------------- */
+
+function showTab(tab, btn){
   document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
   document.getElementById(tab).classList.remove("hidden");
 
   document.querySelectorAll(".menu-item")
     .forEach(item => item.classList.remove("bg-accent","text-white"));
 
-  if(btn){
-    btn.classList.add("bg-accent","text-white");
-    document.getElementById("pageTitle").innerText = btn.innerText;
-  }
+  btn.classList.add("bg-accent","text-white");
+  document.getElementById("pageTitle").innerText = btn.innerText;
 }
 
-// ===== SIDEBAR =====
 function toggleSidebar(){
   const sidebar = document.getElementById("sidebar");
   sidebar.classList.toggle("w-64");
   sidebar.classList.toggle("w-20");
 }
 
-// ===== LOGOUT =====
+function toggleAutoRenew(){
+  const current = localStorage.getItem("sellora_auto_renew");
+  localStorage.setItem("sellora_auto_renew", current === "on" ? "off" : "on");
+  location.reload();
+}
+
 function logout(){
   localStorage.clear();
   window.location.href="login.html";
 }
 
-// Default Active
 document.querySelector(".menu-item")
   .classList.add("bg-accent","text-white");
 
