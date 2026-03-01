@@ -28,9 +28,21 @@ tailwind.config = {
 <body class="bg-darkbg text-gray-200 text-sm">
 
 <script>
-if(localStorage.getItem("sellora_logged_in") !== "true" ||
-   !localStorage.getItem("sellora_plan")){
+const loggedIn = localStorage.getItem("sellora_logged_in");
+const plan = localStorage.getItem("sellora_plan");
+const expiryStored = localStorage.getItem("sellora_subscription_expiry");
+
+if(!loggedIn || !plan){
   window.location.href = "login.html";
+}
+
+if(expiryStored){
+  const now = new Date();
+  const expiryDate = new Date(expiryStored);
+  if(now > expiryDate){
+    localStorage.removeItem("sellora_logged_in");
+    window.location.href = "billing.html";
+  }
 }
 </script>
 
@@ -70,6 +82,11 @@ if(localStorage.getItem("sellora_logged_in") !== "true" ||
         Analytics
       </button>
 
+      <button onclick="showTab('billing', this)"
+        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
+        Billing
+      </button>
+
     </nav>
   </div>
 
@@ -91,21 +108,18 @@ if(localStorage.getItem("sellora_logged_in") !== "true" ||
 
   <div class="flex items-center gap-6">
 
-    <!-- PLAN BADGE -->
     <span id="planBadge"
       class="text-xs px-3 py-1 rounded-full bg-accent"></span>
 
-    <!-- UPGRADE BUTTON -->
     <button id="upgradeBtn"
       onclick="window.location.href='index.html#pricing'"
       class="hidden text-xs px-3 py-1 bg-elite rounded-full">
       Upgrade
     </button>
 
-    <!-- USER PROFILE -->
     <div class="text-right">
       <p id="userEmail" class="text-xs text-gray-300"></p>
-      <p class="text-[10px] text-gray-500">Active Subscription</p>
+      <p id="expiryInfo" class="text-[10px] text-gray-500"></p>
     </div>
 
   </div>
@@ -115,7 +129,6 @@ if(localStorage.getItem("sellora_logged_in") !== "true" ||
 <!-- CONTENT -->
 <main class="flex-1 p-8">
 
-<!-- OVERVIEW -->
 <section id="overview" class="tab">
   <div class="grid grid-cols-4 gap-4 mb-6">
     <div class="bg-card p-4 rounded">
@@ -153,18 +166,27 @@ if(localStorage.getItem("sellora_logged_in") !== "true" ||
   <div class="bg-card p-4 rounded">Advanced analytics content</div>
 </section>
 
+<section id="billing" class="tab hidden">
+  <div class="bg-card p-6 rounded">
+    <h3 class="text-lg font-bold mb-4">Subscription Details</h3>
+    <p>Plan: <span id="billingPlan"></span></p>
+    <p>Start Date: <span id="billingStart"></span></p>
+    <p>Expiry Date: <span id="billingExpiry"></span></p>
+  </div>
+</section>
+
 </main>
 </div>
 </div>
 
 <script>
-const plan = localStorage.getItem("sellora_plan");
 const email = localStorage.getItem("sellora_email");
-
-document.getElementById("planBadge").innerText =
-  plan === "elite" ? "ELITE PLAN" : "PRO PLAN";
+const startDate = localStorage.getItem("sellora_subscription_start");
+const expiryDateStored = localStorage.getItem("sellora_subscription_expiry");
 
 document.getElementById("userEmail").innerText = email;
+document.getElementById("planBadge").innerText =
+  plan === "elite" ? "ELITE PLAN" : "PRO PLAN";
 
 if(plan === "elite"){
   document.getElementById("planBadge").classList.remove("bg-accent");
@@ -174,17 +196,32 @@ if(plan === "elite"){
   document.getElementById("analyticsBtn").style.opacity = "0.4";
 }
 
+if(expiryDateStored){
+  const expiryDate = new Date(expiryDateStored);
+  const today = new Date();
+  const diffDays = Math.ceil((expiryDate - today) / (1000*60*60*24));
+
+  if(diffDays > 0){
+    document.getElementById("expiryInfo").innerText =
+      diffDays + " days remaining";
+  }
+
+  document.getElementById("billingPlan").innerText = plan.toUpperCase();
+  document.getElementById("billingStart").innerText =
+    new Date(startDate).toDateString();
+  document.getElementById("billingExpiry").innerText =
+    expiryDate.toDateString();
+}
+
 function toggleSidebar(){
   const sidebar = document.getElementById("sidebar");
   const logoText = document.getElementById("logoText");
 
   if(sidebar.classList.contains("w-64")){
-    sidebar.classList.remove("w-64");
-    sidebar.classList.add("w-20");
+    sidebar.classList.replace("w-64","w-20");
     logoText.style.display = "none";
   } else {
-    sidebar.classList.remove("w-20");
-    sidebar.classList.add("w-64");
+    sidebar.classList.replace("w-20","w-64");
     logoText.style.display = "block";
   }
 }
