@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SELLORA AI – Executive Dashboard</title>
+<title>SELLORA AI – Dashboard</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -26,7 +26,7 @@ tailwind.config = {
 
 <body class="bg-darkbg text-gray-200 text-sm">
 
-<!-- AUTH PROTECTION -->
+<!-- AUTH -->
 <script>
 if(localStorage.getItem("sellora_logged_in") !== "true" ||
    !localStorage.getItem("sellora_plan")){
@@ -35,23 +35,32 @@ if(localStorage.getItem("sellora_logged_in") !== "true" ||
 </script>
 
 <header class="bg-card border-b border-gray-700">
-  <div class="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
-    <div class="flex items-center gap-3">
-      <h1 class="text-base font-semibold">SELLORA AI</h1>
-      <span id="planBadge" class="text-[10px] px-2 py-1 rounded-full bg-accent"></span>
+  <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
+    <div class="flex items-center gap-4">
+      <h1 class="font-semibold">SELLORA AI</h1>
+      <span id="planBadge"
+        class="text-xs px-3 py-1 rounded-full bg-accent"></span>
     </div>
-    <button onclick="logout()" class="text-xs text-red-400">Logout</button>
+
+    <nav class="flex gap-6 text-xs">
+      <button onclick="showTab('overview')" class="hover:text-white">Overview</button>
+      <button onclick="showTab('trending')" class="hover:text-white">Trending</button>
+      <button onclick="showTab('suppliers')" class="hover:text-white">Suppliers</button>
+      <button id="analyticsTab" onclick="showTab('analytics')" class="hover:text-white">
+        Analytics
+      </button>
+      <button onclick="logout()" class="text-red-400">Logout</button>
+    </nav>
   </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-6 py-4">
+<main class="max-w-7xl mx-auto px-6 py-6">
 
-  <div class="mb-4">
-    <h2 class="text-lg font-bold">Executive Intelligence Overview</h2>
-  </div>
+<!-- OVERVIEW -->
+<div id="overview" class="tab">
+  <h2 class="text-lg font-bold mb-4">Executive Overview</h2>
 
-  <!-- KPI -->
-  <div class="grid grid-cols-4 gap-3 mb-4">
+  <div class="grid grid-cols-4 gap-3 mb-6">
     <div class="bg-card p-3 rounded">
       <p class="text-gray-400 text-[10px]">Active Products</p>
       <h3 class="text-lg font-bold">128</h3>
@@ -70,64 +79,40 @@ if(localStorage.getItem("sellora_logged_in") !== "true" ||
     </div>
   </div>
 
-  <!-- Charts Compact -->
-  <div class="grid grid-cols-3 gap-3 mb-4">
-
-    <div class="bg-card p-3 rounded">
-      <h4 class="text-[11px] mb-1">Demand Trend</h4>
-      <div class="h-32">
-        <canvas id="demandChart"></canvas>
-      </div>
-    </div>
-
-    <div id="eliteCard" class="bg-card p-3 rounded hidden">
-      <h4 class="text-[11px] mb-1">Category Split</h4>
-      <div class="h-32">
-        <canvas id="categoryChart"></canvas>
-      </div>
-    </div>
-
-    <div class="bg-card p-3 rounded">
-      <h4 class="text-[11px] mb-1">India Demand</h4>
-      <div class="h-32 flex items-center justify-center">
-        <svg viewBox="0 0 200 240" class="w-28">
-          <rect width="200" height="240" fill="none" stroke="#334155"/>
-          <path d="M60 100 L80 95 L95 115 L70 125 Z" fill="#4f46e5"/>
-          <path d="M85 150 L105 155 L95 180 L75 170 Z" fill="#22c55e"/>
-        </svg>
-      </div>
-    </div>
-
+  <div class="bg-card p-4 rounded">
+    <canvas id="demandChart" class="h-32"></canvas>
   </div>
+</div>
 
-  <!-- Table -->
-  <div class="bg-card p-3 rounded">
-    <h4 class="text-[11px] mb-2">Top Opportunities</h4>
-    <table class="w-full text-[11px]">
-      <thead class="text-gray-400 border-b border-gray-700">
-        <tr>
-          <th class="text-left py-1">Product</th>
-          <th>Score</th>
-          <th>Potential</th>
-          <th>Suppliers</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="border-b border-gray-800">
-          <td class="py-1">Moringa</td>
-          <td>92%</td>
-          <td class="text-green-400">High</td>
-          <td>14</td>
-        </tr>
-        <tr>
-          <td class="py-1">Millet</td>
-          <td>88%</td>
-          <td class="text-green-400">High</td>
-          <td>9</td>
-        </tr>
-      </tbody>
-    </table>
+<!-- TRENDING -->
+<div id="trending" class="tab hidden">
+  <h2 class="text-lg font-bold mb-4">Trending Products</h2>
+
+  <div class="grid grid-cols-3 gap-4">
+    <div class="bg-card p-4 rounded">Moringa – 92%</div>
+    <div class="bg-card p-4 rounded">Millet – 88%</div>
+    <div class="bg-card p-4 rounded">Turmeric – 91%</div>
   </div>
+</div>
+
+<!-- SUPPLIERS -->
+<div id="suppliers" class="tab hidden">
+  <h2 class="text-lg font-bold mb-4">Verified Suppliers</h2>
+
+  <div class="bg-card p-4 rounded">
+    <p>14 Suppliers – Maharashtra</p>
+    <p>9 Suppliers – Karnataka</p>
+  </div>
+</div>
+
+<!-- ANALYTICS (ELITE ONLY) -->
+<div id="analytics" class="tab hidden">
+  <h2 class="text-lg font-bold mb-4">Advanced Analytics</h2>
+  <div class="bg-card p-4 rounded">
+    <p>Global Heatmap</p>
+    <p>Export Forecast AI</p>
+  </div>
+</div>
 
 </main>
 
@@ -136,8 +121,13 @@ const plan = localStorage.getItem("sellora_plan");
 document.getElementById("planBadge").innerText =
   plan === "elite" ? "ELITE" : "PRO";
 
-if(plan === "elite"){
-  document.getElementById("eliteCard").classList.remove("hidden");
+if(plan === "pro"){
+  document.getElementById("analyticsTab").style.display = "none";
+}
+
+function showTab(tabName){
+  document.querySelectorAll(".tab").forEach(tab => tab.classList.add("hidden"));
+  document.getElementById(tabName).classList.remove("hidden");
 }
 
 function logout(){
@@ -153,23 +143,11 @@ new Chart(document.getElementById('demandChart'), {
       data: [65,72,78,81,88,94],
       borderColor: '#4f46e5',
       backgroundColor: 'rgba(79,70,229,0.1)',
-      fill: true,
-      tension: 0.4
+      fill: true
     }]
   },
   options:{plugins:{legend:{display:false}}}
 });
-
-if(plan === "elite"){
-  new Chart(document.getElementById('categoryChart'), {
-    type: 'doughnut',
-    data: {
-      labels:['Health','Organic','Spices'],
-      datasets:[{data:[40,30,30]}]
-    },
-    options:{plugins:{legend:{display:false}}}
-  });
-}
 </script>
 
 </body>
