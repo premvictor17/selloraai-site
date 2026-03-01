@@ -45,7 +45,80 @@ if(expiryStored){
   }
 }
 </script>
+const expiryDate = new Date(localStorage.getItem("sellora_subscription_expiry"));
+const autoRenew = localStorage.getItem("sellora_auto_renew");
+const now = new Date();
 
+const diffDays = Math.ceil((expiryDate - now) / (1000*60*60*24));
+
+const statusElement = document.getElementById("subscriptionStatus");
+const expiryElement = document.getElementById("billingExpiry");
+const autoRenewBtn = document.getElementById("autoRenewBtn");
+
+expiryElement.innerText = expiryDate.toDateString();
+
+if(diffDays > 3){
+  statusElement.innerText = "Active";
+  statusElement.className = "text-green-400";
+}else if(diffDays > 0){
+  statusElement.innerText = "Expiring Soon";
+  statusElement.className = "text-yellow-400";
+}else{
+  if(autoRenew === "on"){
+    // Auto renew
+    const newExpiry = new Date();
+    newExpiry.setDate(newExpiry.getDate() + 30);
+
+    localStorage.setItem("sellora_subscription_expiry", newExpiry);
+
+    const paymentRecord = {
+      id: "AUTO-" + Date.now(),
+      plan: plan,
+      amount: plan === "elite" ? "4999" : "2999",
+      date: new Date().toISOString(),
+      status: "Auto Renewed"
+    };
+
+    let history = JSON.parse(localStorage.getItem("sellora_payments")) || [];
+    history.push(paymentRecord);
+    localStorage.setItem("sellora_payments", JSON.stringify(history));
+
+    location.reload();
+  } else {
+    window.location.href = "billing.html";
+  }
+}
+
+autoRenewBtn.innerText = autoRenew === "on" ? "ON" : "OFF";
+autoRenewBtn.className =
+  autoRenew === "on"
+    ? "px-3 py-1 rounded text-xs bg-green-500"
+    : "px-3 py-1 rounded text-xs bg-gray-600";
+
+function toggleAutoRenew(){
+  if(localStorage.getItem("sellora_auto_renew") === "on"){
+    localStorage.setItem("sellora_auto_renew","off");
+  } else {
+    localStorage.setItem("sellora_auto_renew","on");
+  }
+  location.reload();
+}
+
+/* Render Payment History */
+const payments = JSON.parse(localStorage.getItem("sellora_payments")) || [];
+const table = document.getElementById("paymentHistory");
+
+payments.reverse().forEach(p => {
+  table.innerHTML += `
+    <tr class="border-b border-gray-700">
+      <td class="py-2">${p.id}</td>
+      <td>${p.plan.toUpperCase()}</td>
+      <td>₹${p.amount}</td>
+      <td>${new Date(p.date).toLocaleDateString()}</td>
+      <td>${p.status}</td>
+    </tr>
+  `;
+});
 <div class="flex min-h-screen">
 
 <!-- SIDEBAR -->
@@ -304,4 +377,5 @@ new Chart(document.getElementById('demandChart'), {
 
 </body>
 </html>
+
 
