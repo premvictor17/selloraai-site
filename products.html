@@ -23,42 +23,60 @@ tailwind.config = {
 
 <body class="bg-white text-gray-800">
 
+<!-- AUTH PROTECTION -->
+<script>
+if(localStorage.getItem("sellora_logged_in") !== "true" ||
+   !localStorage.getItem("sellora_plan")){
+  window.location.href = "login.html";
+}
+</script>
+
 <!-- NAVBAR -->
 <header class="bg-white border-b sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold tracking-wide">SELLORA AI</h1>
+    <div class="flex items-center gap-3">
+      <h1 class="text-2xl font-bold tracking-wide">SELLORA AI</h1>
+      <span id="planBadge" class="text-xs px-3 py-1 rounded-full bg-primary text-white"></span>
+    </div>
     <nav class="hidden md:flex gap-8 text-sm font-medium">
       <a href="index.html" class="hover:text-primary">Home</a>
       <a href="products.html" class="text-primary font-semibold">Products</a>
       <a href="dashboard.html" class="hover:text-primary">Dashboard</a>
+      <button onclick="logout()" class="text-red-500 text-xs">Logout</button>
     </nav>
   </div>
 </header>
 
 <!-- HEADER -->
-<section class="py-16 bg-gray-50 text-center">
-  <h2 class="text-4xl font-bold mb-4">Product Intelligence Library</h2>
-  <p class="text-gray-600">Discover export-ready products backed by AI demand signals.</p>
+<section class="py-12 bg-gray-50 text-center">
+  <h2 class="text-3xl font-bold mb-2">Product Intelligence Library</h2>
+  <p class="text-gray-600 text-sm">
+    AI-ranked export opportunities tailored to your subscription.
+  </p>
 </section>
 
-<!-- FILTER BAR -->
-<div class="max-w-6xl mx-auto px-6 py-6 flex justify-between items-center">
-  <div class="flex gap-4">
-    <button onclick="showPro()" id="proBtn" class="px-6 py-2 rounded-lg bg-primary text-white">
-      Pro Access
-    </button>
-    <button onclick="showElite()" id="eliteBtn" class="px-6 py-2 rounded-lg border border-gray-300">
-      Elite Access
-    </button>
+<!-- UPGRADE BANNER (PRO ONLY) -->
+<div id="upgradeBanner" class="hidden max-w-6xl mx-auto px-6 mb-6">
+  <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-xl flex justify-between items-center">
+    <div>
+      <h3 class="font-semibold">Unlock Full Intelligence with Elite</h3>
+      <p class="text-sm opacity-90">Access all 12 products, global demand insights & advanced analytics.</p>
+    </div>
+    <a href="index.html#pricing"
+       class="bg-white text-indigo-700 px-5 py-2 rounded-lg font-semibold hover:bg-gray-200">
+      Upgrade Now
+    </a>
   </div>
-  <span id="accessLabel" class="text-sm text-gray-500">Showing: Pro Plan (6 Products)</span>
+</div>
+
+<!-- ACCESS LABEL -->
+<div class="max-w-6xl mx-auto px-6 mb-6">
+  <span id="accessLabel" class="text-sm text-gray-500"></span>
 </div>
 
 <!-- PRODUCTS GRID -->
 <section class="max-w-6xl mx-auto px-6 pb-20">
-  <div id="productGrid" class="grid md:grid-cols-3 gap-8">
-
-  </div>
+  <div id="productGrid" class="grid md:grid-cols-3 gap-6"></div>
 </section>
 
 <script>
@@ -77,45 +95,54 @@ const products = [
   {name:"Ready-to-Cook Mixes", score:88}
 ];
 
-let currentPlan = "pro";
+const plan = localStorage.getItem("sellora_plan");
+const grid = document.getElementById("productGrid");
+const accessLabel = document.getElementById("accessLabel");
+const planBadge = document.getElementById("planBadge");
+const upgradeBanner = document.getElementById("upgradeBanner");
+
+planBadge.innerText = plan === "elite" ? "ELITE PLAN" : "PRO PLAN";
+if(plan === "elite"){
+  planBadge.classList.replace("bg-primary","bg-elite");
+}
 
 function renderProducts() {
-  const grid = document.getElementById("productGrid");
+
   grid.innerHTML = "";
 
-  const visibleProducts = currentPlan === "pro" ? products.slice(0,6) : products;
+  const visibleProducts = plan === "pro"
+    ? products.slice(0,6)
+    : products;
 
   visibleProducts.forEach(product => {
     grid.innerHTML += `
-      <div class="border rounded-2xl p-6 shadow-sm hover:shadow-lg transition">
-        <h3 class="text-xl font-semibold mb-2">${product.name}</h3>
-        <p class="text-gray-600 mb-2">Demand Score: <span class="font-semibold">${product.score}%</span></p>
-        <p class="text-gray-600 mb-4">Export Potential: High</p>
-        <a href="product-details.html" class="text-primary font-medium hover:underline">
+      <div class="border rounded-xl p-5 shadow-sm hover:shadow-md transition bg-white">
+        <h3 class="text-lg font-semibold mb-2">${product.name}</h3>
+        <p class="text-gray-600 text-sm mb-1">
+          Demand Score: <span class="font-semibold">${product.score}%</span>
+        </p>
+        <p class="text-gray-600 text-sm mb-3">
+          Export Potential: <span class="text-green-600 font-medium">High</span>
+        </p>
+        <a href="product-details.html"
+           class="text-primary text-sm font-medium hover:underline">
           View Intelligence →
         </a>
       </div>
     `;
   });
 
-  document.getElementById("accessLabel").innerText =
-    currentPlan === "pro"
-      ? "Showing: Pro Plan (6 Products)"
-      : "Showing: Elite Plan (12 Products)";
+  if(plan === "pro"){
+    accessLabel.innerText = "Showing: Pro Plan (6 of 12 Products)";
+    upgradeBanner.classList.remove("hidden");
+  } else {
+    accessLabel.innerText = "Showing: Elite Plan (All 12 Products)";
+  }
 }
 
-function showPro() {
-  currentPlan = "pro";
-  document.getElementById("proBtn").classList.add("bg-primary","text-white");
-  document.getElementById("eliteBtn").classList.remove("bg-elite","text-white");
-  renderProducts();
-}
-
-function showElite() {
-  currentPlan = "elite";
-  document.getElementById("eliteBtn").classList.add("bg-elite","text-white");
-  document.getElementById("proBtn").classList.remove("bg-primary","text-white");
-  renderProducts();
+function logout(){
+  localStorage.clear();
+  window.location.href = "login.html";
 }
 
 renderProducts();
