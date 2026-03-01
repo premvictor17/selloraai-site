@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SELLORA AI – Dashboard</title>
+<title>SELLORA AI – App</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -14,7 +14,8 @@ tailwind.config = {
     extend: {
       colors: {
         darkbg: "#0b1220",
-        card: "#162032",
+        sidebar: "#111827",
+        card: "#1f2937",
         accent: "#4f46e5",
         elite: "#7c3aed"
       }
@@ -24,9 +25,9 @@ tailwind.config = {
 </script>
 </head>
 
-<body class="bg-darkbg text-gray-200 text-sm">
+<body class="bg-darkbg text-gray-200">
 
-<!-- AUTH -->
+<!-- AUTH CHECK -->
 <script>
 if(localStorage.getItem("sellora_logged_in") !== "true" ||
    !localStorage.getItem("sellora_plan")){
@@ -34,100 +35,129 @@ if(localStorage.getItem("sellora_logged_in") !== "true" ||
 }
 </script>
 
-<header class="bg-card border-b border-gray-700">
-  <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-    <div class="flex items-center gap-4">
-      <h1 class="font-semibold">SELLORA AI</h1>
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
+<aside class="w-64 bg-sidebar border-r border-gray-700 p-6 flex flex-col justify-between">
+
+  <div>
+    <h1 class="text-lg font-bold mb-6">SELLORA AI</h1>
+
+    <div class="mb-6">
       <span id="planBadge"
         class="text-xs px-3 py-1 rounded-full bg-accent"></span>
     </div>
 
-    <nav class="flex gap-6 text-xs">
-      <button onclick="showTab('overview')" class="hover:text-white">Overview</button>
-      <button onclick="showTab('trending')" class="hover:text-white">Trending</button>
-      <button onclick="showTab('suppliers')" class="hover:text-white">Suppliers</button>
-      <button id="analyticsTab" onclick="showTab('analytics')" class="hover:text-white">
-        Analytics
+    <nav class="space-y-3 text-sm">
+      <button onclick="showTab('overview')" class="block w-full text-left hover:text-white">
+        Overview
       </button>
-      <button onclick="logout()" class="text-red-400">Logout</button>
+      <button onclick="showTab('trending')" class="block w-full text-left hover:text-white">
+        Trending Products
+      </button>
+      <button onclick="showTab('suppliers')" class="block w-full text-left hover:text-white">
+        Suppliers
+      </button>
+      <button id="analyticsBtn"
+        onclick="showTab('analytics')"
+        class="block w-full text-left hover:text-white">
+        Advanced Analytics
+      </button>
     </nav>
   </div>
-</header>
 
-<main class="max-w-7xl mx-auto px-6 py-6">
+  <button onclick="logout()" class="text-red-400 text-sm">
+    Logout
+  </button>
+
+</aside>
+
+<!-- MAIN CONTENT -->
+<main class="flex-1 p-8">
 
 <!-- OVERVIEW -->
-<div id="overview" class="tab">
-  <h2 class="text-lg font-bold mb-4">Executive Overview</h2>
+<section id="overview" class="tab">
+  <h2 class="text-xl font-bold mb-6">Executive Overview</h2>
 
-  <div class="grid grid-cols-4 gap-3 mb-6">
-    <div class="bg-card p-3 rounded">
-      <p class="text-gray-400 text-[10px]">Active Products</p>
+  <div class="grid grid-cols-4 gap-4 mb-6">
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Active Products</p>
       <h3 class="text-lg font-bold">128</h3>
     </div>
-    <div class="bg-card p-3 rounded">
-      <p class="text-gray-400 text-[10px]">High Demand</p>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">High Demand</p>
       <h3 class="text-lg font-bold">37</h3>
     </div>
-    <div class="bg-card p-3 rounded">
-      <p class="text-gray-400 text-[10px]">Suppliers</p>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Suppliers</p>
       <h3 class="text-lg font-bold">542</h3>
     </div>
-    <div class="bg-card p-3 rounded">
-      <p class="text-gray-400 text-[10px]">Export Score</p>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Export Score</p>
       <h3 class="text-lg font-bold">89%</h3>
     </div>
   </div>
 
   <div class="bg-card p-4 rounded">
-    <canvas id="demandChart" class="h-32"></canvas>
+    <canvas id="demandChart"></canvas>
   </div>
-</div>
+</section>
 
 <!-- TRENDING -->
-<div id="trending" class="tab hidden">
-  <h2 class="text-lg font-bold mb-4">Trending Products</h2>
+<section id="trending" class="tab hidden">
+  <h2 class="text-xl font-bold mb-6">Trending Products</h2>
 
   <div class="grid grid-cols-3 gap-4">
     <div class="bg-card p-4 rounded">Moringa – 92%</div>
     <div class="bg-card p-4 rounded">Millet – 88%</div>
     <div class="bg-card p-4 rounded">Turmeric – 91%</div>
   </div>
-</div>
+</section>
 
 <!-- SUPPLIERS -->
-<div id="suppliers" class="tab hidden">
-  <h2 class="text-lg font-bold mb-4">Verified Suppliers</h2>
+<section id="suppliers" class="tab hidden">
+  <h2 class="text-xl font-bold mb-6">Verified Suppliers</h2>
 
   <div class="bg-card p-4 rounded">
-    <p>14 Suppliers – Maharashtra</p>
-    <p>9 Suppliers – Karnataka</p>
+    <p>Maharashtra – 14 suppliers</p>
+    <p>Karnataka – 9 suppliers</p>
   </div>
-</div>
+</section>
 
 <!-- ANALYTICS (ELITE ONLY) -->
-<div id="analytics" class="tab hidden">
-  <h2 class="text-lg font-bold mb-4">Advanced Analytics</h2>
-  <div class="bg-card p-4 rounded">
-    <p>Global Heatmap</p>
-    <p>Export Forecast AI</p>
+<section id="analytics" class="tab hidden">
+  <h2 class="text-xl font-bold mb-6">Advanced Analytics</h2>
+
+  <div class="bg-card p-6 rounded">
+    <p>Global demand heatmap</p>
+    <p>Export forecast model</p>
   </div>
-</div>
+</section>
 
 </main>
 
+</div>
+
 <script>
 const plan = localStorage.getItem("sellora_plan");
-document.getElementById("planBadge").innerText =
-  plan === "elite" ? "ELITE" : "PRO";
+const badge = document.getElementById("planBadge");
 
-if(plan === "pro"){
-  document.getElementById("analyticsTab").style.display = "none";
+badge.innerText = plan === "elite" ? "ELITE PLAN" : "PRO PLAN";
+
+if(plan === "elite"){
+  badge.classList.remove("bg-accent");
+  badge.classList.add("bg-elite");
+} else {
+  document.getElementById("analyticsBtn").style.opacity = "0.4";
 }
 
-function showTab(tabName){
-  document.querySelectorAll(".tab").forEach(tab => tab.classList.add("hidden"));
-  document.getElementById(tabName).classList.remove("hidden");
+function showTab(tab){
+  if(tab === "analytics" && plan === "pro"){
+    alert("Upgrade to Elite to access Advanced Analytics.");
+    return;
+  }
+  document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden"));
+  document.getElementById(tab).classList.remove("hidden");
 }
 
 function logout(){
