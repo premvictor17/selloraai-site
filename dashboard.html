@@ -13,8 +13,8 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        darkbg: "#0f172a",
-        card: "#1e293b",
+        darkbg: "#0b1220",
+        card: "#162032",
         accent: "#4f46e5",
         elite: "#7c3aed"
       }
@@ -24,164 +24,126 @@ tailwind.config = {
 </script>
 </head>
 
-<body class="bg-darkbg text-gray-200">
+<body class="bg-darkbg text-gray-200 text-sm">
 
 <!-- AUTH PROTECTION -->
 <script>
-if(
-  localStorage.getItem("sellora_logged_in") !== "true" ||
-  !localStorage.getItem("sellora_plan")
-){
+if(localStorage.getItem("sellora_logged_in") !== "true" ||
+   !localStorage.getItem("sellora_plan")){
   window.location.href = "login.html";
 }
 </script>
 
-<!-- NAVBAR -->
 <header class="bg-card border-b border-gray-700">
-  <div class="max-w-7xl mx-auto px-6 py-3 flex justify-between items-center">
-    <div class="flex items-center gap-4">
-      <h1 class="text-lg font-semibold tracking-wide">SELLORA AI</h1>
-      <span id="planBadge" class="text-xs px-3 py-1 rounded-full bg-accent"></span>
+  <div class="max-w-7xl mx-auto px-6 py-2 flex justify-between items-center">
+    <div class="flex items-center gap-3">
+      <h1 class="text-base font-semibold">SELLORA AI</h1>
+      <span id="planBadge" class="text-[10px] px-2 py-1 rounded-full bg-accent"></span>
     </div>
-    <nav class="flex gap-6 text-sm items-center">
-      <a href="index.html" class="hover:text-white">Home</a>
-      <a href="products.html" class="hover:text-white">Products</a>
-      <a href="dashboard.html" class="text-white font-semibold">Dashboard</a>
-      <button onclick="logout()" class="text-red-400 hover:text-red-300">Logout</button>
-    </nav>
+    <button onclick="logout()" class="text-xs text-red-400">Logout</button>
   </div>
 </header>
 
-<main class="max-w-7xl mx-auto px-6 py-6">
+<main class="max-w-7xl mx-auto px-6 py-4">
 
-  <!-- TITLE -->
-  <div class="mb-6">
-    <h2 class="text-2xl font-bold mb-1">Executive Intelligence Overview</h2>
-    <p class="text-gray-400 text-sm">Live export opportunity insights powered by SELLORA AI analytics.</p>
+  <div class="mb-4">
+    <h2 class="text-lg font-bold">Executive Intelligence Overview</h2>
   </div>
 
-  <!-- KPI CARDS -->
-  <div class="grid md:grid-cols-4 gap-4 mb-6">
-    <div class="bg-card p-4 rounded-lg">
-      <p class="text-gray-400 text-xs">Active Products</p>
-      <h3 class="text-xl font-bold mt-1">128</h3>
+  <!-- KPI -->
+  <div class="grid grid-cols-4 gap-3 mb-4">
+    <div class="bg-card p-3 rounded">
+      <p class="text-gray-400 text-[10px]">Active Products</p>
+      <h3 class="text-lg font-bold">128</h3>
     </div>
-
-    <div class="bg-card p-4 rounded-lg">
-      <p class="text-gray-400 text-xs">High Demand</p>
-      <h3 class="text-xl font-bold mt-1">37</h3>
+    <div class="bg-card p-3 rounded">
+      <p class="text-gray-400 text-[10px]">High Demand</p>
+      <h3 class="text-lg font-bold">37</h3>
     </div>
-
-    <div class="bg-card p-4 rounded-lg">
-      <p class="text-gray-400 text-xs">Verified Suppliers</p>
-      <h3 class="text-xl font-bold mt-1">542</h3>
+    <div class="bg-card p-3 rounded">
+      <p class="text-gray-400 text-[10px]">Suppliers</p>
+      <h3 class="text-lg font-bold">542</h3>
     </div>
-
-    <div class="bg-card p-4 rounded-lg">
-      <p class="text-gray-400 text-xs">Avg Export Score</p>
-      <h3 class="text-xl font-bold mt-1">89%</h3>
+    <div class="bg-card p-3 rounded">
+      <p class="text-gray-400 text-[10px]">Export Score</p>
+      <h3 class="text-lg font-bold">89%</h3>
     </div>
   </div>
 
-  <!-- ANALYTICS GRID -->
-  <div class="grid lg:grid-cols-3 gap-4 mb-6">
+  <!-- Charts Compact -->
+  <div class="grid grid-cols-3 gap-3 mb-4">
 
-    <!-- Demand Trend -->
-    <div class="bg-card p-4 rounded-lg">
-      <h4 class="text-xs font-semibold mb-2">Demand Trend</h4>
-      <div class="h-44">
+    <div class="bg-card p-3 rounded">
+      <h4 class="text-[11px] mb-1">Demand Trend</h4>
+      <div class="h-32">
         <canvas id="demandChart"></canvas>
       </div>
     </div>
 
-    <!-- Category Distribution (ELITE ONLY) -->
-    <div id="eliteChartCard" class="bg-card p-4 rounded-lg hidden">
-      <h4 class="text-xs font-semibold mb-2">Category Split</h4>
-      <div class="h-44">
+    <div id="eliteCard" class="bg-card p-3 rounded hidden">
+      <h4 class="text-[11px] mb-1">Category Split</h4>
+      <div class="h-32">
         <canvas id="categoryChart"></canvas>
       </div>
     </div>
 
-    <!-- Heatmap -->
-    <div class="bg-card p-4 rounded-lg">
-      <h4 class="text-xs font-semibold mb-2">India Demand</h4>
-      <div class="h-44 flex items-center justify-center">
-        <svg viewBox="0 0 300 350" class="w-full max-w-xs">
-          <path d="M110 160 L140 150 L160 180 L130 200 Z"
-            fill="#4f46e5">
-            <title>Maharashtra - 94%</title>
-          </path>
-          <path d="M160 240 L185 250 L175 280 L150 270 Z"
-            fill="#22c55e">
-            <title>Tamil Nadu - 89%</title>
-          </path>
-          <path d="M135 210 L160 215 L150 240 L125 235 Z"
-            fill="#7c3aed">
-            <title>Karnataka - 91%</title>
-          </path>
-          <path d="M70 140 L95 130 L105 160 L80 170 Z"
-            fill="#f59e0b">
-            <title>Gujarat - 84%</title>
-          </path>
+    <div class="bg-card p-3 rounded">
+      <h4 class="text-[11px] mb-1">India Demand</h4>
+      <div class="h-32 flex items-center justify-center">
+        <svg viewBox="0 0 200 240" class="w-28">
+          <rect width="200" height="240" fill="none" stroke="#334155"/>
+          <path d="M60 100 L80 95 L95 115 L70 125 Z" fill="#4f46e5"/>
+          <path d="M85 150 L105 155 L95 180 L75 170 Z" fill="#22c55e"/>
         </svg>
       </div>
     </div>
 
   </div>
 
-  <!-- TABLE -->
-  <div class="bg-card p-4 rounded-lg">
-    <h4 class="text-sm font-semibold mb-4">Top Export Opportunities</h4>
-    <div class="overflow-x-auto">
-      <table class="w-full text-xs">
-        <thead class="text-gray-400 border-b border-gray-700">
-          <tr>
-            <th class="text-left py-2">Product</th>
-            <th class="text-left py-2">Demand</th>
-            <th class="text-left py-2">Potential</th>
-            <th class="text-left py-2">Suppliers</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr class="border-b border-gray-800">
-            <td class="py-2">Moringa Powder</td>
-            <td>92%</td>
-            <td class="text-green-400">High</td>
-            <td>14</td>
-          </tr>
-          <tr>
-            <td class="py-2">Millet Snacks</td>
-            <td>88%</td>
-            <td class="text-green-400">High</td>
-            <td>9</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+  <!-- Table -->
+  <div class="bg-card p-3 rounded">
+    <h4 class="text-[11px] mb-2">Top Opportunities</h4>
+    <table class="w-full text-[11px]">
+      <thead class="text-gray-400 border-b border-gray-700">
+        <tr>
+          <th class="text-left py-1">Product</th>
+          <th>Score</th>
+          <th>Potential</th>
+          <th>Suppliers</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="border-b border-gray-800">
+          <td class="py-1">Moringa</td>
+          <td>92%</td>
+          <td class="text-green-400">High</td>
+          <td>14</td>
+        </tr>
+        <tr>
+          <td class="py-1">Millet</td>
+          <td>88%</td>
+          <td class="text-green-400">High</td>
+          <td>9</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 
 </main>
 
 <script>
-const plan = localStorage.getItem("sellora_plan") || "pro";
-const badge = document.getElementById("planBadge");
-const eliteCard = document.getElementById("eliteChartCard");
+const plan = localStorage.getItem("sellora_plan");
+document.getElementById("planBadge").innerText =
+  plan === "elite" ? "ELITE" : "PRO";
 
 if(plan === "elite"){
-  badge.innerText = "ELITE PLAN";
-  badge.classList.add("bg-elite");
-  eliteCard.classList.remove("hidden");
-} else {
-  badge.innerText = "PRO PLAN";
-  badge.classList.add("bg-accent");
+  document.getElementById("eliteCard").classList.remove("hidden");
 }
 
 function logout(){
   localStorage.clear();
   window.location.href = "login.html";
 }
-
-/* Charts */
 
 new Chart(document.getElementById('demandChart'), {
   type: 'line',
@@ -190,37 +152,25 @@ new Chart(document.getElementById('demandChart'), {
     datasets: [{
       data: [65,72,78,81,88,94],
       borderColor: '#4f46e5',
-      backgroundColor: 'rgba(79,70,229,0.15)',
-      tension: 0.4,
-      fill: true
+      backgroundColor: 'rgba(79,70,229,0.1)',
+      fill: true,
+      tension: 0.4
     }]
   },
-  options: {
-    plugins:{legend:{display:false}},
-    scales:{
-      x:{ticks:{color:'#9ca3af'}},
-      y:{ticks:{color:'#9ca3af'}}
-    }
-  }
+  options:{plugins:{legend:{display:false}}}
 });
 
 if(plan === "elite"){
   new Chart(document.getElementById('categoryChart'), {
     type: 'doughnut',
     data: {
-      labels: ['Health','Organic','Spices','Eco'],
-      datasets: [{
-        data: [35,25,20,20],
-        backgroundColor:['#4f46e5','#7c3aed','#22c55e','#f59e0b']
-      }]
+      labels:['Health','Organic','Spices'],
+      datasets:[{data:[40,30,30]}]
     },
-    options:{
-      plugins:{legend:{labels:{color:'#ffffff', boxWidth:10}}}
-    }
+    options:{plugins:{legend:{display:false}}}
   });
 }
 </script>
 
 </body>
 </html>
-
