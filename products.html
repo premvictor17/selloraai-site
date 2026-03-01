@@ -18,6 +18,34 @@ tailwind.config = {
   }
 }
 </script>
+
+<style>
+.unlock-card:hover .blur-layer {
+  filter: blur(4px);
+  opacity: 0.4;
+  transition: all 0.4s ease;
+}
+
+.unlock-card:hover .overlay {
+  opacity: 1;
+}
+
+.overlay {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.lock-icon {
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+</style>
+
 </head>
 
 <body class="bg-gray-50 text-gray-800">
@@ -40,90 +68,92 @@ tailwind.config = {
 <!-- HERO -->
 <section class="py-16 text-center">
   <h2 class="text-4xl font-bold mb-4">
-    Explore AI-Powered Export Intelligence
+    Preview Export Intelligence Engine
   </h2>
   <p class="text-gray-600">
-    Preview trending export products across India & global markets.
+    Hover to preview insights. Unlock to access full analytics.
   </p>
 </section>
 
 <!-- PRODUCTS GRID -->
 <section class="max-w-7xl mx-auto px-6 pb-20">
 
-  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+<div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-    <!-- Product Card -->
-    <div class="relative bg-white p-6 rounded-2xl shadow">
+<!-- CARD -->
+<div class="unlock-card relative bg-white p-6 rounded-2xl shadow overflow-hidden cursor-pointer">
 
-      <!-- Blurred Content -->
-      <div class="blur-sm select-none">
-        <h3 class="text-xl font-semibold mb-2">Moringa Powder</h3>
-        <p class="text-sm text-gray-600">Demand Score: 92%</p>
-        <p class="text-sm text-gray-600">Growth: +18%</p>
-        <p class="text-sm text-gray-600">Export Score: 89</p>
-      </div>
-
-      <!-- Lock Overlay -->
-      <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-2xl">
-        <span class="text-3xl mb-2">🔒</span>
-        <p class="text-sm font-medium mb-3">Unlock Full Intelligence</p>
-        <a href="index.html#pricing"
-           class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
-           Upgrade to Pro
-        </a>
-      </div>
-
-    </div>
-
-    <!-- Duplicate Cards -->
-    <div class="relative bg-white p-6 rounded-2xl shadow">
-      <div class="blur-sm select-none">
-        <h3 class="text-xl font-semibold mb-2">Millet Snacks</h3>
-        <p class="text-sm text-gray-600">Demand Score: 88%</p>
-        <p class="text-sm text-gray-600">Growth: +15%</p>
-        <p class="text-sm text-gray-600">Export Score: 85</p>
-      </div>
-
-      <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-2xl">
-        <span class="text-3xl mb-2">🔒</span>
-        <p class="text-sm font-medium mb-3">Pro Required</p>
-        <a href="index.html#pricing"
-           class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
-           Subscribe
-        </a>
-      </div>
-    </div>
-
-    <div class="relative bg-white p-6 rounded-2xl shadow">
-      <div class="blur-sm select-none">
-        <h3 class="text-xl font-semibold mb-2">Turmeric Extract</h3>
-        <p class="text-sm text-gray-600">Demand Score: 91%</p>
-        <p class="text-sm text-gray-600">Growth: +22%</p>
-        <p class="text-sm text-gray-600">Export Score: 93</p>
-      </div>
-
-      <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-2xl">
-        <span class="text-3xl mb-2">🔒</span>
-        <p class="text-sm font-medium mb-3">Elite Analytics Inside</p>
-        <a href="index.html#pricing"
-           class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
-           Upgrade Now
-        </a>
-      </div>
-    </div>
-
+  <div class="blur-layer transition-all duration-500">
+    <h3 class="text-xl font-semibold mb-2">Moringa Powder</h3>
+    <p class="text-sm text-gray-600">Demand Score: 92%</p>
+    <p class="text-sm text-gray-600">Growth Rate: +18%</p>
+    <p class="text-sm text-gray-600">Export Score: 89</p>
   </div>
 
+  <div class="overlay absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl">
+    <span class="lock-icon text-4xl mb-3">🔒</span>
+    <p class="text-sm font-semibold mb-3">Pro Plan Required</p>
+    <a href="index.html#pricing"
+       class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
+       Unlock Access
+    </a>
+  </div>
+
+</div>
+
+<!-- CARD -->
+<div class="unlock-card relative bg-white p-6 rounded-2xl shadow overflow-hidden cursor-pointer">
+
+  <div class="blur-layer transition-all duration-500">
+    <h3 class="text-xl font-semibold mb-2">Millet Snacks</h3>
+    <p class="text-sm text-gray-600">Demand Score: 88%</p>
+    <p class="text-sm text-gray-600">Growth Rate: +15%</p>
+    <p class="text-sm text-gray-600">Export Score: 85</p>
+  </div>
+
+  <div class="overlay absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl">
+    <span class="lock-icon text-4xl mb-3">🔒</span>
+    <p class="text-sm font-semibold mb-3">Pro Plan Required</p>
+    <a href="index.html#pricing"
+       class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
+       Subscribe Now
+    </a>
+  </div>
+
+</div>
+
+<!-- CARD -->
+<div class="unlock-card relative bg-white p-6 rounded-2xl shadow overflow-hidden cursor-pointer">
+
+  <div class="blur-layer transition-all duration-500">
+    <h3 class="text-xl font-semibold mb-2">Turmeric Extract</h3>
+    <p class="text-sm text-gray-600">Demand Score: 91%</p>
+    <p class="text-sm text-gray-600">Growth Rate: +22%</p>
+    <p class="text-sm text-gray-600">Export Score: 93</p>
+  </div>
+
+  <div class="overlay absolute inset-0 flex flex-col items-center justify-center bg-white/80 backdrop-blur-sm rounded-2xl">
+    <span class="lock-icon text-4xl mb-3">🔒</span>
+    <p class="text-sm font-semibold mb-3">Elite Analytics Inside</p>
+    <a href="index.html#pricing"
+       class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
+       Upgrade to Elite
+    </a>
+  </div>
+
+</div>
+
+</div>
 </section>
 
 <!-- CTA -->
 <section class="bg-primary text-white py-16 text-center">
   <h3 class="text-3xl font-bold mb-4">
-    Ready to Unlock Real Export Intelligence?
+    Unlock Full Export Intelligence
   </h3>
   <a href="index.html#pricing"
      class="bg-white text-primary px-6 py-3 rounded-lg font-semibold">
-     Get Started
+     View Pricing
   </a>
 </section>
 
