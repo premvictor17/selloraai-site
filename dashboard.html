@@ -1,200 +1,47 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SELLORA AI – Dashboard</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
-
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        darkbg: "#0b1220",
-        sidebar: "#111827",
-        card: "#1f2937",
-        accent: "#4f46e5",
-        elite: "#7c3aed"
-      }
-    }
-  }
-}
-</script>
-</head>
-
-<body class="bg-darkbg text-gray-200 text-sm">
-
-<div class="flex min-h-screen">
-
-<!-- SIDEBAR -->
-<aside id="sidebar"
-  class="w-64 bg-sidebar border-r border-gray-700 p-6 flex flex-col justify-between transition-all duration-300">
-
-  <div>
-
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-lg font-bold">SELLORA</h1>
-    </div>
-
-    <nav class="space-y-2 text-sm">
-
-      <button onclick="showTab('overview', this)"
-        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
-        Overview
-      </button>
-
-      <button onclick="showTab('trending', this)"
-        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
-        Trending
-      </button>
-
-      <button onclick="showTab('suppliers', this)"
-        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
-        Suppliers
-      </button>
-
-      <button onclick="showTab('analytics', this)"
-        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
-        Analytics
-      </button>
-
-    </nav>
-  </div>
-
-  <button onclick="logout()" class="text-red-400 text-sm">
-    Logout
-  </button>
-
-</aside>
-
-<!-- MAIN -->
-<div class="flex-1 flex flex-col">
-
-<header class="bg-sidebar border-b border-gray-700 px-8 py-4 flex justify-between items-center">
-
-  <h2 id="pageTitle" class="font-semibold text-base">Overview</h2>
-
-  <div class="text-right">
-    <p id="userEmail" class="text-xs text-gray-300"></p>
-  </div>
-
-</header>
-
-<main class="flex-1 p-8">
-
-<!-- OVERVIEW -->
-<section id="overview" class="tab">
-  <div class="grid grid-cols-4 gap-4 mb-6">
-    <div class="bg-card p-4 rounded">
-      <p class="text-gray-400 text-xs">Active Products</p>
-      <h3 class="text-lg font-bold">128</h3>
-    </div>
-    <div class="bg-card p-4 rounded">
-      <p class="text-gray-400 text-xs">High Demand</p>
-      <h3 class="text-lg font-bold">37</h3>
-    </div>
-    <div class="bg-card p-4 rounded">
-      <p class="text-gray-400 text-xs">Suppliers</p>
-      <h3 class="text-lg font-bold">542</h3>
-    </div>
-    <div class="bg-card p-4 rounded">
-      <p class="text-gray-400 text-xs">Export Score</p>
-      <h3 class="text-lg font-bold">89%</h3>
-    </div>
-  </div>
-</section>
-
-<!-- TRENDING -->
-<section id="trending" class="tab hidden">
-  <div class="bg-card p-6 rounded">
-    Trending products engine (Pro & Elite)
-  </div>
-</section>
-
-<!-- SUPPLIERS -->
-<section id="suppliers" class="tab hidden">
-  <div class="bg-card p-6 rounded">
-    Verified supplier database
-  </div>
-</section>
-
-<!-- ANALYTICS -->
-<section id="analytics" class="tab hidden">
-  <div class="bg-card p-6 rounded">
-    Advanced AI export analytics (Elite only)
-  </div>
-</section>
-
-</main>
-</div>
-</div>
-
-<!-- FIREBASE AUTH -->
 <script type="module">
-
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { 
-  getAuth, 
-  onAuthStateChanged, 
-  signOut 
-} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-// Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
+  apiKey: "YOUR_API_KEY",
   authDomain: "sellora-ai.firebaseapp.com",
   projectId: "sellora-ai",
   storageBucket: "sellora-ai.firebasestorage.app",
   messagingSenderId: "7850591690",
-  appId: "1:7850591690:web:346fccc5531288fb2a3b33",
-  measurementId: "G-NG0NE3L8XH"
+  appId: "1:7850591690:web:346fccc5531288fb2a3b33"
 };
 
-// Initialize
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-// Protect page
-onAuthStateChanged(auth, (user) => {
+onAuthStateChanged(auth, async (user) => {
   if (!user) {
     window.location.href = "login.html";
-  } else {
-    document.getElementById("userEmail").innerText = user.email;
+    return;
   }
+
+  const userRef = doc(db, "users", user.uid);
+  const userSnap = await getDoc(userRef);
+
+  if (!userSnap.exists()) {
+    window.location.href = "index.html#pricing";
+    return;
+  }
+
+  const data = userSnap.data();
+  const today = new Date();
+
+  if (data.status !== "active" || data.expiry.toDate() < today) {
+    window.location.href = "index.html#pricing";
+    return;
+  }
+
+  // Display email
+  document.getElementById("userEmail").innerText = user.email;
+
+  // Display plan
+  document.getElementById("planBadge").innerText = data.plan.toUpperCase();
 });
-
-// Logout
-window.logout = function() {
-  signOut(auth).then(() => {
-    window.location.href = "login.html";
-  });
-};
-
 </script>
-
-<!-- UI SCRIPT -->
-<script>
-
-function showTab(tab, btn){
-
-  document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
-  document.getElementById(tab).classList.remove("hidden");
-
-  document.querySelectorAll(".menu-item")
-    .forEach(item => item.classList.remove("bg-accent","text-white"));
-
-  if(btn){
-    btn.classList.add("bg-accent","text-white");
-    document.getElementById("pageTitle").innerText = btn.innerText;
-  }
-}
-
-document.querySelector(".menu-item")
-  .classList.add("bg-accent","text-white");
-
-</script>
-
-</body>
-</html>
