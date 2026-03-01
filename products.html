@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SELLORA AI – Product Intelligence Library</title>
+<title>SELLORA AI – Explore Platform</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
@@ -12,8 +12,7 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        primary: "#4f46e5",
-        elite: "#7c3aed"
+        primary: "#4f46e5"
       }
     }
   }
@@ -21,132 +20,112 @@ tailwind.config = {
 </script>
 </head>
 
-<body class="bg-white text-gray-800">
-
-<!-- AUTH PROTECTION -->
-<script>
-if(localStorage.getItem("sellora_logged_in") !== "true" ||
-   !localStorage.getItem("sellora_plan")){
-  window.location.href = "login.html";
-}
-</script>
+<body class="bg-gray-50 text-gray-800">
 
 <!-- NAVBAR -->
 <header class="bg-white border-b sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <div class="flex items-center gap-3">
-      <h1 class="text-2xl font-bold tracking-wide">SELLORA AI</h1>
-      <span id="planBadge" class="text-xs px-3 py-1 rounded-full bg-primary text-white"></span>
-    </div>
-    <nav class="hidden md:flex gap-8 text-sm font-medium">
+    <h1 class="text-2xl font-bold">SELLORA AI</h1>
+
+    <nav class="flex gap-6 text-sm font-medium">
       <a href="index.html" class="hover:text-primary">Home</a>
-      <a href="products.html" class="text-primary font-semibold">Products</a>
-      <a href="dashboard.html" class="hover:text-primary">Dashboard</a>
-      <button onclick="logout()" class="text-red-500 text-xs">Logout</button>
+      <a href="login.html"
+         class="bg-primary text-white px-4 py-2 rounded-lg">
+        Login
+      </a>
     </nav>
   </div>
 </header>
 
-<!-- HEADER -->
-<section class="py-12 bg-gray-50 text-center">
-  <h2 class="text-3xl font-bold mb-2">Product Intelligence Library</h2>
-  <p class="text-gray-600 text-sm">
-    AI-ranked export opportunities tailored to your subscription.
+<!-- HERO -->
+<section class="py-16 text-center">
+  <h2 class="text-4xl font-bold mb-4">
+    Explore AI-Powered Export Intelligence
+  </h2>
+  <p class="text-gray-600">
+    Preview trending export products across India & global markets.
   </p>
 </section>
 
-<!-- UPGRADE BANNER (PRO ONLY) -->
-<div id="upgradeBanner" class="hidden max-w-6xl mx-auto px-6 mb-6">
-  <div class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white p-6 rounded-xl flex justify-between items-center">
-    <div>
-      <h3 class="font-semibold">Unlock Full Intelligence with Elite</h3>
-      <p class="text-sm opacity-90">Access all 12 products, global demand insights & advanced analytics.</p>
-    </div>
-    <a href="index.html#pricing"
-       class="bg-white text-indigo-700 px-5 py-2 rounded-lg font-semibold hover:bg-gray-200">
-      Upgrade Now
-    </a>
-  </div>
-</div>
-
-<!-- ACCESS LABEL -->
-<div class="max-w-6xl mx-auto px-6 mb-6">
-  <span id="accessLabel" class="text-sm text-gray-500"></span>
-</div>
-
 <!-- PRODUCTS GRID -->
-<section class="max-w-6xl mx-auto px-6 pb-20">
-  <div id="productGrid" class="grid md:grid-cols-3 gap-6"></div>
-</section>
+<section class="max-w-7xl mx-auto px-6 pb-20">
 
-<script>
-const products = [
-  {name:"Moringa Powder", score:92},
-  {name:"Millet Snacks", score:88},
-  {name:"Turmeric Extract", score:91},
-  {name:"Organic Jaggery", score:85},
-  {name:"Herbal Tea Blends", score:89},
-  {name:"Cold Pressed Oils", score:86},
-  {name:"Spice Gift Boxes", score:90},
-  {name:"Ayurvedic Capsules", score:87},
-  {name:"Plant Protein Mix", score:93},
-  {name:"Dehydrated Fruits", score:84},
-  {name:"Eco Packaging Kits", score:82},
-  {name:"Ready-to-Cook Mixes", score:88}
-];
+  <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
 
-const plan = localStorage.getItem("sellora_plan");
-const grid = document.getElementById("productGrid");
-const accessLabel = document.getElementById("accessLabel");
-const planBadge = document.getElementById("planBadge");
-const upgradeBanner = document.getElementById("upgradeBanner");
+    <!-- Product Card -->
+    <div class="relative bg-white p-6 rounded-2xl shadow">
 
-planBadge.innerText = plan === "elite" ? "ELITE PLAN" : "PRO PLAN";
-if(plan === "elite"){
-  planBadge.classList.replace("bg-primary","bg-elite");
-}
+      <!-- Blurred Content -->
+      <div class="blur-sm select-none">
+        <h3 class="text-xl font-semibold mb-2">Moringa Powder</h3>
+        <p class="text-sm text-gray-600">Demand Score: 92%</p>
+        <p class="text-sm text-gray-600">Growth: +18%</p>
+        <p class="text-sm text-gray-600">Export Score: 89</p>
+      </div>
 
-function renderProducts() {
-
-  grid.innerHTML = "";
-
-  const visibleProducts = plan === "pro"
-    ? products.slice(0,6)
-    : products;
-
-  visibleProducts.forEach(product => {
-    grid.innerHTML += `
-      <div class="border rounded-xl p-5 shadow-sm hover:shadow-md transition bg-white">
-        <h3 class="text-lg font-semibold mb-2">${product.name}</h3>
-        <p class="text-gray-600 text-sm mb-1">
-          Demand Score: <span class="font-semibold">${product.score}%</span>
-        </p>
-        <p class="text-gray-600 text-sm mb-3">
-          Export Potential: <span class="text-green-600 font-medium">High</span>
-        </p>
-        <a href="product-details.html"
-           class="text-primary text-sm font-medium hover:underline">
-          View Intelligence →
+      <!-- Lock Overlay -->
+      <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-2xl">
+        <span class="text-3xl mb-2">🔒</span>
+        <p class="text-sm font-medium mb-3">Unlock Full Intelligence</p>
+        <a href="index.html#pricing"
+           class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
+           Upgrade to Pro
         </a>
       </div>
-    `;
-  });
 
-  if(plan === "pro"){
-    accessLabel.innerText = "Showing: Pro Plan (6 of 12 Products)";
-    upgradeBanner.classList.remove("hidden");
-  } else {
-    accessLabel.innerText = "Showing: Elite Plan (All 12 Products)";
-  }
-}
+    </div>
 
-function logout(){
-  localStorage.clear();
-  window.location.href = "login.html";
-}
+    <!-- Duplicate Cards -->
+    <div class="relative bg-white p-6 rounded-2xl shadow">
+      <div class="blur-sm select-none">
+        <h3 class="text-xl font-semibold mb-2">Millet Snacks</h3>
+        <p class="text-sm text-gray-600">Demand Score: 88%</p>
+        <p class="text-sm text-gray-600">Growth: +15%</p>
+        <p class="text-sm text-gray-600">Export Score: 85</p>
+      </div>
 
-renderProducts();
-</script>
+      <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-2xl">
+        <span class="text-3xl mb-2">🔒</span>
+        <p class="text-sm font-medium mb-3">Pro Required</p>
+        <a href="index.html#pricing"
+           class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
+           Subscribe
+        </a>
+      </div>
+    </div>
+
+    <div class="relative bg-white p-6 rounded-2xl shadow">
+      <div class="blur-sm select-none">
+        <h3 class="text-xl font-semibold mb-2">Turmeric Extract</h3>
+        <p class="text-sm text-gray-600">Demand Score: 91%</p>
+        <p class="text-sm text-gray-600">Growth: +22%</p>
+        <p class="text-sm text-gray-600">Export Score: 93</p>
+      </div>
+
+      <div class="absolute inset-0 flex flex-col items-center justify-center bg-white/70 rounded-2xl">
+        <span class="text-3xl mb-2">🔒</span>
+        <p class="text-sm font-medium mb-3">Elite Analytics Inside</p>
+        <a href="index.html#pricing"
+           class="bg-primary text-white px-4 py-2 rounded-lg text-sm">
+           Upgrade Now
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+</section>
+
+<!-- CTA -->
+<section class="bg-primary text-white py-16 text-center">
+  <h3 class="text-3xl font-bold mb-4">
+    Ready to Unlock Real Export Intelligence?
+  </h3>
+  <a href="index.html#pricing"
+     class="bg-white text-primary px-6 py-3 rounded-lg font-semibold">
+     Get Started
+  </a>
+</section>
 
 </body>
 </html>
