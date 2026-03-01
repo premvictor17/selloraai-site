@@ -6,142 +6,87 @@
 <title>SELLORA AI – Login</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        primary: "#4f46e5"
-      }
-    }
-  }
-}
-</script>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
 <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">
 
-  <a href="index.html" class="text-sm text-gray-500 hover:text-primary">
-    ← Back to Home
-  </a>
+<h2 class="text-2xl font-bold mb-6 text-center">SELLORA AI</h2>
 
-  <h2 class="text-2xl font-bold mt-4 mb-2 text-center">SELLORA AI</h2>
-  <p class="text-gray-500 text-sm text-center mb-6">
-    Sign in or create your account
-  </p>
+<form id="authForm" class="space-y-4">
 
-  <div id="messageBox" class="text-center text-sm mb-4"></div>
+<div>
+<label>Email</label>
+<input type="email" id="email" class="w-full border p-2 rounded" required>
+</div>
 
-  <form id="authForm" class="space-y-4">
+<div>
+<label>Password</label>
+<input type="password" id="password" class="w-full border p-2 rounded" required>
+</div>
 
-    <div>
-      <label class="text-sm text-gray-600">Email</label>
-      <input type="email" id="email"
-        class="w-full mt-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
-        required>
-    </div>
+<button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded">
+Login / Signup
+</button>
 
-    <div>
-      <label class="text-sm text-gray-600">Password</label>
-      <input type="password" id="password"
-        class="w-full mt-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-primary outline-none"
-        required>
-    </div>
+</form>
 
-    <button type="submit"
-      class="w-full bg-primary text-white py-3 rounded-lg hover:bg-indigo-600 transition">
-      Login
-    </button>
-
-  </form>
-
-  <div class="text-center mt-6">
-    <p class="text-sm text-gray-500">
-      Don’t have an account?
-    </p>
-    <button id="signupBtn"
-      class="mt-2 text-primary font-medium hover:underline text-sm">
-      Create Account
-    </button>
-  </div>
+<p id="message" class="text-center mt-4 text-sm"></p>
 
 </div>
 
-<!-- FIREBASE AUTH SCRIPT -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { 
-  getAuth, 
-  signInWithEmailAndPassword, 
-  createUserWithEmailAndPassword,
-  onAuthStateChanged 
-} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-// Your Firebase config
 const firebaseConfig = {
-  apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
+  apiKey: "YOUR_API_KEY",
   authDomain: "sellora-ai.firebaseapp.com",
   projectId: "sellora-ai",
   storageBucket: "sellora-ai.firebasestorage.app",
   messagingSenderId: "7850591690",
-  appId: "1:7850591690:web:346fccc5531288fb2a3b33",
-  measurementId: "G-NG0NE3L8XH"
+  appId: "1:7850591690:web:346fccc5531288fb2a3b33"
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+const db = getFirestore(app);
 
-const form = document.getElementById("authForm");
-const signupBtn = document.getElementById("signupBtn");
-const messageBox = document.getElementById("messageBox");
-
-// Auto redirect if already logged in
-onAuthStateChanged(auth, (user) => {
-  if (user) {
-    window.location.href = "dashboard.html";
-  }
-});
-
-// LOGIN
-form.addEventListener("submit", async (e) => {
+document.getElementById("authForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+  const email = email.value;
+  const password = password.value;
+  const message = document.getElementById("message");
 
   try {
-    await signInWithEmailAndPassword(auth, email, password);
-    messageBox.innerHTML = "<span class='text-green-600'>Login successful!</span>";
+    // Try login first
+    const userCredential = await signInWithEmailAndPassword(auth, email, password);
     window.location.href = "dashboard.html";
+
   } catch (error) {
-    messageBox.innerHTML = "<span class='text-red-500'>" + error.message + "</span>";
+
+    if (error.code === "auth/user-not-found") {
+      // Create new user
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Create Firestore subscription document
+      await setDoc(doc(db, "users", user.uid), {
+        email: user.email,
+        plan: "free",
+        status: "inactive",
+        createdAt: serverTimestamp()
+      });
+
+      window.location.href = "dashboard.html";
+    } else {
+      message.innerText = error.message;
+    }
   }
-});
-
-// SIGN UP
-signupBtn.addEventListener("click", async () => {
-
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  if (!email || !password) {
-    messageBox.innerHTML = "<span class='text-red-500'>Enter email & password first.</span>";
-    return;
-  }
-
-  try {
-    await createUserWithEmailAndPassword(auth, email, password);
-    messageBox.innerHTML = "<span class='text-green-600'>Account created successfully!</span>";
-    window.location.href = "dashboard.html";
-  } catch (error) {
-    messageBox.innerHTML = "<span class='text-red-500'>" + error.message + "</span>";
-  }
-
 });
 
 </script>
