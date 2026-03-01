@@ -32,7 +32,7 @@ tailwind.config = {
     <nav class="hidden md:flex gap-8 text-sm font-medium">
       <a href="#features" class="hover:text-primary">Platform</a>
       <a href="#pricing" class="hover:text-primary">Pricing</a>
-      <a href="products.html" class="hover:text-primary">Products</a>
+      <a href="products.html" class="hover:text-primary">Explore</a>
       <a href="login.html" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-indigo-600">
         Login
       </a>
@@ -48,8 +48,7 @@ tailwind.config = {
       Command Center
     </h2>
     <p class="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
-      Discover high-demand products, verified suppliers, and global demand patterns —
-      before your competitors do.
+      Discover high-demand products, verified suppliers, and global demand patterns — before your competitors do.
     </p>
     <div class="flex justify-center gap-4">
       <a href="#pricing" class="bg-primary text-white px-8 py-4 rounded-xl text-lg hover:bg-indigo-600">
@@ -59,34 +58,6 @@ tailwind.config = {
         Explore Platform
       </a>
     </div>
-  </div>
-</section>
-
-<!-- FEATURES -->
-<section id="features" class="py-20">
-  <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-10">
-
-    <div class="p-8 border rounded-2xl shadow-sm">
-      <h3 class="text-2xl font-bold mb-4">AI Demand Signals</h3>
-      <p class="text-gray-600">
-        Identify export-ready products using real-time trend analysis across India.
-      </p>
-    </div>
-
-    <div class="p-8 border rounded-2xl shadow-sm">
-      <h3 class="text-2xl font-bold mb-4">Verified Supplier Network</h3>
-      <p class="text-gray-600">
-        Access curated suppliers with direct contact information and MOQ insights.
-      </p>
-    </div>
-
-    <div class="p-8 border rounded-2xl shadow-sm">
-      <h3 class="text-2xl font-bold mb-4">Market Heatmaps</h3>
-      <p class="text-gray-600">
-        Visualize product demand by state and international regions instantly.
-      </p>
-    </div>
-
   </div>
 </section>
 
@@ -124,7 +95,7 @@ tailwind.config = {
           <li>✔ Global + India demand maps</li>
           <li>✔ 10+ suppliers per product</li>
           <li>✔ Advanced analytics & export scoring</li>
-          <li>✔ Executive dark-mode dashboard</li>
+          <li>✔ Executive dashboard</li>
         </ul>
 
         <button onclick="payElite()" class="w-full bg-white text-indigo-700 py-4 rounded-xl font-semibold hover:bg-gray-200">
@@ -136,21 +107,6 @@ tailwind.config = {
   </div>
 </section>
 
-<!-- CTA -->
-<section class="py-20 bg-primary text-white text-center">
-  <div class="max-w-4xl mx-auto px-6">
-    <h2 class="text-4xl font-bold mb-6">
-      Ready to Find Your Next Export Winner?
-    </h2>
-    <p class="mb-8 text-lg">
-      Join exporters using SELLORA AI to stay ahead of global demand.
-    </p>
-    <a href="#pricing" class="bg-white text-primary px-8 py-4 rounded-xl font-semibold hover:bg-gray-200">
-      Start Now
-    </a>
-  </div>
-</section>
-
 <!-- FOOTER -->
 <footer class="py-10 bg-white border-t text-center text-gray-500 text-sm">
   © 2026 SELLORA AI. All rights reserved.
@@ -158,92 +114,88 @@ tailwind.config = {
 
 <!-- PAYMENT SCRIPT -->
 <script>
+
+/* Require Login Before Payment */
+function requireLogin(){
+  const loggedIn = localStorage.getItem("sellora_logged_in");
+  const email = localStorage.getItem("sellora_email");
+
+  if(!loggedIn || !email){
+    alert("Please login before subscribing.");
+    window.location.href = "login.html";
+    return false;
+  }
+  return true;
+}
+
+/* Activate Plan */
+function activatePlan(planName, amount, paymentId){
+
+  const startDate = new Date();
+  const expiryDate = new Date();
+  expiryDate.setDate(expiryDate.getDate() + 30);
+
+  localStorage.setItem("sellora_plan", planName);
+  localStorage.setItem("sellora_subscription_start", startDate);
+  localStorage.setItem("sellora_subscription_expiry", expiryDate);
+  localStorage.setItem("sellora_auto_renew", "off");
+
+  const paymentRecord = {
+    id: paymentId,
+    plan: planName,
+    amount: amount,
+    date: new Date().toISOString(),
+    status: "Paid"
+  };
+
+  let history = JSON.parse(localStorage.getItem("sellora_payments")) || [];
+  history.push(paymentRecord);
+  localStorage.setItem("sellora_payments", JSON.stringify(history));
+
+  window.location.href = "dashboard.html";
+}
+
+/* PRO PAYMENT */
 function payPro() {
+
+  if(!requireLogin()) return;
+
   var options = {
     key: "rzp_test_SKRhNYMtC7UJsW",
     amount: "299900",
     currency: "INR",
     name: "SELLORA AI - Pro",
     description: "Pro Monthly Subscription",
-handler: function (response){
-
-  const email = localStorage.getItem("sellora_email_temp");
-
-  const startDate = new Date();
-  const expiryDate = new Date();
-  expiryDate.setDate(expiryDate.getDate() + 30);
-
-  localStorage.setItem("sellora_logged_in", "true");
-  localStorage.setItem("sellora_plan", "pro");
-  localStorage.setItem("sellora_email", email);
-  localStorage.setItem("sellora_subscription_start", startDate);
-  localStorage.setItem("sellora_subscription_expiry", expiryDate);
-  localStorage.setItem("sellora_auto_renew", "off");
-
-  const paymentRecord = {
-    id: response.razorpay_payment_id,
-    plan: "pro",
-    amount: "2999",
-    date: new Date().toISOString(),
-    status: "Paid"
+    handler: function (response){
+      activatePlan("pro", "2999", response.razorpay_payment_id);
+    }
   };
 
-  let history = JSON.parse(localStorage.getItem("sellora_payments")) || [];
-  history.push(paymentRecord);
-  localStorage.setItem("sellora_payments", JSON.stringify(history));
-
-  window.location.href = "dashboard.html";
-}
-  };
   var rzp = new Razorpay(options);
   rzp.open();
 }
 
+/* ELITE PAYMENT */
 function payElite() {
+
+  if(!requireLogin()) return;
+
   var options = {
     key: "rzp_test_SKRhNYMtC7UJsW",
     amount: "499900",
     currency: "INR",
     name: "SELLORA AI - Elite",
     description: "Elite Monthly Subscription",
-handler: function (response){
-
-  const email = localStorage.getItem("sellora_email_temp");
-
-  const startDate = new Date();
-  const expiryDate = new Date();
-  expiryDate.setDate(expiryDate.getDate() + 30);
-
-  localStorage.setItem("sellora_logged_in", "true");
-  localStorage.setItem("sellora_plan", "elite");
-  localStorage.setItem("sellora_email", email);
-  localStorage.setItem("sellora_subscription_start", startDate);
-  localStorage.setItem("sellora_subscription_expiry", expiryDate);
-  localStorage.setItem("sellora_auto_renew", "off");
-
-  const paymentRecord = {
-    id: response.razorpay_payment_id,
-    plan: "elite",
-    amount: "4999",
-    date: new Date().toISOString(),
-    status: "Paid"
+    handler: function (response){
+      activatePlan("elite", "4999", response.razorpay_payment_id);
+    }
   };
 
-  let history = JSON.parse(localStorage.getItem("sellora_payments")) || [];
-  history.push(paymentRecord);
-  localStorage.setItem("sellora_payments", JSON.stringify(history));
-
-  window.location.href = "dashboard.html";
-}
-  };
   var rzp = new Razorpay(options);
   rzp.open();
 }
+
 </script>
 
 </body>
 </html>
-
-
-
-
