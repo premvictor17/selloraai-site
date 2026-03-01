@@ -33,8 +33,8 @@ tailwind.config = {
       <a href="#features" class="hover:text-primary">Platform</a>
       <a href="#pricing" class="hover:text-primary">Pricing</a>
       <a href="products.html" class="hover:text-primary">Products</a>
-      <a href="dashboard.html" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-indigo-600">
-        Dashboard
+      <a href="login.html" class="bg-primary text-white px-4 py-2 rounded-lg hover:bg-indigo-600">
+        Login
       </a>
     </nav>
   </div>
@@ -156,6 +156,7 @@ tailwind.config = {
   © 2026 SELLORA AI. All rights reserved.
 </footer>
 
+<!-- PAYMENT SCRIPT -->
 <script>
 function payPro() {
   var options = {
@@ -163,14 +164,16 @@ function payPro() {
     amount: "299900",
     currency: "INR",
     name: "SELLORA AI - Pro",
-    description: "Monthly Subscription",
+    description: "Pro Monthly Subscription",
     handler: function (response){
-      alert("Payment Successful!");
+      localStorage.setItem("sellora_logged_in", "true");
+      localStorage.setItem("sellora_plan", "pro");
+      localStorage.setItem("sellora_payment_id", response.razorpay_payment_id);
       window.location.href = "dashboard.html";
     }
   };
-  var rzp1 = new Razorpay(options);
-  rzp1.open();
+  var rzp = new Razorpay(options);
+  rzp.open();
 }
 
 function payElite() {
@@ -179,14 +182,16 @@ function payElite() {
     amount: "499900",
     currency: "INR",
     name: "SELLORA AI - Elite",
-    description: "Monthly Subscription",
+    description: "Elite Monthly Subscription",
     handler: function (response){
-      alert("Payment Successful!");
+      localStorage.setItem("sellora_logged_in", "true");
+      localStorage.setItem("sellora_plan", "elite");
+      localStorage.setItem("sellora_payment_id", response.razorpay_payment_id);
       window.location.href = "dashboard.html";
     }
   };
-  var rzp2 = new Razorpay(options);
-  rzp2.open();
+  var rzp = new Razorpay(options);
+  rzp.open();
 }
 </script>
 
