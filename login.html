@@ -24,7 +24,6 @@ tailwind.config = {
 
 <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">
 
-  <!-- BACK BUTTON -->
   <a href="index.html" class="text-sm text-gray-500 hover:text-primary">
     ← Back to Home
   </a>
@@ -60,47 +59,67 @@ tailwind.config = {
 
   </form>
 
-  <!-- SUBSCRIBE BUTTON IF NO PLAN -->
+  <!-- SUBSCRIBE BUTTON -->
   <div id="subscribeBox" class="hidden text-center mt-6">
     <p class="text-sm text-gray-500 mb-3">
-      No active subscription found.
+      You don’t have an active subscription.
     </p>
     <a href="index.html#pricing"
        class="bg-primary text-white px-6 py-2 rounded-lg text-sm hover:bg-indigo-600">
-       Subscribe Now
+       View Plans
     </a>
   </div>
 
 </div>
 
 <script>
+
 const plan = localStorage.getItem("sellora_plan");
+const expiry = localStorage.getItem("sellora_subscription_expiry");
+
 const planStatus = document.getElementById("planStatus");
 const subscribeBox = document.getElementById("subscribeBox");
 
-if(plan){
-  planStatus.innerHTML =
-    `<span class="text-green-600 font-medium">Active Plan: ${plan.toUpperCase()}</span>`;
+// Check subscription status
+if(plan && expiry){
+  const expiryDate = new Date(expiry);
+  const today = new Date();
+
+  if(today < expiryDate){
+    planStatus.innerHTML =
+      `<span class="text-green-600 font-medium">
+        Active Plan: ${plan.toUpperCase()}
+      </span>`;
+  } else {
+    planStatus.innerHTML =
+      `<span class="text-red-500 font-medium">
+        Subscription Expired
+      </span>`;
+    subscribeBox.classList.remove("hidden");
+  }
+
 } else {
   planStatus.innerHTML =
-    `<span class="text-red-500 font-medium">No Active Subscription</span>`;
+    `<span class="text-gray-500 font-medium">
+      No Active Subscription
+    </span>`;
   subscribeBox.classList.remove("hidden");
 }
 
 function login(event){
   event.preventDefault();
 
-  if(!localStorage.getItem("sellora_plan")){
-    alert("Please subscribe before logging in.");
-    return;
-  }
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
+  // Store login session
   localStorage.setItem("sellora_logged_in", "true");
-  localStorage.setItem("sellora_email",
-    document.getElementById("email").value);
+  localStorage.setItem("sellora_email", email);
+  localStorage.setItem("sellora_password", password);
 
   window.location.href = "dashboard.html";
 }
+
 </script>
 
 </body>
