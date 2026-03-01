@@ -1,38 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SELLORA AI – Login</title>
-
-<script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <title>SELLORA AI – Login</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
 
 <body class="bg-gray-100 flex items-center justify-center min-h-screen">
 
 <div class="bg-white p-10 rounded-2xl shadow-xl w-full max-w-md">
+  
+  <h2 class="text-2xl font-bold mb-6 text-center">SELLORA AI</h2>
 
-<h2 class="text-2xl font-bold mb-6 text-center">SELLORA AI</h2>
+  <form id="authForm" class="space-y-4">
 
-<form id="authForm" class="space-y-4">
+    <div>
+      <label>Email</label>
+      <input type="email" id="email"
+        class="w-full mt-1 px-4 py-3 border rounded-lg"
+        required>
+    </div>
 
-<div>
-<label>Email</label>
-<input type="email" id="email" class="w-full border p-2 rounded" required>
-</div>
+    <div>
+      <label>Password</label>
+      <input type="password" id="password"
+        class="w-full mt-1 px-4 py-3 border rounded-lg"
+        required>
+    </div>
 
-<div>
-<label>Password</label>
-<input type="password" id="password" class="w-full border p-2 rounded" required>
-</div>
+    <button class="w-full bg-indigo-600 text-white py-3 rounded-lg">
+      Login / Signup
+    </button>
 
-<button type="submit" class="w-full bg-indigo-600 text-white py-2 rounded">
-Login / Signup
-</button>
+  </form>
 
-</form>
-
-<p id="message" class="text-center mt-4 text-sm"></p>
+  <p id="message" class="text-red-500 text-sm mt-4"></p>
 
 </div>
 
@@ -40,10 +42,10 @@ Login / Signup
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, setDoc, getDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
+  apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
   authDomain: "sellora-ai.firebaseapp.com",
   projectId: "sellora-ai",
   storageBucket: "sellora-ai.firebasestorage.app",
@@ -58,35 +60,42 @@ const db = getFirestore(app);
 document.getElementById("authForm").addEventListener("submit", async (e) => {
   e.preventDefault();
 
-  const email = email.value;
-  const password = password.value;
+  const emailValue = document.getElementById("email").value;
+  const passwordValue = document.getElementById("password").value;
   const message = document.getElementById("message");
 
   try {
+
     // Try login first
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
+    await signInWithEmailAndPassword(auth, emailValue, passwordValue);
     window.location.href = "dashboard.html";
 
   } catch (error) {
 
     if (error.code === "auth/user-not-found") {
-      // Create new user
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
 
-      // Create Firestore subscription document
-      await setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-        plan: "free",
-        status: "inactive",
-        createdAt: serverTimestamp()
-      });
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, emailValue, passwordValue);
+        const user = userCredential.user;
 
-      window.location.href = "dashboard.html";
+        await setDoc(doc(db, "users", user.uid), {
+          email: user.email,
+          plan: "free",
+          status: "inactive",
+          createdAt: serverTimestamp()
+        });
+
+        window.location.href = "dashboard.html";
+
+      } catch (signupError) {
+        message.innerText = signupError.message;
+      }
+
     } else {
       message.innerText = error.message;
     }
   }
+
 });
 
 </script>
