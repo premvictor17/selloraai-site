@@ -35,12 +35,12 @@
 
   <div class="mt-6 space-y-3">
 
-    <button onclick="signUp()"
+    <button id="signupBtn"
       class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition">
       Create Account
     </button>
 
-    <button onclick="login()"
+    <button id="loginBtn"
       class="w-full bg-gray-800 text-white py-3 rounded-lg hover:bg-black transition">
       Login
     </button>
@@ -56,11 +56,21 @@
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } 
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { 
+  getAuth, 
+  createUserWithEmailAndPassword, 
+  signInWithEmailAndPassword,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
 
+import { 
+  getFirestore, 
+  doc, 
+  setDoc 
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+
+// 🔥 Your Firebase Config
 const firebaseConfig = {
   apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
   authDomain: "sellora-ai.firebaseapp.com",
@@ -75,11 +85,28 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const message = document.getElementById("message");
+const emailInput = document.getElementById("email");
+const passwordInput = document.getElementById("password");
+const signupBtn = document.getElementById("signupBtn");
+const loginBtn = document.getElementById("loginBtn");
 
-window.signUp = async function() {
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+// 🔥 AUTO REDIRECT IF ALREADY LOGGED IN
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    window.location.href = "dashboard.html";
+  }
+});
+
+
+// =======================
+// 🔥 SIGN UP
+// =======================
+
+signupBtn.addEventListener("click", async () => {
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
   if (!email || !password) {
     message.innerText = "Please fill all fields";
@@ -92,7 +119,7 @@ window.signUp = async function() {
     const userCredential = await createUserWithEmailAndPassword(auth, email, password);
     const user = userCredential.user;
 
-    // Create empty subscription record
+    // Create Firestore user document
     await setDoc(doc(db, "users", user.uid), {
       email: email,
       plan: "free",
@@ -103,22 +130,22 @@ window.signUp = async function() {
     message.innerText = "Account created successfully!";
     message.className = "text-green-600 text-center text-sm mt-4";
 
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 1000);
-
   } catch (error) {
     message.innerText = error.message;
     message.className = "text-red-500 text-center text-sm mt-4";
   }
 
-};
+});
 
 
-window.login = async function() {
+// =======================
+// 🔥 LOGIN
+// =======================
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
+loginBtn.addEventListener("click", async () => {
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
 
   if (!email || !password) {
     message.innerText = "Please fill all fields";
@@ -133,16 +160,14 @@ window.login = async function() {
     message.innerText = "Login successful!";
     message.className = "text-green-600 text-center text-sm mt-4";
 
-    setTimeout(() => {
-      window.location.href = "dashboard.html";
-    }, 1000);
+    // redirect happens automatically via onAuthStateChanged
 
   } catch (error) {
     message.innerText = error.message;
     message.className = "text-red-500 text-center text-sm mt-4";
   }
 
-};
+});
 
 </script>
 
