@@ -12,7 +12,8 @@ tailwind.config = {
   theme: {
     extend: {
       colors: {
-        primary: "#6A0DAD"
+        primary: "#7c3aed",
+        darkbg: "#0f172a"
       }
     }
   }
@@ -21,85 +22,113 @@ tailwind.config = {
 
 </head>
 
-<body class="bg-[#0b1120] text-white">
+<body class="bg-darkbg text-white min-h-screen flex">
 
-<div class="flex min-h-screen">
+<!-- SIDEBAR -->
+<div class="w-64 bg-black p-6 flex flex-col">
 
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-[#111827] p-6 flex flex-col justify-between">
+  <h1 class="text-2xl font-bold mb-8">SELLORA</h1>
 
-    <div>
-      <h1 class="text-xl font-bold mb-10">SELLORA</h1>
+  <div class="space-y-4 text-sm">
 
-      <nav class="space-y-4">
-        <a href="#" class="block bg-primary px-4 py-2 rounded-lg">Overview</a>
-        <a href="#" class="block hover:bg-gray-700 px-4 py-2 rounded-lg">Trending</a>
-        <a href="#" class="block hover:bg-gray-700 px-4 py-2 rounded-lg">Suppliers</a>
-        <a href="#" class="block hover:bg-gray-700 px-4 py-2 rounded-lg">Analytics</a>
-        <a href="#" class="block hover:bg-gray-700 px-4 py-2 rounded-lg">Billing</a>
-      </nav>
-    </div>
+    <button onclick="showSection('overview')" class="sidebar-btn">Overview</button>
+    <button onclick="showSection('trending')" class="sidebar-btn">Trending</button>
+    <button onclick="showSection('suppliers')" class="sidebar-btn">Suppliers</button>
+    <button onclick="showSection('analytics')" class="sidebar-btn">Analytics</button>
+    <button onclick="showSection('billing')" class="sidebar-btn">Billing</button>
 
-    <button onclick="logout()" class="text-red-400 hover:text-red-600">
+  </div>
+
+  <div class="mt-auto">
+    <button onclick="logout()" class="text-red-400 mt-10 text-sm">
       Logout
     </button>
-
-  </aside>
-
-
-  <!-- MAIN CONTENT -->
-  <main class="flex-1 p-10">
-
-    <!-- TOP BAR -->
-    <div class="flex justify-between items-center mb-10">
-
-      <h2 class="text-2xl font-semibold">Dashboard Overview</h2>
-
-      <div class="flex items-center space-x-4">
-        <span id="userEmail" class="text-sm text-gray-300"></span>
-        <span id="planBadge"
-          class="bg-primary text-white text-xs px-3 py-1 rounded-full">
-        </span>
-      </div>
-
-    </div>
-
-    <!-- STATS CARDS -->
-    <div class="grid grid-cols-4 gap-6">
-
-      <div class="bg-[#1f2937] p-6 rounded-xl">
-        <p class="text-gray-400 text-sm">Active Products</p>
-        <p class="text-3xl font-bold mt-2">128</p>
-      </div>
-
-      <div class="bg-[#1f2937] p-6 rounded-xl">
-        <p class="text-gray-400 text-sm">High Demand</p>
-        <p class="text-3xl font-bold mt-2">37</p>
-      </div>
-
-      <div class="bg-[#1f2937] p-6 rounded-xl">
-        <p class="text-gray-400 text-sm">Suppliers</p>
-        <p class="text-3xl font-bold mt-2">542</p>
-      </div>
-
-      <div class="bg-[#1f2937] p-6 rounded-xl">
-        <p class="text-gray-400 text-sm">Export Score</p>
-        <p class="text-3xl font-bold mt-2">89%</p>
-      </div>
-
-    </div>
-
-  </main>
+  </div>
 
 </div>
 
 
-<!-- 🔥 FIREBASE PROTECTION SCRIPT -->
+<!-- MAIN CONTENT -->
+<div class="flex-1 p-10">
+
+  <!-- TOP BAR -->
+  <div class="flex justify-between items-center mb-10">
+    <h2 class="text-3xl font-bold">Dashboard Overview</h2>
+
+    <div class="flex items-center gap-4">
+      <span id="userEmail" class="text-sm"></span>
+      <span id="userPlan" class="px-4 py-1 rounded-full text-sm bg-primary"></span>
+    </div>
+  </div>
+
+
+  <!-- OVERVIEW -->
+  <div id="overviewSection">
+    <div class="grid grid-cols-4 gap-6">
+
+      <div class="bg-gray-800 p-6 rounded-xl">
+        <p class="text-gray-400">Active Products</p>
+        <h3 class="text-3xl mt-2">128</h3>
+      </div>
+
+      <div class="bg-gray-800 p-6 rounded-xl">
+        <p class="text-gray-400">High Demand</p>
+        <h3 class="text-3xl mt-2">37</h3>
+      </div>
+
+      <div class="bg-gray-800 p-6 rounded-xl">
+        <p class="text-gray-400">Suppliers</p>
+        <h3 class="text-3xl mt-2">542</h3>
+      </div>
+
+      <div class="bg-gray-800 p-6 rounded-xl">
+        <p class="text-gray-400">Export Score</p>
+        <h3 class="text-3xl mt-2">89%</h3>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- TRENDING -->
+  <div id="trendingSection" class="hidden">
+    <h3 class="text-2xl font-bold mb-6">Trending Products</h3>
+    <p class="text-gray-400">Premium data visible for Pro & Elite users only.</p>
+  </div>
+
+
+  <!-- SUPPLIERS -->
+  <div id="suppliersSection" class="hidden">
+    <h3 class="text-2xl font-bold mb-6">Verified Suppliers</h3>
+    <p class="text-gray-400">Supplier intelligence module.</p>
+  </div>
+
+
+  <!-- ANALYTICS -->
+  <div id="analyticsSection" class="hidden">
+    <h3 class="text-2xl font-bold mb-6">Analytics</h3>
+    <p class="text-gray-400">Advanced analytics (Elite only).</p>
+  </div>
+
+
+  <!-- BILLING -->
+  <div id="billingSection" class="hidden">
+    <h3 class="text-2xl font-bold mb-6">Billing</h3>
+    <p class="text-gray-400">Manage subscription and payments.</p>
+  </div>
+
+</div>
+
+
+
+<!-- FIREBASE SCRIPT -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged, signOut } 
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
+import { getFirestore, doc, getDoc } 
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
@@ -114,6 +143,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const userEmailEl = document.getElementById("userEmail");
+const userPlanEl = document.getElementById("userPlan");
+
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
@@ -121,35 +153,71 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  const userRef = doc(db, "users", user.uid);
-  const userSnap = await getDoc(userRef);
+  userEmailEl.innerText = user.email;
 
-  if (!userSnap.exists()) {
+  const docRef = doc(db, "users", user.uid);
+  const docSnap = await getDoc(docRef);
+
+  if (docSnap.exists()) {
+
+    const data = docSnap.data();
+
+    if (data.status !== "active") {
+      window.location.href = "index.html#pricing";
+      return;
+    }
+
+    userPlanEl.innerText = data.plan.toUpperCase();
+
+  } else {
     window.location.href = "index.html#pricing";
-    return;
   }
-
-  const data = userSnap.data();
-  const today = new Date();
-
-  if (data.status !== "active" || data.expiry.toDate() < today) {
-    window.location.href = "index.html#pricing";
-    return;
-  }
-
-  // ✅ Display user info
-  document.getElementById("userEmail").innerText = user.email;
-  document.getElementById("planBadge").innerText = data.plan.toUpperCase();
 
 });
 
-window.logout = function() {
-  signOut(auth).then(() => {
-    window.location.href = "login.html";
-  });
-}
+window.logout = async function() {
+  await signOut(auth);
+  window.location.href = "login.html";
+};
 
 </script>
+
+
+<!-- SECTION SWITCHING -->
+<script>
+
+window.showSection = function(section){
+
+  const sections = [
+    "overviewSection",
+    "trendingSection",
+    "suppliersSection",
+    "analyticsSection",
+    "billingSection"
+  ];
+
+  sections.forEach(id => {
+    document.getElementById(id).classList.add("hidden");
+  });
+
+  document.getElementById(section + "Section").classList.remove("hidden");
+};
+
+</script>
+
+
+<style>
+.sidebar-btn {
+  width: 100%;
+  text-align: left;
+  padding: 10px 14px;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+.sidebar-btn:hover {
+  background: #7c3aed;
+}
+</style>
 
 </body>
 </html>
