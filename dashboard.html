@@ -6,7 +6,6 @@
 <title>SELLORA AI – App</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 tailwind.config = {
@@ -28,6 +27,7 @@ tailwind.config = {
 <body class="bg-darkbg text-gray-200 text-sm">
 
 <script>
+// Auth Guard
 const loggedIn = localStorage.getItem("sellora_logged_in");
 const plan = localStorage.getItem("sellora_plan");
 const expiryStored = localStorage.getItem("sellora_subscription_expiry");
@@ -39,6 +39,7 @@ if(!loggedIn || !plan){
 if(expiryStored){
   const now = new Date();
   const expiryDate = new Date(expiryStored);
+
   if(now > expiryDate){
     localStorage.removeItem("sellora_logged_in");
     window.location.href = "billing.html";
@@ -76,8 +77,7 @@ if(expiryStored){
         Suppliers
       </button>
 
-      <button id="analyticsBtn"
-        onclick="showTab('analytics', this)"
+      <button onclick="showTab('analytics', this)"
         class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
         Analytics
       </button>
@@ -96,43 +96,57 @@ if(expiryStored){
 
 </aside>
 
-<!-- MAIN AREA -->
+<!-- MAIN -->
 <div class="flex-1 flex flex-col">
 
 <header class="bg-sidebar border-b border-gray-700 px-8 py-4 flex justify-between items-center">
+
   <h2 id="pageTitle" class="font-semibold text-base">Executive Overview</h2>
 
   <div class="text-right">
     <p id="userEmail" class="text-xs text-gray-300"></p>
     <p id="expiryInfo" class="text-[10px] text-gray-500"></p>
   </div>
+
 </header>
 
 <main class="flex-1 p-8">
 
+<!-- OVERVIEW -->
 <section id="overview" class="tab">
   <div class="bg-card p-4 rounded">
     Overview Content
   </div>
 </section>
 
+<!-- TRENDING -->
 <section id="trending" class="tab hidden">
-  <div class="bg-card p-4 rounded">Trending content</div>
+  <div class="bg-card p-4 rounded">
+    Trending Content
+  </div>
 </section>
 
+<!-- SUPPLIERS -->
 <section id="suppliers" class="tab hidden">
-  <div class="bg-card p-4 rounded">Suppliers content</div>
+  <div class="bg-card p-4 rounded">
+    Suppliers Content
+  </div>
 </section>
 
+<!-- ANALYTICS -->
 <section id="analytics" class="tab hidden">
-  <div class="bg-card p-4 rounded">Analytics content</div>
+  <div class="bg-card p-4 rounded">
+    Advanced Analytics (Elite Only)
+  </div>
 </section>
 
+<!-- BILLING -->
 <section id="billing" class="tab hidden">
+
   <div class="bg-card p-6 rounded mb-6">
     <h3 class="text-lg font-bold mb-4">Subscription Details</h3>
 
-    <p>Status: <span id="subscriptionStatus"></span></p>
+    <p>Status: <span id="subscriptionStatus" class="font-semibold"></span></p>
     <p>Plan: <span id="billingPlan"></span></p>
     <p>Expiry: <span id="billingExpiry"></span></p>
 
@@ -144,10 +158,21 @@ if(expiryStored){
 
   <div class="bg-card p-6 rounded">
     <h3 class="text-lg font-bold mb-4">Payment History</h3>
+
     <table class="w-full text-xs">
+      <thead class="text-gray-400 border-b border-gray-600">
+        <tr>
+          <th class="text-left py-2">Payment ID</th>
+          <th>Plan</th>
+          <th>Amount</th>
+          <th>Date</th>
+          <th>Status</th>
+        </tr>
+      </thead>
       <tbody id="paymentHistory"></tbody>
     </table>
   </div>
+
 </section>
 
 </main>
@@ -156,14 +181,20 @@ if(expiryStored){
 
 <script>
 
+// Default Auto Renew
+if(!localStorage.getItem("sellora_auto_renew")){
+  localStorage.setItem("sellora_auto_renew","off");
+}
+
 const email = localStorage.getItem("sellora_email");
-const startDate = localStorage.getItem("sellora_subscription_start");
 const expiryDateStored = localStorage.getItem("sellora_subscription_expiry");
 const autoRenew = localStorage.getItem("sellora_auto_renew");
 
-document.getElementById("userEmail").innerText = email;
+document.getElementById("userEmail").innerText = email || "";
 
+// EXPIRY + STATUS
 if(expiryDateStored){
+
   const expiryDate = new Date(expiryDateStored);
   const today = new Date();
   const diffDays = Math.ceil((expiryDate - today)/(1000*60*60*24));
@@ -173,8 +204,10 @@ if(expiryDateStored){
 
   if(diffDays > 3){
     document.getElementById("subscriptionStatus").innerText = "Active";
+    document.getElementById("subscriptionStatus").className = "text-green-400";
   } else if(diffDays > 0){
     document.getElementById("subscriptionStatus").innerText = "Expiring Soon";
+    document.getElementById("subscriptionStatus").className = "text-yellow-400";
   } else {
     if(autoRenew === "on"){
       const newExpiry = new Date();
@@ -190,32 +223,74 @@ if(expiryDateStored){
     diffDays + " days remaining";
 }
 
+// AUTO RENEW BUTTON
 document.getElementById("autoRenewBtn").innerText =
   autoRenew === "on" ? "Auto Renew: ON" : "Auto Renew: OFF";
 
 function toggleAutoRenew(){
-  localStorage.setItem(
-    "sellora_auto_renew",
-    autoRenew === "on" ? "off" : "on"
-  );
+  const current = localStorage.getItem("sellora_auto_renew");
+
+  if(current === "on"){
+    localStorage.setItem("sellora_auto_renew","off");
+  } else {
+    localStorage.setItem("sellora_auto_renew","on");
+  }
+
   location.reload();
 }
 
+// PAYMENT HISTORY
+const payments = JSON.parse(localStorage.getItem("sellora_payments")) || [];
+const table = document.getElementById("paymentHistory");
+
+payments.reverse().forEach(p => {
+  table.innerHTML += `
+    <tr class="border-b border-gray-700">
+      <td class="py-2">${p.id}</td>
+      <td>${p.plan.toUpperCase()}</td>
+      <td>₹${p.amount}</td>
+      <td>${new Date(p.date).toLocaleDateString()}</td>
+      <td>${p.status}</td>
+    </tr>
+  `;
+});
+
+// TAB SWITCH
 function showTab(tab, btn){
+
+  if(tab === "analytics" && plan === "pro"){
+    alert("Upgrade to Elite to access Analytics.");
+    return;
+  }
+
   document.querySelectorAll(".tab").forEach(t=>t.classList.add("hidden"));
   document.getElementById(tab).classList.remove("hidden");
+
+  document.querySelectorAll(".menu-item")
+    .forEach(item => item.classList.remove("bg-accent","text-white"));
+
+  if(btn){
+    btn.classList.add("bg-accent","text-white");
+    document.getElementById("pageTitle").innerText = btn.innerText;
+  }
 }
 
+// SIDEBAR TOGGLE
 function toggleSidebar(){
   const sidebar = document.getElementById("sidebar");
   sidebar.classList.toggle("w-64");
   sidebar.classList.toggle("w-20");
 }
 
+// LOGOUT
 function logout(){
   localStorage.clear();
   window.location.href="login.html";
 }
+
+// Default Active Menu
+document.querySelector(".menu-item")
+  .classList.add("bg-accent","text-white");
 
 </script>
 
