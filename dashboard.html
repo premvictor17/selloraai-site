@@ -38,6 +38,230 @@ if(localStorage.getItem("sellora_logged_in") !== "true" ||
 <div class="flex min-h-screen">
 
 <!-- SIDEBAR -->
+<aside id="sidebar"
+  class="w-64 bg-sidebar border-r border-gray-700 p-6 flex flex-col justify-between transition-all duration-300">
+
+  <div>
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6">
+      <h1 id="logoText" class="text-lg font-bold">SELLORA</h1>
+      <button onclick="toggleSidebar()" class="text-xs text-gray-400">
+        ☰
+      </button>
+    </div>
+
+    <div class="mb-6">
+      <span id="planBadge"
+        class="text-xs px-3 py-1 rounded-full bg-accent"></span>
+    </div>
+
+    <!-- MENU -->
+    <nav class="space-y-2 text-sm">
+
+      <button onclick="showTab('overview', this)"
+        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
+        Overview
+      </button>
+
+      <button onclick="showTab('trending', this)"
+        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
+        Trending
+      </button>
+
+      <button onclick="showTab('suppliers', this)"
+        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
+        Suppliers
+      </button>
+
+      <button id="analyticsBtn"
+        onclick="showTab('analytics', this)"
+        class="menu-item block w-full text-left px-3 py-2 rounded hover:bg-gray-700">
+        Analytics
+      </button>
+
+    </nav>
+  </div>
+
+  <button onclick="logout()" class="text-red-400 text-sm">
+    Logout
+  </button>
+
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 p-8 transition-all duration-300">
+
+<!-- OVERVIEW -->
+<section id="overview" class="tab">
+  <h2 class="text-xl font-bold mb-6">Executive Overview</h2>
+
+  <div class="grid grid-cols-4 gap-4 mb-6">
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Active Products</p>
+      <h3 class="text-lg font-bold">128</h3>
+    </div>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">High Demand</p>
+      <h3 class="text-lg font-bold">37</h3>
+    </div>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Suppliers</p>
+      <h3 class="text-lg font-bold">542</h3>
+    </div>
+    <div class="bg-card p-4 rounded">
+      <p class="text-gray-400 text-xs">Export Score</p>
+      <h3 class="text-lg font-bold">89%</h3>
+    </div>
+  </div>
+
+  <div class="bg-card p-4 rounded">
+    <canvas id="demandChart"></canvas>
+  </div>
+</section>
+
+<!-- TRENDING -->
+<section id="trending" class="tab hidden">
+  <h2 class="text-xl font-bold mb-6">Trending Products</h2>
+  <div class="grid grid-cols-3 gap-4">
+    <div class="bg-card p-4 rounded">Moringa – 92%</div>
+    <div class="bg-card p-4 rounded">Millet – 88%</div>
+    <div class="bg-card p-4 rounded">Turmeric – 91%</div>
+  </div>
+</section>
+
+<!-- SUPPLIERS -->
+<section id="suppliers" class="tab hidden">
+  <h2 class="text-xl font-bold mb-6">Verified Suppliers</h2>
+  <div class="bg-card p-4 rounded">
+    Maharashtra – 14 suppliers<br>
+    Karnataka – 9 suppliers
+  </div>
+</section>
+
+<!-- ANALYTICS -->
+<section id="analytics" class="tab hidden">
+  <h2 class="text-xl font-bold mb-6">Advanced Analytics</h2>
+  <div class="bg-card p-6 rounded">
+    Global Heatmap<br>
+    AI Forecast Engine
+  </div>
+</section>
+
+</main>
+</div>
+
+<script>
+const plan = localStorage.getItem("sellora_plan");
+const badge = document.getElementById("planBadge");
+
+badge.innerText = plan === "elite" ? "ELITE PLAN" : "PRO PLAN";
+
+if(plan === "elite"){
+  badge.classList.remove("bg-accent");
+  badge.classList.add("bg-elite");
+}else{
+  document.getElementById("analyticsBtn").style.opacity = "0.4";
+}
+
+/* Sidebar Collapse */
+function toggleSidebar(){
+  const sidebar = document.getElementById("sidebar");
+  const logoText = document.getElementById("logoText");
+
+  if(sidebar.classList.contains("w-64")){
+    sidebar.classList.remove("w-64");
+    sidebar.classList.add("w-20");
+    logoText.style.display = "none";
+  } else {
+    sidebar.classList.remove("w-20");
+    sidebar.classList.add("w-64");
+    logoText.style.display = "block";
+  }
+}
+
+/* Tab Switch + Active Highlight */
+function showTab(tab, btn){
+  if(tab === "analytics" && plan === "pro"){
+    alert("Upgrade to Elite to access Analytics.");
+    return;
+  }
+
+  document.querySelectorAll(".tab").forEach(t => t.classList.add("hidden"));
+  document.getElementById(tab).classList.remove("hidden");
+
+  document.querySelectorAll(".menu-item")
+    .forEach(item => item.classList.remove("bg-accent","text-white"));
+
+  btn.classList.add("bg-accent","text-white");
+}
+
+function logout(){
+  localStorage.clear();
+  window.location.href = "login.html";
+}
+
+/* Default Active */
+document.querySelector(".menu-item")
+  .classList.add("bg-accent","text-white");
+
+/* Chart */
+new Chart(document.getElementById('demandChart'), {
+  type: 'line',
+  data: {
+    labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+    datasets: [{
+      data: [65,72,78,81,88,94],
+      borderColor: '#4f46e5',
+      backgroundColor: 'rgba(79,70,229,0.1)',
+      fill: true
+    }]
+  },
+  options:{plugins:{legend:{display:false}}}
+});
+</script>
+
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SELLORA AI – App</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        darkbg: "#0b1220",
+        sidebar: "#111827",
+        card: "#1f2937",
+        accent: "#4f46e5",
+        elite: "#7c3aed"
+      }
+    }
+  }
+}
+</script>
+</head>
+
+<body class="bg-darkbg text-gray-200">
+
+<!-- AUTH CHECK -->
+<script>
+if(localStorage.getItem("sellora_logged_in") !== "true" ||
+   !localStorage.getItem("sellora_plan")){
+  window.location.href = "login.html";
+}
+</script>
+
+<div class="flex min-h-screen">
+
+<!-- SIDEBAR -->
 <aside class="w-64 bg-sidebar border-r border-gray-700 p-6 flex flex-col justify-between">
 
   <div>
@@ -182,3 +406,4 @@ new Chart(document.getElementById('demandChart'), {
 
 </body>
 </html>
+
