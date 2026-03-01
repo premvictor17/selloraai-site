@@ -28,7 +28,10 @@ tailwind.config = {
 
 <!-- AUTH PROTECTION -->
 <script>
-if(localStorage.getItem("sellora_logged_in") !== "true") {
+if(
+  localStorage.getItem("sellora_logged_in") !== "true" ||
+  !localStorage.getItem("sellora_plan")
+){
   window.location.href = "login.html";
 }
 </script>
@@ -220,3 +223,4 @@ if(plan === "elite"){
 
 </body>
 </html>
+
