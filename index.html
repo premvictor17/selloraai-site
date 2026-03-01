@@ -171,12 +171,24 @@ handler: function (response){
   const expiry = new Date();
   expiry.setDate(now.getDate() + 30);
 
+  const paymentRecord = {
+    id: response.razorpay_payment_id,
+    plan: "pro",
+    amount: "2999",
+    date: now.toISOString(),
+    status: "Paid"
+  };
+
+  let history = JSON.parse(localStorage.getItem("sellora_payments")) || [];
+  history.push(paymentRecord);
+
+  localStorage.setItem("sellora_payments", JSON.stringify(history));
   localStorage.setItem("sellora_plan", "pro");
   localStorage.setItem("sellora_logged_in", "true");
   localStorage.setItem("sellora_subscription_start", now);
   localStorage.setItem("sellora_subscription_expiry", expiry);
+  localStorage.setItem("sellora_auto_renew", "on");
 
-  alert("Pro Subscription Activated!");
   window.location.href = "dashboard.html";
 }
   };
@@ -191,18 +203,30 @@ function payElite() {
     currency: "INR",
     name: "SELLORA AI - Elite",
     description: "Elite Monthly Subscription",
-  handler: function (response){
+ handler: function (response){
 
   const now = new Date();
   const expiry = new Date();
   expiry.setDate(now.getDate() + 30);
 
-  localStorage.setItem("sellora_plan", "elite");
+  const paymentRecord = {
+    id: response.razorpay_payment_id,
+plan: "elite",
+amount: "4999",
+    date: now.toISOString(),
+    status: "Paid"
+  };
+
+  let history = JSON.parse(localStorage.getItem("sellora_payments")) || [];
+  history.push(paymentRecord);
+
+  localStorage.setItem("sellora_payments", JSON.stringify(history));
+  localStorage.setItem("sellora_plan", "pro");
   localStorage.setItem("sellora_logged_in", "true");
   localStorage.setItem("sellora_subscription_start", now);
   localStorage.setItem("sellora_subscription_expiry", expiry);
+  localStorage.setItem("sellora_auto_renew", "on");
 
-  alert("Elite Subscription Activated!");
   window.location.href = "dashboard.html";
 }
   };
@@ -213,5 +237,6 @@ function payElite() {
 
 </body>
 </html>
+
 
 
