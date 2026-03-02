@@ -3,156 +3,68 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SELLORA AI – Export Intelligence Command Center</title>
+<title>SELLORA AI – Export Intelligence</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 </head>
 
 <body class="bg-white text-gray-800">
 
 <!-- NAVBAR -->
-<header class="bg-white border-b sticky top-0 z-50">
+<header class="border-b bg-white sticky top-0 z-50">
   <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
-    <h1 class="text-2xl font-bold tracking-wide">SELLORA AI</h1>
-    <nav class="hidden md:flex gap-8 text-sm font-medium">
-      <a href="#pricing" class="hover:text-indigo-600">Pricing</a>
-      <a href="login.html" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+    <h1 class="text-2xl font-bold">SELLORA AI</h1>
+
+    <div class="flex gap-4">
+      <a href="products.html" class="text-sm hover:text-indigo-600">
+        Explore
+      </a>
+
+      <a href="login.html"
+         class="bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700">
         Login
       </a>
-    </nav>
+    </div>
   </div>
 </header>
 
-<!-- PRICING -->
-<section id="pricing" class="py-24 bg-gray-50">
-  <div class="max-w-6xl mx-auto px-6 text-center">
-    <h2 class="text-4xl font-bold mb-16">Simple, Transparent Pricing</h2>
+<!-- HERO -->
+<section class="py-24 text-center bg-gradient-to-br from-indigo-50 to-purple-50">
+  <h2 class="text-5xl font-bold mb-6">
+    The Export Intelligence Command Center
+  </h2>
 
-    <div class="grid md:grid-cols-2 gap-10">
+  <p class="text-xl text-gray-600 max-w-3xl mx-auto mb-8">
+    Discover trending products, verified suppliers, and export analytics —
+    before your competitors do.
+  </p>
 
-      <!-- PRO -->
-      <div class="bg-white p-10 rounded-3xl shadow-xl border">
-        <h3 class="text-3xl font-bold mb-4 text-indigo-600">Pro</h3>
-        <p class="text-5xl font-bold mb-6">₹2,999 <span class="text-lg font-normal">/ month</span></p>
+  <a href="login.html"
+     class="bg-indigo-600 text-white px-8 py-4 rounded-xl text-lg hover:bg-indigo-700">
+    Start Now
+  </a>
+</section>
 
-        <button onclick="payPro()" class="w-full bg-indigo-600 text-white py-4 rounded-xl">
-          Subscribe Pro
-        </button>
+<!-- BLURRED DEMO -->
+<section class="py-20 bg-gray-100 text-center">
+  <h3 class="text-3xl font-bold mb-10">Live Platform Preview</h3>
+
+  <div class="max-w-5xl mx-auto relative">
+    <img src="dashboard-preview.jpg"
+         class="rounded-2xl shadow-2xl blur-sm">
+
+    <div class="absolute inset-0 flex items-center justify-center">
+      <div class="bg-black/60 text-white px-8 py-6 rounded-xl">
+        🔒 Login to Unlock Full Dashboard
       </div>
-
-      <!-- ELITE -->
-      <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-10 rounded-3xl shadow-xl">
-        <h3 class="text-3xl font-bold mb-4">Elite</h3>
-        <p class="text-5xl font-bold mb-6">₹4,999 <span class="text-lg font-normal">/ month</span></p>
-
-        <button onclick="payElite()" class="w-full bg-white text-indigo-700 py-4 rounded-xl font-semibold">
-          Subscribe Elite
-        </button>
-      </div>
-
     </div>
   </div>
 </section>
 
-<footer class="py-10 bg-white border-t text-center text-gray-500 text-sm">
-  © 2026 SELLORA AI. All rights reserved.
+<footer class="py-8 text-center text-gray-500 text-sm">
+  © 2026 SELLORA AI
 </footer>
-
-
-<!-- 🔥 FIREBASE + PAYMENT SCRIPT -->
-<script type="module">
-
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, onAuthStateChanged } 
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, setDoc } 
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
-const firebaseConfig = {
-  apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
-  authDomain: "sellora-ai.firebaseapp.com",
-  projectId: "sellora-ai",
-  storageBucket: "sellora-ai.firebasestorage.app",
-  messagingSenderId: "7850591690",
-  appId: "1:7850591690:web:346fccc5531288fb2a3b33"
-};
-
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
-
-let currentUser = null;
-
-onAuthStateChanged(auth, (user) => {
-  currentUser = user;
-});
-
-function requireLogin(){
-  if(!currentUser){
-    alert("Please login before subscribing.");
-    window.location.href = "login.html";
-    return false;
-  }
-  return true;
-}
-
-async function activatePlan(planName){
-
-  const expiry = new Date();
-  expiry.setDate(expiry.getDate() + 30);
-
-  await setDoc(doc(db, "users", currentUser.uid), {
-    email: currentUser.email,
-    plan: planName,
-    status: "active",
-    expiry: expiry,
-    updatedAt: new Date()
-  }, { merge: true });
-
-  window.location.href = "dashboard.html";
-}
-
-window.payPro = function(){
-
-  if(!requireLogin()) return;
-
-  var options = {
-    key: "rzp_test_SKRhNYMtC7UJsW",
-    amount: "299900",
-    currency: "INR",
-    name: "SELLORA AI - Pro",
-    description: "Pro Monthly Subscription",
-    handler: async function (response){
-      await activatePlan("pro");
-    }
-  };
-
-  var rzp = new Razorpay(options);
-  rzp.open();
-};
-
-window.payElite = function(){
-
-  if(!requireLogin()) return;
-
-  var options = {
-    key: "rzp_test_SKRhNYMtC7UJsW",
-    amount: "499900",
-    currency: "INR",
-    name: "SELLORA AI - Elite",
-    description: "Elite Monthly Subscription",
-    handler: async function (response){
-      await activatePlan("elite");
-    }
-  };
-
-  var rzp = new Razorpay(options);
-  rzp.open();
-};
-
-</script>
 
 </body>
 </html>
