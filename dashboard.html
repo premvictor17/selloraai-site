@@ -6,13 +6,14 @@
 <title>SELLORA AI – Dashboard</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
 tailwind.config = {
   theme: {
     extend: {
       colors: {
-        darkbg: "#0f172a",
+        darkbg: "#0b1120",
         sidebar: "#020617",
         primary: "#6366f1"
       }
@@ -21,113 +22,115 @@ tailwind.config = {
 }
 </script>
 
+<style>
+.fade {
+  animation: fadeIn 0.4s ease-in-out;
+}
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(10px);}
+  to { opacity:1; transform:translateY(0);}
+}
+.card-hover:hover {
+  transform: translateY(-5px);
+  transition: 0.3s ease;
+}
+</style>
+
 </head>
 
 <body class="bg-darkbg text-white">
 
 <div class="flex min-h-screen">
 
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-sidebar p-6 flex flex-col justify-between">
+<!-- SIDEBAR -->
+<aside class="w-64 bg-sidebar p-6 flex flex-col justify-between">
 
-    <div>
-      <h1 class="text-2xl font-bold mb-10">SELLORA</h1>
+<div>
+<h1 class="text-2xl font-bold mb-10">SELLORA</h1>
 
-      <nav class="space-y-4 text-gray-300">
-
-        <button onclick="showSection('overview')" class="block w-full text-left hover:text-white">Overview</button>
-        <button onclick="showSection('trending')" class="block w-full text-left hover:text-white">Trending</button>
-        <button onclick="showSection('suppliers')" class="block w-full text-left hover:text-white">Suppliers</button>
-        <button onclick="showSection('analytics')" class="block w-full text-left hover:text-white">Analytics</button>
-
-      </nav>
-    </div>
-
-    <button onclick="logout()" class="text-red-400 text-left hover:text-red-600">
-      Logout
-    </button>
-
-  </aside>
-
-
-  <!-- MAIN CONTENT -->
-  <main class="flex-1 p-12">
-
-    <!-- HEADER -->
-    <div class="flex justify-between items-center mb-10">
-      <h2 class="text-3xl font-bold">Dashboard</h2>
-      <div class="flex items-center gap-4">
-        <span id="userEmail" class="text-gray-300"></span>
-        <span id="planBadge" class="px-4 py-1 rounded-full text-sm font-semibold bg-gray-700"></span>
-      </div>
-    </div>
-
-
-    <!-- OVERVIEW -->
-    <div id="overviewSection" class="section">
-      <div class="grid grid-cols-4 gap-6">
-
-        <div class="bg-slate-800 p-6 rounded-xl">
-          <p class="text-gray-400">Active Products</p>
-          <h3 class="text-3xl font-bold mt-2">128</h3>
-        </div>
-
-        <div class="bg-slate-800 p-6 rounded-xl">
-          <p class="text-gray-400">High Demand</p>
-          <h3 class="text-3xl font-bold mt-2">37</h3>
-        </div>
-
-        <div class="bg-slate-800 p-6 rounded-xl">
-          <p class="text-gray-400">Suppliers</p>
-          <h3 class="text-3xl font-bold mt-2">542</h3>
-        </div>
-
-        <div class="bg-slate-800 p-6 rounded-xl">
-          <p class="text-gray-400">Export Score</p>
-          <h3 class="text-3xl font-bold mt-2">89%</h3>
-        </div>
-
-      </div>
-    </div>
-
-
-    <!-- TRENDING -->
-    <div id="trendingSection" class="section hidden">
-      <h3 class="text-2xl font-semibold mb-6">Trending Products</h3>
-      <div id="trendingContent"></div>
-    </div>
-
-
-    <!-- SUPPLIERS -->
-    <div id="suppliersSection" class="section hidden">
-      <h3 class="text-2xl font-semibold mb-6">Verified Suppliers</h3>
-      <div id="suppliersContent"></div>
-    </div>
-
-
-    <!-- ANALYTICS -->
-    <div id="analyticsSection" class="section hidden">
-      <h3 class="text-2xl font-semibold mb-6">Advanced Analytics</h3>
-      <div id="analyticsContent"></div>
-    </div>
-
-
-  </main>
-
+<nav class="space-y-4 text-gray-300">
+<button onclick="showSection('overview')" class="block w-full text-left hover:text-white">Overview</button>
+<button onclick="showSection('trending')" class="block w-full text-left hover:text-white">Trending</button>
+<button onclick="showSection('suppliers')" class="block w-full text-left hover:text-white">Suppliers</button>
+<button onclick="showSection('analytics')" class="block w-full text-left hover:text-white">Analytics</button>
+</nav>
 </div>
 
+<button onclick="logout()" class="text-red-400 hover:text-red-600 text-left">Logout</button>
 
-<!-- 🔥 FIREBASE SCRIPT -->
+</aside>
+
+<!-- MAIN -->
+<main class="flex-1 p-12">
+
+<!-- HEADER -->
+<div class="flex justify-between items-center mb-10">
+<h2 class="text-3xl font-bold">Dashboard</h2>
+<div class="flex items-center gap-4">
+<span id="userEmail" class="text-gray-300"></span>
+<span id="planBadge" class="px-4 py-1 rounded-full text-sm font-semibold bg-gray-700"></span>
+</div>
+</div>
+
+<!-- OVERVIEW -->
+<div id="overviewSection" class="section fade">
+<div class="grid grid-cols-4 gap-6">
+
+<div class="bg-slate-800 p-6 rounded-xl card-hover">
+<p class="text-gray-400">Active Products</p>
+<h3 id="stat1" class="text-3xl font-bold mt-2">0</h3>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-xl card-hover">
+<p class="text-gray-400">High Demand</p>
+<h3 id="stat2" class="text-3xl font-bold mt-2">0</h3>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-xl card-hover">
+<p class="text-gray-400">Suppliers</p>
+<h3 id="stat3" class="text-3xl font-bold mt-2">0</h3>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-xl card-hover">
+<p class="text-gray-400">Export Score</p>
+<h3 id="stat4" class="text-3xl font-bold mt-2">0%</h3>
+</div>
+
+</div>
+</div>
+
+<!-- TRENDING -->
+<div id="trendingSection" class="section hidden fade">
+<h3 class="text-2xl font-semibold mb-6">Trending Products Demand</h3>
+<canvas id="demandChart" height="100"></canvas>
+</div>
+
+<!-- SUPPLIERS -->
+<div id="suppliersSection" class="section hidden fade">
+<h3 class="text-2xl font-semibold mb-6">Supplier Distribution</h3>
+<canvas id="supplierChart" height="100"></canvas>
+</div>
+
+<!-- ANALYTICS -->
+<div id="analyticsSection" class="section hidden fade">
+<h3 class="text-2xl font-semibold mb-6">AI Export Score Breakdown</h3>
+<canvas id="analyticsChart" height="100"></canvas>
+</div>
+
+</main>
+</div>
+
+<!-- FIREBASE -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } 
+import { getAuth, onAuthStateChanged, signOut }
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } 
+import { getFirestore, doc, getDoc }
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
+  apiKey: "YOUR_API_KEY",
   authDomain: "sellora-ai.firebaseapp.com",
   projectId: "sellora-ai",
   storageBucket: "sellora-ai.firebasestorage.app",
@@ -139,114 +142,97 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-const userEmail = document.getElementById("userEmail");
-const planBadge = document.getElementById("planBadge");
-
 onAuthStateChanged(auth, async (user) => {
 
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
+if(!user){
+window.location.href = "login.html";
+return;
+}
 
-  userEmail.innerText = user.email;
+document.getElementById("userEmail").innerText = user.email;
 
-  const docRef = doc(db, "users", user.uid);
-  const docSnap = await getDoc(docRef);
+const snap = await getDoc(doc(db,"users",user.uid));
+let plan = snap.exists() ? snap.data().plan : "free";
 
-  let plan = "free";
+document.getElementById("planBadge").innerText = plan.toUpperCase();
 
-  if (docSnap.exists()) {
-    plan = docSnap.data().plan || "free";
-  }
-
-  planBadge.innerText = plan.toUpperCase();
-
-  if(plan === "elite") {
-    planBadge.className = "px-4 py-1 rounded-full text-sm font-semibold bg-purple-600";
-  }
-  else if(plan === "pro") {
-    planBadge.className = "px-4 py-1 rounded-full text-sm font-semibold bg-indigo-600";
-  }
-  else {
-    planBadge.className = "px-4 py-1 rounded-full text-sm font-semibold bg-gray-600";
-  }
-
-  renderContent(plan);
+animateStats();
+renderCharts(plan);
 
 });
 
-
-function renderContent(plan) {
-
-  const trending = document.getElementById("trendingContent");
-  const suppliers = document.getElementById("suppliersContent");
-  const analytics = document.getElementById("analyticsContent");
-
-  if(plan === "pro" || plan === "elite") {
-
-    trending.innerHTML = `
-      <div class="bg-slate-800 p-6 rounded-xl">
-        <ul class="space-y-2">
-          <li>Millet Snacks</li>
-          <li>Solar Garden Lights</li>
-          <li>Organic Spices</li>
-          <li>Eco Packaging</li>
-        </ul>
-      </div>
-    `;
-
-    suppliers.innerHTML = `
-      <div class="bg-slate-800 p-6 rounded-xl">
-        542 verified suppliers available.
-      </div>
-    `;
-
-  } else {
-
-    trending.innerHTML = `
-      <p class="text-red-400">🔒 Upgrade to Pro or Elite to access premium data.</p>
-    `;
-
-    suppliers.innerHTML = trending.innerHTML;
-  }
-
-
-  if(plan === "elite") {
-
-    analytics.innerHTML = `
-      <div class="bg-slate-800 p-6 rounded-xl">
-        AI Demand Score: 92% <br>
-        Competition Index: Low <br>
-        Margin Potential: High
-      </div>
-    `;
-
-  } else {
-
-    analytics.innerHTML = `
-      <p class="text-red-400">🔒 Elite plan required for advanced analytics.</p>
-    `;
-  }
-
+function animateStats(){
+animateValue("stat1",0,128,1000);
+animateValue("stat2",0,37,1000);
+animateValue("stat3",0,542,1000);
+animateValue("stat4",0,89,1000,true);
 }
 
-
-window.showSection = function(section) {
-
-  document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
-
-  if(section === "overview") document.getElementById("overviewSection").classList.remove("hidden");
-  if(section === "trending") document.getElementById("trendingSection").classList.remove("hidden");
-  if(section === "suppliers") document.getElementById("suppliersSection").classList.remove("hidden");
-  if(section === "analytics") document.getElementById("analyticsSection").classList.remove("hidden");
-
+function animateValue(id,start,end,duration,percent=false){
+let obj=document.getElementById(id);
+let range=end-start;
+let startTime=null;
+function step(timestamp){
+if(!startTime) startTime=timestamp;
+let progress=Math.min((timestamp-startTime)/duration,1);
+let value=Math.floor(progress*range+start);
+obj.innerText=percent? value+"%":value;
+if(progress<1) requestAnimationFrame(step);
+}
+requestAnimationFrame(step);
 }
 
+function renderCharts(plan){
 
-window.logout = function() {
-  signOut(auth);
-  window.location.href = "login.html";
+if(plan==="free") return;
+
+new Chart(document.getElementById("demandChart"),{
+type:"bar",
+data:{
+labels:["USA","UAE","UK","Canada","Australia"],
+datasets:[{
+label:"Demand Score",
+data:[88,92,85,79,83],
+backgroundColor:"#6366f1"
+}]
+}
+});
+
+new Chart(document.getElementById("supplierChart"),{
+type:"doughnut",
+data:{
+labels:["India","China","Vietnam","Turkey"],
+datasets:[{
+data:[45,30,15,10],
+backgroundColor:["#6366f1","#8b5cf6","#22d3ee","#f59e0b"]
+}]
+}
+});
+
+if(plan==="elite"){
+new Chart(document.getElementById("analyticsChart"),{
+type:"radar",
+data:{
+labels:["Market Demand","Competition","Margin","Stability","Growth"],
+datasets:[{
+label:"AI Score",
+data:[92,30,85,88,76],
+backgroundColor:"rgba(99,102,241,0.2)",
+borderColor:"#6366f1"
+}]
+}
+});
+}
+}
+
+window.showSection=function(section){
+document.querySelectorAll(".section").forEach(s=>s.classList.add("hidden"));
+document.getElementById(section+"Section").classList.remove("hidden");
+}
+
+window.logout=function(){
+signOut(auth);
+window.location.href="login.html";
 }
 
 </script>
