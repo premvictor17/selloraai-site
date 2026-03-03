@@ -7,81 +7,123 @@
 
 <script src="https://cdn.tailwindcss.com"></script>
 
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        darkbg: "#0f172a",
+        sidebar: "#020617",
+        primary: "#6366f1"
+      }
+    }
+  }
+}
+</script>
+
 </head>
 
-<body class="bg-slate-900 text-white">
+<body class="bg-darkbg text-white">
 
 <div class="flex min-h-screen">
 
-<!-- SIDEBAR -->
-<aside class="w-64 bg-black p-6">
-  <h2 class="text-xl font-bold mb-10">SELLORA</h2>
+  <!-- SIDEBAR -->
+  <aside class="w-64 bg-sidebar p-6 flex flex-col justify-between">
 
-  <nav class="space-y-4 text-gray-300">
-    <button onclick="showSection('overview')" class="block w-full text-left hover:text-white">
-      Overview
-    </button>
+    <div>
+      <h1 class="text-2xl font-bold mb-10">SELLORA</h1>
 
-    <button onclick="showSection('trending')" class="block w-full text-left hover:text-white">
-      Trending
-    </button>
+      <nav class="space-y-4 text-gray-300">
 
-    <button onclick="showSection('suppliers')" class="block w-full text-left hover:text-white">
-      Suppliers
-    </button>
+        <button onclick="showSection('overview')" class="block w-full text-left hover:text-white">Overview</button>
+        <button onclick="showSection('trending')" class="block w-full text-left hover:text-white">Trending</button>
+        <button onclick="showSection('suppliers')" class="block w-full text-left hover:text-white">Suppliers</button>
+        <button onclick="showSection('analytics')" class="block w-full text-left hover:text-white">Analytics</button>
 
-    <button onclick="showSection('analytics')" class="block w-full text-left hover:text-white">
-      Analytics
-    </button>
+      </nav>
+    </div>
 
-    <button onclick="logout()" class="text-red-400 mt-20">
+    <button onclick="logout()" class="text-red-400 text-left hover:text-red-600">
       Logout
     </button>
-  </nav>
-</aside>
 
-<!-- MAIN -->
-<main class="flex-1 p-10">
+  </aside>
 
-  <div class="flex justify-between mb-10">
-    <h1 class="text-3xl font-bold">Dashboard</h1>
-    <div>
-      <span id="userEmail"></span>
-      <span id="userPlan"
-            class="ml-4 px-3 py-1 rounded-full text-sm bg-purple-600">
-      </span>
+
+  <!-- MAIN CONTENT -->
+  <main class="flex-1 p-12">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-10">
+      <h2 class="text-3xl font-bold">Dashboard</h2>
+      <div class="flex items-center gap-4">
+        <span id="userEmail" class="text-gray-300"></span>
+        <span id="planBadge" class="px-4 py-1 rounded-full text-sm font-semibold bg-gray-700"></span>
+      </div>
     </div>
-  </div>
 
-  <!-- OVERVIEW -->
-  <section id="overview">
-    <h2 class="text-2xl mb-4">Overview</h2>
-    <p>Welcome to your export intelligence command center.</p>
-  </section>
 
-  <!-- TRENDING -->
-  <section id="trending" class="hidden">
-    <h2 class="text-2xl mb-4">Trending Products</h2>
-    <div id="premiumLock" class="hidden text-red-400">
-      🔒 Upgrade to Pro or Elite to access premium data.
+    <!-- OVERVIEW -->
+    <div id="overviewSection" class="section">
+      <div class="grid grid-cols-4 gap-6">
+
+        <div class="bg-slate-800 p-6 rounded-xl">
+          <p class="text-gray-400">Active Products</p>
+          <h3 class="text-3xl font-bold mt-2">128</h3>
+        </div>
+
+        <div class="bg-slate-800 p-6 rounded-xl">
+          <p class="text-gray-400">High Demand</p>
+          <h3 class="text-3xl font-bold mt-2">37</h3>
+        </div>
+
+        <div class="bg-slate-800 p-6 rounded-xl">
+          <p class="text-gray-400">Suppliers</p>
+          <h3 class="text-3xl font-bold mt-2">542</h3>
+        </div>
+
+        <div class="bg-slate-800 p-6 rounded-xl">
+          <p class="text-gray-400">Export Score</p>
+          <h3 class="text-3xl font-bold mt-2">89%</h3>
+        </div>
+
+      </div>
     </div>
-    <div id="premiumContent" class="grid grid-cols-3 gap-6">
-      <div class="bg-slate-800 p-6 rounded-xl">Product A</div>
-      <div class="bg-slate-800 p-6 rounded-xl">Product B</div>
-      <div class="bg-slate-800 p-6 rounded-xl">Product C</div>
-    </div>
-  </section>
 
-</main>
+
+    <!-- TRENDING -->
+    <div id="trendingSection" class="section hidden">
+      <h3 class="text-2xl font-semibold mb-6">Trending Products</h3>
+      <div id="trendingContent"></div>
+    </div>
+
+
+    <!-- SUPPLIERS -->
+    <div id="suppliersSection" class="section hidden">
+      <h3 class="text-2xl font-semibold mb-6">Verified Suppliers</h3>
+      <div id="suppliersContent"></div>
+    </div>
+
+
+    <!-- ANALYTICS -->
+    <div id="analyticsSection" class="section hidden">
+      <h3 class="text-2xl font-semibold mb-6">Advanced Analytics</h3>
+      <div id="analyticsContent"></div>
+    </div>
+
+
+  </main>
+
 </div>
 
-<!-- FIREBASE -->
+
+<!-- 🔥 FIREBASE SCRIPT -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut }
+import { getAuth, onAuthStateChanged, signOut } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, getDoc }
+import { getFirestore, doc, getDoc } 
 from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -97,6 +139,9 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
+const userEmail = document.getElementById("userEmail");
+const planBadge = document.getElementById("planBadge");
+
 onAuthStateChanged(auth, async (user) => {
 
   if (!user) {
@@ -104,41 +149,105 @@ onAuthStateChanged(auth, async (user) => {
     return;
   }
 
-  document.getElementById("userEmail").innerText = user.email;
+  userEmail.innerText = user.email;
 
   const docRef = doc(db, "users", user.uid);
   const docSnap = await getDoc(docRef);
 
+  let plan = "free";
+
   if (docSnap.exists()) {
-
-    const data = docSnap.data();
-    const plan = data.plan;
-    const status = data.status;
-
-    document.getElementById("userPlan").innerText =
-      plan ? plan.toUpperCase() : "FREE";
-
-    if (status !== "active" || plan === "free") {
-      document.getElementById("premiumLock").classList.remove("hidden");
-      document.getElementById("premiumContent").classList.add("hidden");
-    }
+    plan = docSnap.data().plan || "free";
   }
+
+  planBadge.innerText = plan.toUpperCase();
+
+  if(plan === "elite") {
+    planBadge.className = "px-4 py-1 rounded-full text-sm font-semibold bg-purple-600";
+  }
+  else if(plan === "pro") {
+    planBadge.className = "px-4 py-1 rounded-full text-sm font-semibold bg-indigo-600";
+  }
+  else {
+    planBadge.className = "px-4 py-1 rounded-full text-sm font-semibold bg-gray-600";
+  }
+
+  renderContent(plan);
 
 });
 
-window.logout = function () {
-  signOut(auth).then(() => {
-    window.location.href = "index.html";
-  });
-};
+
+function renderContent(plan) {
+
+  const trending = document.getElementById("trendingContent");
+  const suppliers = document.getElementById("suppliersContent");
+  const analytics = document.getElementById("analyticsContent");
+
+  if(plan === "pro" || plan === "elite") {
+
+    trending.innerHTML = `
+      <div class="bg-slate-800 p-6 rounded-xl">
+        <ul class="space-y-2">
+          <li>Millet Snacks</li>
+          <li>Solar Garden Lights</li>
+          <li>Organic Spices</li>
+          <li>Eco Packaging</li>
+        </ul>
+      </div>
+    `;
+
+    suppliers.innerHTML = `
+      <div class="bg-slate-800 p-6 rounded-xl">
+        542 verified suppliers available.
+      </div>
+    `;
+
+  } else {
+
+    trending.innerHTML = `
+      <p class="text-red-400">🔒 Upgrade to Pro or Elite to access premium data.</p>
+    `;
+
+    suppliers.innerHTML = trending.innerHTML;
+  }
+
+
+  if(plan === "elite") {
+
+    analytics.innerHTML = `
+      <div class="bg-slate-800 p-6 rounded-xl">
+        AI Demand Score: 92% <br>
+        Competition Index: Low <br>
+        Margin Potential: High
+      </div>
+    `;
+
+  } else {
+
+    analytics.innerHTML = `
+      <p class="text-red-400">🔒 Elite plan required for advanced analytics.</p>
+    `;
+  }
+
+}
+
 
 window.showSection = function(section) {
-  document.querySelectorAll("main section")
-    .forEach(sec => sec.classList.add("hidden"));
 
-  document.getElementById(section)
-    .classList.remove("hidden");
-};
+  document.querySelectorAll(".section").forEach(s => s.classList.add("hidden"));
+
+  if(section === "overview") document.getElementById("overviewSection").classList.remove("hidden");
+  if(section === "trending") document.getElementById("trendingSection").classList.remove("hidden");
+  if(section === "suppliers") document.getElementById("suppliersSection").classList.remove("hidden");
+  if(section === "analytics") document.getElementById("analyticsSection").classList.remove("hidden");
+
+}
+
+
+window.logout = function() {
+  signOut(auth);
+  window.location.href = "login.html";
+}
 
 </script>
 
