@@ -7,6 +7,7 @@
 <title>SELLORA Dashboard</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
+<script src="https://www.gstatic.com/charts/loader.js"></script>
 
 </head>
 
@@ -34,7 +35,7 @@ Suppliers
 </button>
 
 <button onclick="showSection('analytics-section')" class="block hover:text-white">
-Analytics
+Global Demand Map
 </button>
 
 <button onclick="logout()" class="text-red-400 mt-10">
@@ -48,7 +49,6 @@ Logout
 
 <!-- MAIN CONTENT -->
 <div class="flex-1 p-10">
-
 
 <!-- USER BAR -->
 <div class="flex justify-end mb-10">
@@ -137,21 +137,15 @@ Supplier intelligence module coming soon.
 </div>
 
 
-<!-- ANALYTICS -->
+
+<!-- GLOBAL DEMAND MAP -->
 <div id="analytics-section" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">Export Analytics</h2>
+<h2 class="text-3xl font-bold mb-6">Global Demand Heatmap</h2>
 
 <div class="bg-slate-800 p-6 rounded-xl">
 
-<p class="text-gray-400">
-Global demand heatmaps and export insights coming soon.
-</p>
-
-</div>
-
-</div>
-
+<div id="regions_div" style="width:100%; height:500px;"></div>
 
 </div>
 
@@ -159,7 +153,12 @@ Global demand heatmaps and export insights coming soon.
 
 
 
-<!-- FIREBASE -->
+</div>
+
+</div>
+
+
+
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
@@ -183,8 +182,10 @@ messagingSenderId: "7850591690",
 appId: "1:7850591690:web:346fccc5531288fb2a3b33"
 };
 
+
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
 
 
 window.showSection = function(section){
@@ -198,6 +199,10 @@ document.getElementById(section).classList.remove("hidden");
 
 if(section === "trending-section"){
 loadTrendingProducts();
+}
+
+if(section === "analytics-section"){
+drawRegionsMap();
 }
 
 }
@@ -258,6 +263,43 @@ table.innerHTML += `
 }
 
 
+
+google.charts.load('current', {
+packages:['geochart']
+});
+
+
+function drawRegionsMap(){
+
+var data = google.visualization.arrayToDataTable([
+['Country', 'Demand'],
+
+['United Arab Emirates', 92],
+['United States', 88],
+['Germany', 85],
+['United Kingdom', 83],
+['Canada', 78],
+['Australia', 74],
+['Singapore', 70]
+
+]);
+
+var options = {
+colorAxis: {colors: ['#93c5fd', '#4f46e5']},
+backgroundColor: '#1e293b',
+datalessRegionColor: '#374151'
+};
+
+var chart = new google.visualization.GeoChart(
+document.getElementById('regions_div')
+);
+
+chart.draw(data, options);
+
+}
+
+
+
 window.logout = function(){
 
 localStorage.clear()
@@ -267,8 +309,10 @@ window.location.href = "login.html"
 }
 
 
+
 document.getElementById("userEmail").innerText =
 localStorage.getItem("sellora_email") || "User"
+
 
 document.getElementById("userPlan").innerText =
 (localStorage.getItem("sellora_plan") || "FREE").toUpperCase()
