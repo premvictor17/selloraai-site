@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -10,6 +12,7 @@
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 </head>
+
 
 <body class="bg-slate-900 text-white">
 
@@ -47,6 +50,7 @@ Logout
 </div>
 
 
+
 <!-- MAIN CONTENT -->
 <div class="flex-1 p-10">
 
@@ -58,6 +62,7 @@ Logout
 <span id="userPlan" class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 
 </div>
+
 
 
 <!-- OVERVIEW -->
@@ -121,6 +126,7 @@ Logout
 </div>
 
 
+
 <!-- SUPPLIERS -->
 <div id="suppliers-section" class="hidden">
 
@@ -145,7 +151,7 @@ Supplier intelligence module coming soon.
 
 <div class="bg-slate-800 p-6 rounded-xl">
 
-<div id="regions_div" style="width:100%; height:500px;"></div>
+<div id="regions_div" class="w-full h-[600px]"></div>
 
 </div>
 
@@ -174,12 +180,14 @@ limit
 
 
 const firebaseConfig = {
+
 apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
 authDomain: "sellora-ai.firebaseapp.com",
 projectId: "sellora-ai",
 storageBucket: "sellora-ai.firebasestorage.app",
 messagingSenderId: "7850591690",
 appId: "1:7850591690:web:346fccc5531288fb2a3b33"
+
 };
 
 
@@ -205,7 +213,7 @@ if(section === "analytics-section"){
 drawRegionsMap();
 }
 
-}
+};
 
 
 
@@ -269,6 +277,7 @@ packages:['geochart']
 });
 
 
+
 function drawRegionsMap(){
 
 var data = google.visualization.arrayToDataTable([
@@ -284,11 +293,23 @@ var data = google.visualization.arrayToDataTable([
 
 ]);
 
+
 var options = {
-colorAxis: {colors: ['#93c5fd', '#4f46e5']},
+
 backgroundColor: '#1e293b',
-datalessRegionColor: '#374151'
+datalessRegionColor: '#374151',
+
+colorAxis: {
+colors: ['#93c5fd', '#4f46e5']
+},
+
+legend: 'none',
+
+width: "100%",
+height: 600
+
 };
+
 
 var chart = new google.visualization.GeoChart(
 document.getElementById('regions_div')
@@ -296,29 +317,33 @@ document.getElementById('regions_div')
 
 chart.draw(data, options);
 
+window.addEventListener("resize", () => {
+chart.draw(data, options);
+});
+
 }
 
 
 
 window.logout = function(){
 
-localStorage.clear()
+localStorage.clear();
+window.location.href = "login.html";
 
-window.location.href = "login.html"
-
-}
+};
 
 
 
 document.getElementById("userEmail").innerText =
-localStorage.getItem("sellora_email") || "User"
+localStorage.getItem("sellora_email") || "User";
 
 
 document.getElementById("userPlan").innerText =
-(localStorage.getItem("sellora_plan") || "FREE").toUpperCase()
+(localStorage.getItem("sellora_plan") || "FREE").toUpperCase();
 
 
 </script>
+
 
 </body>
 </html>
