@@ -41,6 +41,10 @@ Suppliers
 Global Demand Map
 </button>
 
+<button onclick="showSection('ai-section')" class="block hover:text-white">
+AI Export Advisor
+</button>
+
 <button onclick="logout()" class="text-red-400 mt-10">
 Logout
 </button>
@@ -159,6 +163,30 @@ Supplier intelligence module coming soon.
 
 
 
+<!-- AI EXPORT ADVISOR -->
+<div id="ai-section" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">SELLORA AI Export Advisor</h2>
+
+<div class="bg-slate-800 p-8 rounded-xl max-w-3xl">
+
+<input id="aiQuery"
+placeholder="Example: What should I export to UAE?"
+class="w-full p-4 rounded-lg text-black mb-4">
+
+<button onclick="runAI()"
+class="bg-purple-600 px-6 py-3 rounded-lg">
+Analyze Market
+</button>
+
+<div id="aiResults" class="mt-6 text-gray-300"></div>
+
+</div>
+
+</div>
+
+
+
 </div>
 
 </div>
@@ -202,6 +230,7 @@ document.getElementById("overview-section").classList.add("hidden");
 document.getElementById("trending-section").classList.add("hidden");
 document.getElementById("suppliers-section").classList.add("hidden");
 document.getElementById("analytics-section").classList.add("hidden");
+document.getElementById("ai-section").classList.add("hidden");
 
 document.getElementById(section).classList.remove("hidden");
 
@@ -304,7 +333,6 @@ colors: ['#93c5fd', '#4f46e5']
 },
 
 legend: 'none',
-
 width: "100%",
 height: 600
 
@@ -322,6 +350,47 @@ chart.draw(data, options);
 });
 
 }
+
+
+
+window.runAI = async function(){
+
+const queryText = document.getElementById("aiQuery").value.toLowerCase();
+
+const snapshot = await getDocs(collection(db,"products"));
+
+let results = [];
+
+snapshot.forEach(doc => {
+
+const data = doc.data();
+
+if(queryText.includes(data.best_market.toLowerCase())){
+results.push(data);
+}
+
+});
+
+results.sort((a,b)=>b.demand_score-a.demand_score);
+
+let output = "<h3 class='text-xl mb-4'>Top Opportunities</h3>";
+
+results.slice(0,5).forEach(product=>{
+
+output += `
+<div class="mb-4 border-b border-gray-700 pb-3">
+<strong>${product.product}</strong><br>
+Demand Score: ${product.demand_score}<br>
+Market: ${product.best_market}<br>
+Margin: ${product.margin}
+</div>
+`;
+
+});
+
+document.getElementById("aiResults").innerHTML = output;
+
+};
 
 
 
