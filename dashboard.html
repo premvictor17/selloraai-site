@@ -3,217 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>SELLORA AI – Dashboard</title>
+
+<title>SELLORA Dashboard</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 
-<script>
-tailwind.config = {
-  theme: {
-    extend: {
-      colors: {
-        primary: "#4f46e5",
-        elite: "#7c3aed",
-        darkbg: "#0f172a"
-      }
-    }
-  }
-}
-</script>
 </head>
 
-<body class="bg-darkbg text-white">
+<body class="bg-slate-900 text-white">
 
-<!-- 🔵 LOADING SCREEN -->
-<div id="loadingScreen" class="flex items-center justify-center h-screen text-xl">
-  Loading Dashboard...
-</div>
+<div class="flex">
 
-<!-- 🔵 MAIN APP -->
-<div id="mainApp" style="display:none;" class="flex h-screen">
+<!-- SIDEBAR -->
+<div class="w-64 h-screen bg-black p-6">
 
-  <!-- SIDEBAR -->
-  <aside class="w-64 bg-black p-6 flex flex-col justify-between">
-    <div>
-      <h1 class="text-2xl font-bold mb-10">SELLORA</h1>
+<h1 class="text-xl font-bold mb-10">SELLORA</h1>
 
-      <nav class="space-y-6 text-gray-300">
+<nav class="space-y-4 text-gray-300">
 
-        <button onclick="showSection('overview')" class="block hover:text-white">Overview</button>
-        <button onclick="showSection('trending')" class="block hover:text-white">Trending</button>
-        <button onclick="showSection('suppliers')" class="block hover:text-white">Suppliers</button>
-        <button onclick="showSection('analytics')" class="block hover:text-white">Analytics</button>
+<button onclick="showSection('overview-section')" class="block hover:text-white">
+Overview
+</button>
 
-      </nav>
-    </div>
+<button onclick="showSection('trending-section')" class="block hover:text-white">
+Trending Products
+</button>
 
-    <button onclick="logout()" class="text-red-400 hover:text-red-600">
-      Logout
-    </button>
-  </aside>
+<button onclick="showSection('suppliers-section')" class="block hover:text-white">
+Suppliers
+</button>
 
-  <!-- CONTENT -->
-  <main class="flex-1 p-10 overflow-y-auto">
+<button onclick="showSection('analytics-section')" class="block hover:text-white">
+Analytics
+</button>
 
-    <!-- TOP BAR -->
-    <div class="flex justify-between items-center mb-12">
-      <h2 class="text-3xl font-bold">Dashboard</h2>
-      <div>
-        <span id="userEmail" class="mr-4 text-gray-300"></span>
-        <span id="userPlan" class="px-4 py-2 rounded-full bg-primary text-white text-sm"></span>
-      </div>
-    </div>
+<button onclick="logout()" class="text-red-400 mt-10">
+Logout
+</button>
 
-    <!-- OVERVIEW -->
-    <section id="overviewSection">
-      <div class="grid grid-cols-4 gap-6">
+</nav>
 
-        <div class="bg-gray-800 p-6 rounded-xl">
-          <h3 class="text-gray-400">Active Products</h3>
-          <p class="text-3xl font-bold mt-2">128</p>
-        </div>
-
-        <div class="bg-gray-800 p-6 rounded-xl">
-          <h3 class="text-gray-400">High Demand</h3>
-          <p class="text-3xl font-bold mt-2">37</p>
-        </div>
-
-        <div class="bg-gray-800 p-6 rounded-xl">
-          <h3 class="text-gray-400">Suppliers</h3>
-          <p class="text-3xl font-bold mt-2">542</p>
-        </div>
-
-        <div class="bg-gray-800 p-6 rounded-xl">
-          <h3 class="text-gray-400">Export Score</h3>
-          <p class="text-3xl font-bold mt-2">89%</p>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- TRENDING -->
-    <section id="trendingSection" class="hidden">
-      <h3 class="text-2xl font-bold mb-6">Trending Products</h3>
-
-      <div id="premiumContent" class="hidden">
-        <div class="bg-gray-800 p-6 rounded-xl">
-          Premium Trending Data Visible
-        </div>
-      </div>
-
-      <div id="upgradeMessage" class="text-red-400">
-        🔒 Upgrade to Pro or Elite to access premium data.
-      </div>
-    </section>
-
-    <!-- SUPPLIERS -->
-    <section id="suppliersSection" class="hidden">
-      <h3 class="text-2xl font-bold mb-6">Verified Suppliers</h3>
-
-      <div id="premiumSuppliers" class="hidden">
-        <div class="bg-gray-800 p-6 rounded-xl">
-          Supplier Network Data Visible
-        </div>
-      </div>
-
-      <div id="upgradeSuppliers" class="text-red-400">
-        🔒 Upgrade required.
-      </div>
-    </section>
-
-    <!-- ANALYTICS -->
-    <section id="analyticsSection" class="hidden">
-      <h3 class="text-2xl font-bold mb-6">Export Analytics</h3>
-
-      <div id="premiumAnalytics" class="hidden">
-        <div class="bg-gray-800 p-6 rounded-xl">
-          Advanced Analytics Dashboard
-        </div>
-      </div>
-
-      <div id="upgradeAnalytics" class="text-red-400">
-        🔒 Upgrade required.
-      </div>
-    </section>
-
-  </main>
 </div>
 
 
-<!-- 🔥 FIREBASE SCRIPT -->
+<!-- MAIN CONTENT -->
+<div class="flex-1 p-10">
+
+
+<!-- USER BAR -->
+<div class="flex justify-end mb-10">
+
+<span id="userEmail" class="mr-4 text-gray-300"></span>
+
+<span id="userPlan" class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
+
+</div>
+
+
+<!-- OVERVIEW -->
+<div id="overview-section">
+
+<h1 class="text-4xl font-bold mb-8">Dashboard Overview</h1>
+
+<div class="grid grid-cols-4 gap-6">
+
+<div class="bg-slate-800 p-6 rounded-xl">
+<p class="text-gray-400">Active Products</p>
+<p class="text-3xl font-bold">128</p>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-xl">
+<p class="text-gray-400">High Demand</p>
+<p class="text-3xl font-bold">37</p>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-xl">
+<p class="text-gray-400">Suppliers</p>
+<p class="text-3xl font-bold">542</p>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-xl">
+<p class="text-gray-400">Export Score</p>
+<p class="text-3xl font-bold">89%</p>
+</div>
+
+</div>
+
+</div>
+
+
+
+<!-- TRENDING PRODUCTS -->
+<div id="trending-section" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">Trending Export Opportunities</h2>
+
+<div class="bg-slate-800 rounded-xl p-6">
+
+<table class="w-full text-left">
+
+<thead class="border-b border-gray-700 text-gray-400">
+<tr>
+<th class="py-3">Product</th>
+<th>Demand Score</th>
+<th>Best Market</th>
+<th>Margin</th>
+<th>Suppliers</th>
+</tr>
+</thead>
+
+<tbody id="productsTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+
+<!-- SUPPLIERS -->
+<div id="suppliers-section" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">Verified Suppliers</h2>
+
+<div class="bg-slate-800 p-6 rounded-xl">
+
+<p class="text-gray-400">
+Supplier intelligence module coming soon.
+</p>
+
+</div>
+
+</div>
+
+
+<!-- ANALYTICS -->
+<div id="analytics-section" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">Export Analytics</h2>
+
+<div class="bg-slate-800 p-6 rounded-xl">
+
+<p class="text-gray-400">
+Global demand heatmaps and export insights coming soon.
+</p>
+
+</div>
+
+</div>
+
+
+</div>
+
+</div>
+
+
+
+<!-- FIREBASE -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } 
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } 
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+import {
+getFirestore,
+collection,
+getDocs,
+query,
+orderBy,
+limit
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
-  authDomain: "sellora-ai.firebaseapp.com",
-  projectId: "sellora-ai",
-  storageBucket: "sellora-ai.firebasestorage.app",
-  messagingSenderId: "7850591690",
-  appId: "1:7850591690:web:346fccc5531288fb2a3b33"
+apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
+authDomain: "sellora-ai.firebaseapp.com",
+projectId: "sellora-ai",
+storageBucket: "sellora-ai.firebasestorage.app",
+messagingSenderId: "7850591690",
+appId: "1:7850591690:web:346fccc5531288fb2a3b33"
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 const db = getFirestore(app);
 
-onAuthStateChanged(auth, async (user) => {
-
-  if (!user) {
-    window.location.href = "login.html";
-    return;
-  }
-
-  document.getElementById("userEmail").innerText = user.email;
-
-  const snap = await getDoc(doc(db, "users", user.uid));
-
-  if (snap.exists()) {
-
-    const data = snap.data();
-    const plan = data.plan;
-
-    document.getElementById("userPlan").innerText = plan.toUpperCase();
-
-    if (plan === "pro" || plan === "elite") {
-
-      document.getElementById("premiumContent").classList.remove("hidden");
-      document.getElementById("premiumSuppliers").classList.remove("hidden");
-      document.getElementById("premiumAnalytics").classList.remove("hidden");
-
-      document.getElementById("upgradeMessage").classList.add("hidden");
-      document.getElementById("upgradeSuppliers").classList.add("hidden");
-      document.getElementById("upgradeAnalytics").classList.add("hidden");
-
-    }
-
-  }
-
-  document.getElementById("loadingScreen").style.display = "none";
-  document.getElementById("mainApp").style.display = "flex";
-
-});
-
-window.logout = function(){
-  signOut(auth).then(() => {
-    window.location.href = "login.html";
-  });
-};
 
 window.showSection = function(section){
 
-  document.getElementById("overviewSection").classList.add("hidden");
-  document.getElementById("trendingSection").classList.add("hidden");
-  document.getElementById("suppliersSection").classList.add("hidden");
-  document.getElementById("analyticsSection").classList.add("hidden");
+document.getElementById("overview-section").classList.add("hidden");
+document.getElementById("trending-section").classList.add("hidden");
+document.getElementById("suppliers-section").classList.add("hidden");
+document.getElementById("analytics-section").classList.add("hidden");
 
-  document.getElementById(section + "Section").classList.remove("hidden");
-};
+document.getElementById(section).classList.remove("hidden");
+
+if(section === "trending-section"){
+loadTrendingProducts();
+}
+
+}
+
+
+
+async function loadTrendingProducts(){
+
+const productsRef = collection(db,"products");
+
+const q = query(productsRef, orderBy("demand_score","desc"), limit(20));
+
+const snapshot = await getDocs(q);
+
+const table = document.getElementById("productsTable");
+
+table.innerHTML = "";
+
+snapshot.forEach(doc => {
+
+const data = doc.data();
+
+let flag = "🌍";
+
+if(data.best_market === "UAE") flag = "🇦🇪";
+if(data.best_market === "USA") flag = "🇺🇸";
+if(data.best_market === "Germany") flag = "🇩🇪";
+if(data.best_market === "UK") flag = "🇬🇧";
+
+table.innerHTML += `
+
+<tr class="border-b border-gray-700">
+
+<td class="py-4 font-medium">${data.product}</td>
+
+<td>
+
+<div class="w-32 bg-gray-700 rounded-full h-2">
+<div class="bg-green-400 h-2 rounded-full" style="width:${data.demand_score}%"></div>
+</div>
+
+<span class="text-xs text-gray-400">${data.demand_score}</span>
+
+</td>
+
+<td>${flag} ${data.best_market}</td>
+
+<td class="text-green-400">${data.margin}</td>
+
+<td>${data.supplier_count}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+window.logout = function(){
+
+localStorage.clear()
+
+window.location.href = "login.html"
+
+}
+
+
+document.getElementById("userEmail").innerText =
+localStorage.getItem("sellora_email") || "User"
+
+document.getElementById("userPlan").innerText =
+(localStorage.getItem("sellora_plan") || "FREE").toUpperCase()
+
 
 </script>
 
