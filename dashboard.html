@@ -25,37 +25,21 @@
 
 <nav class="space-y-4 text-gray-300">
 
-<button onclick="showSection('overview')" class="block hover:text-white">
-Overview
-</button>
+<button onclick="showSection('overview')" class="block hover:text-white">Overview</button>
 
-<button onclick="showSection('trending')" class="block hover:text-white">
-Trending Products
-</button>
+<button onclick="showSection('trending')" class="block hover:text-white">Trending Products</button>
 
-<button onclick="showSection('opportunities')" class="block hover:text-white">
-Opportunity Scanner
-</button>
+<button onclick="showSection('opportunities')" class="block hover:text-white">Opportunity Scanner</button>
 
-<button onclick="showSection('imports')" class="block hover:text-white">
-Global Import Tracker
-</button>
+<button onclick="showSection('imports')" class="block hover:text-white">Global Import Tracker</button>
 
-<button onclick="showSection('suppliers')" class="block hover:text-white">
-Supplier Intelligence
-</button>
+<button onclick="showSection('suppliers')" class="block hover:text-white">Supplier Intelligence</button>
 
-<button onclick="showSection('heatmap')" class="block hover:text-white">
-Global Demand Map
-</button>
+<button onclick="showSection('heatmap')" class="block hover:text-white">Global Demand Map</button>
 
-<button onclick="showSection('ai')" class="block hover:text-white">
-AI Export Advisor
-</button>
+<button onclick="showSection('ai')" class="block hover:text-white">AI Export Advisor</button>
 
-<button onclick="logout()" class="text-red-400 mt-10">
-Logout
-</button>
+<button onclick="logout()" class="text-red-400 mt-10">Logout</button>
 
 </nav>
 
@@ -122,7 +106,7 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 <thead class="border-b border-gray-700 text-gray-400">
 
 <tr>
-<th class="py-3">Product</th>
+<th>Product</th>
 <th>Demand Score</th>
 <th>Best Market</th>
 <th>Margin</th>
@@ -144,12 +128,9 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 
 <div id="opportunities" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">
-🔥 Product Opportunity Scanner
-</h2>
+<h2 class="text-3xl font-bold mb-6">🔥 Product Opportunity Scanner</h2>
 
-<div id="opportunityList"
-class="grid grid-cols-3 gap-6"></div>
+<div id="opportunityList" class="grid grid-cols-3 gap-6"></div>
 
 </div>
 
@@ -158,12 +139,9 @@ class="grid grid-cols-3 gap-6"></div>
 
 <div id="imports" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">
-🌍 Global Import Demand Tracker
-</h2>
+<h2 class="text-3xl font-bold mb-6">🌍 Global Import Demand Tracker</h2>
 
-<div id="importList"
-class="grid grid-cols-3 gap-6"></div>
+<div id="importList" class="grid grid-cols-3 gap-6"></div>
 
 </div>
 
@@ -241,7 +219,7 @@ from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
 
-apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
+apiKey: "YOUR_KEY",
 authDomain: "sellora-ai.firebaseapp.com",
 projectId: "sellora-ai",
 storageBucket: "sellora-ai.firebasestorage.app",
@@ -254,12 +232,9 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-/* USER PLAN */
+/* SECTION SWITCHER */
 
-const userPlan = (localStorage.getItem("sellora_plan") || "free").toLowerCase();
-
-
-window.showSection = function(section){
+window.showSection=function(section){
 
 ["overview","trending","opportunities","imports","suppliers","heatmap","ai"].forEach(id=>{
 document.getElementById(id).classList.add("hidden");
@@ -268,10 +243,10 @@ document.getElementById(id).classList.add("hidden");
 document.getElementById(section).classList.remove("hidden");
 
 if(section==="trending") loadProducts();
-if(section==="suppliers") loadSuppliers();
-if(section==="heatmap") drawMap();
 if(section==="opportunities") loadOpportunities();
 if(section==="imports") loadImports();
+if(section==="suppliers") loadSuppliers();
+if(section==="heatmap") drawMap();
 
 }
 
@@ -304,7 +279,7 @@ table.innerHTML+=`
 }
 
 
-/* OPPORTUNITY SCANNER FIX */
+/* OPPORTUNITY SCANNER */
 
 async function loadOpportunities(){
 
@@ -316,19 +291,13 @@ snapshot.forEach(doc=>{
 
 const p=doc.data();
 
-/* Convert margin text to numbers */
-
 let marginScore=0;
 
 if(p.margin==="High") marginScore=40;
 if(p.margin==="Medium") marginScore=25;
 if(p.margin==="Low") marginScore=10;
 
-/* Supplier factor */
-
-const supplierFactor=100-(p.supplier_count || 0);
-
-/* Score formula */
+const supplierFactor=100-(p.supplier_count||0);
 
 const score=
 (p.demand_score*0.5)+
@@ -347,49 +316,165 @@ score:Math.round(score)
 
 opportunities.sort((a,b)=>b.score-a.score);
 
-renderOpportunities(opportunities.slice(0,6));
-
-}
-
-
-function renderOpportunities(data){
-
 const container=document.getElementById("opportunityList");
-
 container.innerHTML="";
 
-data.forEach(o=>{
+opportunities.slice(0,6).forEach(o=>{
 
 container.innerHTML+=`
-
 <div class="bg-slate-800 p-6 rounded-xl">
 
-<h3 class="text-xl font-bold mb-2">
-${o.product}
-</h3>
+<h3 class="text-xl font-bold">${o.product}</h3>
 
-<p class="text-gray-400">
-Best Market: ${o.market}
-</p>
+<p class="text-gray-400">Best Market: ${o.market}</p>
 
-<p class="text-gray-400">
-Demand Score: ${o.demand}
-</p>
+<p class="text-gray-400">Demand Score: ${o.demand}</p>
 
-<p class="text-gray-400">
-Margin: ${o.margin}
-</p>
+<p class="text-gray-400">Margin: ${o.margin}</p>
 
 <p class="text-green-400 font-bold mt-2">
 Opportunity Score: ${o.score}
 </p>
 
 </div>
-
 `;
 
 });
 
+}
+
+
+/* IMPORT TRACKER */
+
+async function loadImports(){
+
+const snapshot=await getDocs(collection(db,"global_demand"));
+
+const container=document.getElementById("importList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const d=doc.data();
+
+container.innerHTML+=`
+<div class="bg-slate-800 p-6 rounded-xl">
+
+<h3 class="text-xl font-bold">${d.product}</h3>
+
+<p class="text-gray-400">Country: ${d.country}</p>
+
+<p class="text-green-400 font-bold">
+Demand Growth: +${d.demand_growth}%
+</p>
+
+</div>
+`;
+
+});
+
+}
+
+
+/* SUPPLIERS */
+
+async function loadSuppliers(){
+
+const snapshot=await getDocs(collection(db,"suppliers"));
+
+const table=document.getElementById("suppliersTable");
+table.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const s=doc.data();
+
+table.innerHTML+=`
+<tr class="border-b border-gray-700">
+<td>${s.supplier_name}</td>
+<td>${s.product}</td>
+<td>${s.location}</td>
+<td>${s.moq}</td>
+<td>${s.contact}</td>
+</tr>
+`;
+
+});
+
+}
+
+
+/* MAP */
+
+google.charts.load('current',{packages:['geochart']});
+
+function drawMap(){
+
+var data=google.visualization.arrayToDataTable([
+['Country','Demand'],
+['United Arab Emirates',92],
+['United States',88],
+['Germany',85],
+['United Kingdom',83],
+['Canada',78]
+]);
+
+var options={
+colorAxis:{colors:['#93c5fd','#4f46e5']}
+};
+
+var chart=new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+chart.draw(data,options);
+
+}
+
+
+/* AI */
+
+window.runAI=async function(){
+
+const q=document.getElementById("aiQuery").value.toLowerCase();
+
+const snapshot=await getDocs(collection(db,"products"));
+
+let output="";
+
+snapshot.forEach(doc=>{
+
+const d=doc.data();
+
+if(q.includes(d.best_market.toLowerCase())){
+
+output+=`
+<div class="mb-4 border-b border-gray-700 pb-2">
+<strong>${d.product}</strong><br>
+Demand Score: ${d.demand_score}<br>
+Market: ${d.best_market}
+</div>
+`;
+
+}
+
+});
+
+document.getElementById("aiResults").innerHTML=output;
+
+}
+
+
+/* USER */
+
+document.getElementById("userEmail").innerText=
+localStorage.getItem("sellora_email")||"User";
+
+document.getElementById("userPlan").innerText=
+(localStorage.getItem("sellora_plan")||"FREE").toUpperCase();
+
+
+window.logout=function(){
+localStorage.clear();
+window.location.href="login.html";
 }
 
 </script>
