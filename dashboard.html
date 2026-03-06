@@ -37,6 +37,10 @@ Trending Products
 Opportunity Scanner
 </button>
 
+<button onclick="showSection('imports')" class="block hover:text-white">
+Global Import Tracker
+</button>
+
 <button onclick="showSection('suppliers')" class="block hover:text-white">
 Supplier Intelligence
 </button>
@@ -150,6 +154,20 @@ class="grid grid-cols-3 gap-6"></div>
 </div>
 
 
+<!-- GLOBAL IMPORT TRACKER -->
+
+<div id="imports" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🌍 Global Import Demand Tracker
+</h2>
+
+<div id="importList"
+class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
 <!-- SUPPLIERS -->
 
 <div id="suppliers" class="hidden">
@@ -243,7 +261,7 @@ const userPlan = (localStorage.getItem("sellora_plan") || "free").toLowerCase();
 
 window.showSection = function(section){
 
-["overview","trending","opportunities","suppliers","heatmap","ai"].forEach(id=>{
+["overview","trending","opportunities","imports","suppliers","heatmap","ai"].forEach(id=>{
 document.getElementById(id).classList.add("hidden");
 });
 
@@ -253,6 +271,7 @@ if(section==="trending") loadProducts();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") drawMap();
 if(section==="opportunities") loadOpportunities();
+if(section==="imports") loadImports();
 
 }
 
@@ -350,6 +369,45 @@ Margin: ${o.margin}%
 
 <p class="text-green-400 font-bold mt-2">
 Opportunity Score: ${o.score}
+</p>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* GLOBAL IMPORT DEMAND */
+
+async function loadImports(){
+
+const snapshot=await getDocs(collection(db,"global_demand"));
+
+const container=document.getElementById("importList");
+
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const d=doc.data();
+
+container.innerHTML+=`
+
+<div class="bg-slate-800 p-6 rounded-xl">
+
+<h3 class="text-xl font-bold mb-2">
+${d.product}
+</h3>
+
+<p class="text-gray-400">
+Country: ${d.country}
+</p>
+
+<p class="text-green-400 font-bold">
+Demand Growth: +${d.demand_growth}%
 </p>
 
 </div>
