@@ -35,6 +35,8 @@
 
 <button onclick="showSection('alerts')" class="block hover:text-white">AI Opportunity Alerts</button>
 
+<button onclick="showSection('radar')" class="block hover:text-white">Global Export Radar</button>
+
 <button onclick="showSection('suppliers')" class="block hover:text-white">Supplier Intelligence</button>
 
 <button onclick="showSection('heatmap')" class="block hover:text-white">Global Demand Map</button>
@@ -48,7 +50,7 @@
 </div>
 
 
-<!-- MAIN -->
+<!-- MAIN CONTENT -->
 
 <div class="flex-1 p-10">
 
@@ -137,7 +139,7 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 </div>
 
 
-<!-- IMPORT TRACKER -->
+<!-- GLOBAL IMPORT TRACKER -->
 
 <div id="imports" class="hidden">
 
@@ -155,6 +157,17 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 <h2 class="text-3xl font-bold mb-6">🚨 AI Opportunity Alerts</h2>
 
 <div id="alertsList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
+<!-- GLOBAL EXPORT RADAR -->
+
+<div id="radar" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">🌎 Global Export Radar</h2>
+
+<div id="radarMap" style="width:100%; height:600px;"></div>
 
 </div>
 
@@ -201,7 +214,7 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 </div>
 
 
-<!-- AI ADVISOR -->
+<!-- AI EXPORT ADVISOR -->
 
 <div id="ai" class="hidden">
 
@@ -245,11 +258,12 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
+
 /* SECTION SWITCHER */
 
 window.showSection=function(section){
 
-["overview","trending","opportunities","imports","alerts","suppliers","heatmap","ai"].forEach(id=>{
+["overview","trending","opportunities","imports","alerts","radar","suppliers","heatmap","ai"].forEach(id=>{
 document.getElementById(id).classList.add("hidden");
 });
 
@@ -259,10 +273,12 @@ if(section==="trending") loadProducts();
 if(section==="opportunities") loadOpportunities();
 if(section==="imports") loadImports();
 if(section==="alerts") loadAlerts();
+if(section==="radar") loadRadar();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") drawMap();
 
 }
+
 
 
 /* TRENDING PRODUCTS */
@@ -293,62 +309,30 @@ table.innerHTML+=`
 }
 
 
+
 /* OPPORTUNITY SCANNER */
 
 async function loadOpportunities(){
 
 const snapshot=await getDocs(collection(db,"products"));
 
-let opportunities=[];
+const container=document.getElementById("opportunityList");
+container.innerHTML="";
 
 snapshot.forEach(doc=>{
 
 const p=doc.data();
 
-let marginScore=0;
-
-if(p.margin==="High") marginScore=40;
-if(p.margin==="Medium") marginScore=25;
-if(p.margin==="Low") marginScore=10;
-
-const supplierFactor=100-(p.supplier_count||0);
-
-const score=
-(p.demand_score*0.5)+
-(marginScore*0.3)+
-(supplierFactor*0.2);
-
-opportunities.push({
-product:p.product,
-market:p.best_market,
-margin:p.margin,
-demand:p.demand_score,
-score:Math.round(score)
-});
-
-});
-
-opportunities.sort((a,b)=>b.score-a.score);
-
-const container=document.getElementById("opportunityList");
-container.innerHTML="";
-
-opportunities.slice(0,6).forEach(o=>{
-
 container.innerHTML+=`
 <div class="bg-slate-800 p-6 rounded-xl">
 
-<h3 class="text-xl font-bold">${o.product}</h3>
+<h3 class="text-xl font-bold">${p.product}</h3>
 
-<p class="text-gray-400">Best Market: ${o.market}</p>
+<p class="text-gray-400">Best Market: ${p.best_market}</p>
 
-<p class="text-gray-400">Demand Score: ${o.demand}</p>
+<p class="text-gray-400">Demand Score: ${p.demand_score}</p>
 
-<p class="text-gray-400">Margin: ${o.margin}</p>
-
-<p class="text-green-400 font-bold mt-2">
-Opportunity Score: ${o.score}
-</p>
+<p class="text-gray-400">Margin: ${p.margin}</p>
 
 </div>
 `;
@@ -356,6 +340,7 @@ Opportunity Score: ${o.score}
 });
 
 }
+
 
 
 /* IMPORT TRACKER */
@@ -378,9 +363,7 @@ container.innerHTML+=`
 
 <p class="text-gray-400">Country: ${d.country}</p>
 
-<p class="text-green-400 font-bold">
-Demand Growth: +${d.demand_growth}%
-</p>
+<p class="text-green-400 font-bold">Demand Growth: +${d.demand_growth}%</p>
 
 </div>
 `;
@@ -390,6 +373,7 @@ Demand Growth: +${d.demand_growth}%
 }
 
 
+
 /* AI ALERTS */
 
 async function loadAlerts(){
@@ -397,17 +381,11 @@ async function loadAlerts(){
 const snapshot=await getDocs(collection(db,"ai_alerts"));
 
 const container=document.getElementById("alertsList");
-
 container.innerHTML="";
 
 snapshot.forEach(doc=>{
 
 const a=doc.data();
-
-let severityColor="text-yellow-400";
-
-if(a.severity==="High") severityColor="text-red-400";
-if(a.severity==="Low") severityColor="text-green-400";
 
 container.innerHTML+=`
 
@@ -419,9 +397,7 @@ container.innerHTML+=`
 
 <p class="text-gray-400">${a.reason}</p>
 
-<p class="${severityColor} font-bold mt-2">
-Severity: ${a.severity}
-</p>
+<p class="text-red-400 font-bold mt-2">Severity: ${a.severity}</p>
 
 </div>
 
@@ -430,6 +406,49 @@ Severity: ${a.severity}
 });
 
 }
+
+
+
+/* EXPORT RADAR */
+
+async function loadRadar(){
+
+google.charts.load('current',{'packages':['geochart']});
+
+google.charts.setOnLoadCallback(drawRadar);
+
+async function drawRadar(){
+
+const snapshot = await getDocs(collection(db,"export_radar"));
+
+let dataArray=[['Country','Demand']];
+
+snapshot.forEach(doc=>{
+
+const r=doc.data();
+
+dataArray.push([
+r.country,
+r.market_size
+]);
+
+});
+
+var data=google.visualization.arrayToDataTable(dataArray);
+
+var options={
+colorAxis:{colors:['#60a5fa','#7c3aed','#ef4444']},
+backgroundColor:'#0f172a'
+};
+
+var chart=new google.visualization.GeoChart(document.getElementById('radarMap'));
+
+chart.draw(data,options);
+
+}
+
+}
+
 
 
 /* SUPPLIERS */
@@ -460,7 +479,8 @@ table.innerHTML+=`
 }
 
 
-/* MAP */
+
+/* DEMAND MAP */
 
 google.charts.load('current',{packages:['geochart']});
 
@@ -475,9 +495,7 @@ var data=google.visualization.arrayToDataTable([
 ['Canada',78]
 ]);
 
-var options={
-colorAxis:{colors:['#93c5fd','#4f46e5']}
-};
+var options={colorAxis:{colors:['#93c5fd','#4f46e5']}};
 
 var chart=new google.visualization.GeoChart(document.getElementById('regions_div'));
 
@@ -486,7 +504,8 @@ chart.draw(data,options);
 }
 
 
-/* AI ADVISOR */
+
+/* AI EXPORT ADVISOR */
 
 window.runAI=async function(){
 
@@ -529,8 +548,10 @@ document.getElementById("userPlan").innerText=
 
 
 window.logout=function(){
+
 localStorage.clear();
 window.location.href="login.html";
+
 }
 
 </script>
