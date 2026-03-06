@@ -13,35 +13,35 @@
 
 </head>
 
-
 <body class="bg-slate-900 text-white">
 
 <div class="flex">
 
 <!-- SIDEBAR -->
+
 <div class="w-64 h-screen bg-black p-6">
 
 <h1 class="text-xl font-bold mb-10">SELLORA</h1>
 
 <nav class="space-y-4 text-gray-300">
 
-<button onclick="showSection('overview-section')" class="block hover:text-white">
+<button onclick="showSection('overview')" class="block hover:text-white">
 Overview
 </button>
 
-<button onclick="showSection('trending-section')" class="block hover:text-white">
+<button onclick="showSection('trending')" class="block hover:text-white">
 Trending Products
 </button>
 
-<button onclick="showSection('suppliers-section')" class="block hover:text-white">
-Suppliers
+<button onclick="showSection('suppliers')" class="block hover:text-white">
+Supplier Intelligence
 </button>
 
-<button onclick="showSection('analytics-section')" class="block hover:text-white">
+<button onclick="showSection('heatmap')" class="block hover:text-white">
 Global Demand Map
 </button>
 
-<button onclick="showSection('ai-section')" class="block hover:text-white">
+<button onclick="showSection('ai')" class="block hover:text-white">
 AI Export Advisor
 </button>
 
@@ -54,23 +54,21 @@ Logout
 </div>
 
 
+<!-- MAIN -->
 
-<!-- MAIN CONTENT -->
 <div class="flex-1 p-10">
 
-<!-- USER BAR -->
 <div class="flex justify-end mb-10">
 
 <span id="userEmail" class="mr-4 text-gray-300"></span>
-
 <span id="userPlan" class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 
 </div>
 
 
-
 <!-- OVERVIEW -->
-<div id="overview-section">
+
+<div id="overview">
 
 <h1 class="text-4xl font-bold mb-8">Dashboard Overview</h1>
 
@@ -101,9 +99,9 @@ Logout
 </div>
 
 
-
 <!-- TRENDING PRODUCTS -->
-<div id="trending-section" class="hidden">
+
+<div id="trending" class="hidden">
 
 <h2 class="text-3xl font-bold mb-6">Trending Export Opportunities</h2>
 
@@ -112,6 +110,7 @@ Logout
 <table class="w-full text-left">
 
 <thead class="border-b border-gray-700 text-gray-400">
+
 <tr>
 <th class="py-3">Product</th>
 <th>Demand Score</th>
@@ -119,6 +118,7 @@ Logout
 <th>Margin</th>
 <th>Suppliers</th>
 </tr>
+
 </thead>
 
 <tbody id="productsTable"></tbody>
@@ -130,82 +130,76 @@ Logout
 </div>
 
 
-
 <!-- SUPPLIERS -->
-<div id="suppliers-section" class="hidden">
+
+<div id="suppliers" class="hidden">
 
 <h2 class="text-3xl font-bold mb-6">Verified Suppliers</h2>
 
-<div class="bg-slate-800 p-6 rounded-xl">
+<div class="bg-slate-800 rounded-xl p-6">
 
-<p class="text-gray-400">
-Supplier intelligence module coming soon.
-</p>
+<table class="w-full text-left">
+
+<thead class="border-b border-gray-700 text-gray-400">
+
+<tr>
+<th>Supplier</th>
+<th>Product</th>
+<th>Location</th>
+<th>MOQ</th>
+<th>Contact</th>
+</tr>
+
+</thead>
+
+<tbody id="suppliersTable"></tbody>
+
+</table>
 
 </div>
 
 </div>
 
 
+<!-- HEATMAP -->
 
-<!-- GLOBAL DEMAND MAP -->
-<div id="analytics-section" class="hidden">
+<div id="heatmap" class="hidden">
 
 <h2 class="text-3xl font-bold mb-6">Global Demand Heatmap</h2>
 
-<div class="bg-slate-800 p-6 rounded-xl">
-
-<div id="regions_div" class="w-full h-[600px]"></div>
-
-</div>
+<div id="regions_div" style="width:100%; height:600px;"></div>
 
 </div>
 
 
+<!-- AI -->
 
-<!-- AI EXPORT ADVISOR -->
-<div id="ai-section" class="hidden">
+<div id="ai" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">SELLORA AI Export Advisor</h2>
-
-<div class="bg-slate-800 p-8 rounded-xl max-w-3xl">
+<h2 class="text-3xl font-bold mb-6">AI Export Advisor</h2>
 
 <input id="aiQuery"
-placeholder="Example: What should I export to UAE?"
+placeholder="Example: export to UAE"
 class="w-full p-4 rounded-lg text-black mb-4">
 
-<button onclick="runAI()"
-class="bg-purple-600 px-6 py-3 rounded-lg">
+<button onclick="runAI()" class="bg-purple-600 px-6 py-3 rounded-lg">
 Analyze Market
 </button>
 
-<div id="aiResults" class="mt-6 text-gray-300"></div>
+<div id="aiResults" class="mt-6"></div>
 
 </div>
 
 </div>
 
-
-
 </div>
-
-</div>
-
 
 
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-
-import {
-getFirestore,
-collection,
-getDocs,
-query,
-orderBy,
-limit
-} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
+import { getFirestore, collection, getDocs, query, orderBy, limit }
+from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
 
@@ -218,81 +212,44 @@ appId: "1:7850591690:web:346fccc5531288fb2a3b33"
 
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 
-
 window.showSection = function(section){
 
-document.getElementById("overview-section").classList.add("hidden");
-document.getElementById("trending-section").classList.add("hidden");
-document.getElementById("suppliers-section").classList.add("hidden");
-document.getElementById("analytics-section").classList.add("hidden");
-document.getElementById("ai-section").classList.add("hidden");
+["overview","trending","suppliers","heatmap","ai"].forEach(id=>{
+document.getElementById(id).classList.add("hidden");
+});
 
 document.getElementById(section).classList.remove("hidden");
 
-if(section === "trending-section"){
-loadTrendingProducts();
+if(section==="trending") loadProducts();
+if(section==="suppliers") loadSuppliers();
+if(section==="heatmap") drawMap();
+
 }
 
-if(section === "analytics-section"){
-drawRegionsMap();
-}
 
-};
+async function loadProducts(){
 
+const q=query(collection(db,"products"),orderBy("demand_score","desc"),limit(20));
+const snapshot=await getDocs(q);
 
+const table=document.getElementById("productsTable");
+table.innerHTML="";
 
-async function loadTrendingProducts(){
+snapshot.forEach(doc=>{
+const d=doc.data();
 
-const productsRef = collection(db,"products");
-
-const q = query(productsRef, orderBy("demand_score","desc"), limit(20));
-
-const snapshot = await getDocs(q);
-
-const table = document.getElementById("productsTable");
-
-table.innerHTML = "";
-
-snapshot.forEach(doc => {
-
-const data = doc.data();
-
-let flag = "🌍";
-
-if(data.best_market === "UAE") flag = "🇦🇪";
-if(data.best_market === "USA") flag = "🇺🇸";
-if(data.best_market === "Germany") flag = "🇩🇪";
-if(data.best_market === "UK") flag = "🇬🇧";
-
-table.innerHTML += `
-
+table.innerHTML+=`
 <tr class="border-b border-gray-700">
-
-<td class="py-4 font-medium">${data.product}</td>
-
-<td>
-
-<div class="w-32 bg-gray-700 rounded-full h-2">
-<div class="bg-green-400 h-2 rounded-full" style="width:${data.demand_score}%"></div>
-</div>
-
-<span class="text-xs text-gray-400">${data.demand_score}</span>
-
-</td>
-
-<td>${flag} ${data.best_market}</td>
-
-<td class="text-green-400">${data.margin}</td>
-
-<td>${data.supplier_count}</td>
-
+<td>${d.product}</td>
+<td>${d.demand_score}</td>
+<td>${d.best_market}</td>
+<td>${d.margin}</td>
+<td>${d.supplier_count}</td>
 </tr>
-
 `;
 
 });
@@ -300,119 +257,104 @@ table.innerHTML += `
 }
 
 
+async function loadSuppliers(){
 
-google.charts.load('current', {
-packages:['geochart']
-});
+const snapshot=await getDocs(collection(db,"suppliers"));
 
+const table=document.getElementById("suppliersTable");
+table.innerHTML="";
 
+snapshot.forEach(doc=>{
+const s=doc.data();
 
-function drawRegionsMap(){
+table.innerHTML+=`
+<tr class="border-b border-gray-700">
+<td>${s.supplier_name}</td>
+<td>${s.product}</td>
+<td>${s.location}</td>
+<td>${s.moq}</td>
+<td>${s.contact}</td>
+</tr>
+`;
 
-var data = google.visualization.arrayToDataTable([
-['Country', 'Demand'],
-
-['United Arab Emirates', 92],
-['United States', 88],
-['Germany', 85],
-['United Kingdom', 83],
-['Canada', 78],
-['Australia', 74],
-['Singapore', 70]
-
-]);
-
-
-var options = {
-
-backgroundColor: '#1e293b',
-datalessRegionColor: '#374151',
-
-colorAxis: {
-colors: ['#93c5fd', '#4f46e5']
-},
-
-legend: 'none',
-width: "100%",
-height: 600
-
-};
-
-
-var chart = new google.visualization.GeoChart(
-document.getElementById('regions_div')
-);
-
-chart.draw(data, options);
-
-window.addEventListener("resize", () => {
-chart.draw(data, options);
 });
 
 }
 
+
+google.charts.load('current',{packages:['geochart']});
+
+function drawMap(){
+
+var data=google.visualization.arrayToDataTable([
+['Country','Demand'],
+['United Arab Emirates',92],
+['United States',88],
+['Germany',85],
+['United Kingdom',83],
+['Canada',78]
+]);
+
+var options={
+colorAxis:{colors:['#93c5fd','#4f46e5']},
+legend:{textStyle:{color:'#fff'}}
+};
+
+var chart=new google.visualization.GeoChart(document.getElementById('regions_div'));
+
+chart.draw(data,options);
+
+}
 
 
 window.runAI = async function(){
 
-const queryText = document.getElementById("aiQuery").value.toLowerCase();
+const q=document.getElementById("aiQuery").value.toLowerCase();
 
-const snapshot = await getDocs(collection(db,"products"));
+const snapshot=await getDocs(collection(db,"products"));
 
-let results = [];
+let results=[];
 
-snapshot.forEach(doc => {
+snapshot.forEach(doc=>{
+const d=doc.data();
 
-const data = doc.data();
-
-if(queryText.includes(data.best_market.toLowerCase())){
-results.push(data);
+if(q.includes(d.best_market.toLowerCase())){
+results.push(d);
 }
 
 });
 
-results.sort((a,b)=>b.demand_score-a.demand_score);
+let output="";
 
-let output = "<h3 class='text-xl mb-4'>Top Opportunities</h3>";
-
-results.slice(0,5).forEach(product=>{
-
-output += `
-<div class="mb-4 border-b border-gray-700 pb-3">
-<strong>${product.product}</strong><br>
-Demand Score: ${product.demand_score}<br>
-Market: ${product.best_market}<br>
-Margin: ${product.margin}
+results.forEach(r=>{
+output+=`
+<div class="mb-4 border-b border-gray-700 pb-2">
+<strong>${r.product}</strong><br>
+Demand Score: ${r.demand_score}<br>
+Market: ${r.best_market}
 </div>
 `;
-
 });
 
-document.getElementById("aiResults").innerHTML = output;
+document.getElementById("aiResults").innerHTML=output;
 
-};
+}
 
 
-
-window.logout = function(){
+window.logout=function(){
 
 localStorage.clear();
-window.location.href = "login.html";
+window.location.href="login.html";
 
-};
+}
 
-
-
-document.getElementById("userEmail").innerText =
+document.getElementById("userEmail").innerText=
 localStorage.getItem("sellora_email") || "User";
 
-
-document.getElementById("userPlan").innerText =
+document.getElementById("userPlan").innerText=
 (localStorage.getItem("sellora_plan") || "FREE").toUpperCase();
 
-
 </script>
-
 
 </body>
 </html>
