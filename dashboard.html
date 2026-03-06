@@ -33,6 +33,8 @@
 
 <button onclick="showSection('imports')" class="block hover:text-white">Global Import Tracker</button>
 
+<button onclick="showSection('alerts')" class="block hover:text-white">AI Opportunity Alerts</button>
+
 <button onclick="showSection('suppliers')" class="block hover:text-white">Supplier Intelligence</button>
 
 <button onclick="showSection('heatmap')" class="block hover:text-white">Global Demand Map</button>
@@ -135,13 +137,24 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 </div>
 
 
-<!-- GLOBAL IMPORT TRACKER -->
+<!-- IMPORT TRACKER -->
 
 <div id="imports" class="hidden">
 
 <h2 class="text-3xl font-bold mb-6">🌍 Global Import Demand Tracker</h2>
 
 <div id="importList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
+<!-- AI ALERTS -->
+
+<div id="alerts" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">🚨 AI Opportunity Alerts</h2>
+
+<div id="alertsList" class="grid grid-cols-3 gap-6"></div>
 
 </div>
 
@@ -188,7 +201,7 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 </div>
 
 
-<!-- AI -->
+<!-- AI ADVISOR -->
 
 <div id="ai" class="hidden">
 
@@ -219,7 +232,7 @@ from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
 
-apiKey: "YOUR_KEY",
+apiKey: "YOUR_API_KEY",
 authDomain: "sellora-ai.firebaseapp.com",
 projectId: "sellora-ai",
 storageBucket: "sellora-ai.firebasestorage.app",
@@ -236,7 +249,7 @@ const db = getFirestore(app);
 
 window.showSection=function(section){
 
-["overview","trending","opportunities","imports","suppliers","heatmap","ai"].forEach(id=>{
+["overview","trending","opportunities","imports","alerts","suppliers","heatmap","ai"].forEach(id=>{
 document.getElementById(id).classList.add("hidden");
 });
 
@@ -245,6 +258,7 @@ document.getElementById(section).classList.remove("hidden");
 if(section==="trending") loadProducts();
 if(section==="opportunities") loadOpportunities();
 if(section==="imports") loadImports();
+if(section==="alerts") loadAlerts();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") drawMap();
 
@@ -376,6 +390,48 @@ Demand Growth: +${d.demand_growth}%
 }
 
 
+/* AI ALERTS */
+
+async function loadAlerts(){
+
+const snapshot=await getDocs(collection(db,"ai_alerts"));
+
+const container=document.getElementById("alertsList");
+
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const a=doc.data();
+
+let severityColor="text-yellow-400";
+
+if(a.severity==="High") severityColor="text-red-400";
+if(a.severity==="Low") severityColor="text-green-400";
+
+container.innerHTML+=`
+
+<div class="bg-slate-800 p-6 rounded-xl">
+
+<h3 class="text-xl font-bold">${a.product}</h3>
+
+<p class="text-gray-400">Country: ${a.country}</p>
+
+<p class="text-gray-400">${a.reason}</p>
+
+<p class="${severityColor} font-bold mt-2">
+Severity: ${a.severity}
+</p>
+
+</div>
+
+`;
+
+});
+
+}
+
+
 /* SUPPLIERS */
 
 async function loadSuppliers(){
@@ -430,7 +486,7 @@ chart.draw(data,options);
 }
 
 
-/* AI */
+/* AI ADVISOR */
 
 window.runAI=async function(){
 
@@ -463,7 +519,7 @@ document.getElementById("aiResults").innerHTML=output;
 }
 
 
-/* USER */
+/* USER INFO */
 
 document.getElementById("userEmail").innerText=
 localStorage.getItem("sellora_email")||"User";
