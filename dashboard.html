@@ -33,6 +33,10 @@ Overview
 Trending Products
 </button>
 
+<button onclick="showSection('opportunities')" class="block hover:text-white">
+Opportunity Scanner
+</button>
+
 <button onclick="showSection('suppliers')" class="block hover:text-white">
 Supplier Intelligence
 </button>
@@ -132,6 +136,20 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 </div>
 
 
+<!-- OPPORTUNITY SCANNER -->
+
+<div id="opportunities" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🔥 Product Opportunity Scanner
+</h2>
+
+<div id="opportunityList"
+class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
 <!-- SUPPLIERS -->
 
 <div id="suppliers" class="hidden">
@@ -225,7 +243,7 @@ const userPlan = (localStorage.getItem("sellora_plan") || "free").toLowerCase();
 
 window.showSection = function(section){
 
-["overview","trending","suppliers","heatmap","ai"].forEach(id=>{
+["overview","trending","opportunities","suppliers","heatmap","ai"].forEach(id=>{
 document.getElementById(id).classList.add("hidden");
 });
 
@@ -234,9 +252,12 @@ document.getElementById(section).classList.remove("hidden");
 if(section==="trending") loadProducts();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") drawMap();
+if(section==="opportunities") loadOpportunities();
 
 }
 
+
+/* TRENDING PRODUCTS */
 
 async function loadProducts(){
 
@@ -264,7 +285,83 @@ table.innerHTML+=`
 }
 
 
-/* SUPPLIERS WITH CONTACT LOCK */
+/* OPPORTUNITY SCANNER */
+
+async function loadOpportunities(){
+
+const snapshot=await getDocs(collection(db,"products"));
+
+let opportunities=[];
+
+snapshot.forEach(doc=>{
+
+const p=doc.data();
+
+const supplierFactor=100-p.supplier_count;
+
+const score=
+(p.demand_score*0.5)+
+(p.margin*0.3)+
+(supplierFactor*0.2);
+
+opportunities.push({
+product:p.product,
+market:p.best_market,
+margin:p.margin,
+demand:p.demand_score,
+score:Math.round(score)
+});
+
+});
+
+opportunities.sort((a,b)=>b.score-a.score);
+
+renderOpportunities(opportunities.slice(0,6));
+
+}
+
+function renderOpportunities(data){
+
+const container=document.getElementById("opportunityList");
+
+container.innerHTML="";
+
+data.forEach(o=>{
+
+container.innerHTML+=`
+
+<div class="bg-slate-800 p-6 rounded-xl">
+
+<h3 class="text-xl font-bold mb-2">
+${o.product}
+</h3>
+
+<p class="text-gray-400">
+Best Market: ${o.market}
+</p>
+
+<p class="text-gray-400">
+Demand Score: ${o.demand}
+</p>
+
+<p class="text-gray-400">
+Margin: ${o.margin}%
+</p>
+
+<p class="text-green-400 font-bold mt-2">
+Opportunity Score: ${o.score}
+</p>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* SUPPLIERS */
 
 async function loadSuppliers(){
 
@@ -280,22 +377,18 @@ let contactHTML="";
 
 if(userPlan==="elite"){
 
-contactHTML = `
-<div class="text-green-400">
-${s.contact}
-</div>
-`;
+contactHTML=`<span class="text-green-400">${s.contact}</span>`;
 
 }else{
 
-contactHTML = `
-<div class="text-yellow-400">
+contactHTML=`
+<span class="text-yellow-400">
 🔒 Elite Only
 <button onclick="upgradePlan()"
 class="ml-2 bg-purple-600 px-2 py-1 rounded text-xs">
 Upgrade
 </button>
-</div>
+</span>
 `;
 
 }
@@ -305,7 +398,7 @@ table.innerHTML+=`
 <td>${s.supplier_name}</td>
 <td>${s.product}</td>
 <td>${s.location}</td>
-<td>${s.moq}</td>
+<td>${s.moq} units</td>
 <td>${contactHTML}</td>
 </tr>
 `;
@@ -344,33 +437,29 @@ chart.draw(data,options);
 
 /* AI SEARCH */
 
-window.runAI = async function(){
+window.runAI=async function(){
 
 const q=document.getElementById("aiQuery").value.toLowerCase();
 
 const snapshot=await getDocs(collection(db,"products"));
 
-let results=[];
+let output="";
 
 snapshot.forEach(doc=>{
 const d=doc.data();
 
 if(q.includes(d.best_market.toLowerCase())){
-results.push(d);
-}
 
-});
-
-let output="";
-
-results.forEach(r=>{
 output+=`
 <div class="mb-4 border-b border-gray-700 pb-2">
-<strong>${r.product}</strong><br>
-Demand Score: ${r.demand_score}<br>
-Market: ${r.best_market}
+<strong>${d.product}</strong><br>
+Demand Score: ${d.demand_score}<br>
+Market: ${d.best_market}
 </div>
 `;
+
+}
+
 });
 
 document.getElementById("aiResults").innerHTML=output;
@@ -381,19 +470,15 @@ document.getElementById("aiResults").innerHTML=output;
 /* UPGRADE */
 
 window.upgradePlan=function(){
-
 window.location.href="pricing.html";
-
 }
 
 
 /* LOGOUT */
 
 window.logout=function(){
-
 localStorage.clear();
 window.location.href="login.html";
-
 }
 
 
