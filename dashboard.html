@@ -212,13 +212,20 @@
 </div>
 
 
-<!-- HEATMAP -->
-
 <div id="heatmap" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">Global Demand Heatmap</h2>
+<h2 class="text-3xl font-bold mb-6">
+Interactive Global Demand Map
+</h2>
 
-<div id="regions_div" style="width:100%; height:70vh;"></div>
+<div id="regions_div"
+style="width:100%; height:70vh;"></div>
+
+<button id="backButton"
+onclick="drawWorldMap()"
+class="mt-4 bg-purple-600 px-4 py-2 rounded hidden">
+Back to World Map
+</button>
 
 </div>
 
@@ -285,7 +292,9 @@ if(section==="alerts") loadAlerts();
 if(section==="radar") drawRadar();
 if(section==="predictor") loadPredictor();
 if(section==="suppliers") loadSuppliers();
-if(section==="heatmap") drawMap();
+
+if(section==="heatmap")
+google.charts.setOnLoadCallback(drawWorldMap);
 
 }
 
@@ -408,11 +417,18 @@ Opportunity Level: ${level}
 
 
 
-/* DEMAND MAP */
+/* INTERACTIVE DEMAND MAP */
 
-google.charts.load('current',{packages:['geochart']});
+google.charts.load('current', { packages:['geochart'] });
 
-function drawMap(){
+let currentCountry=null;
+
+
+/* WORLD MAP */
+
+window.drawWorldMap=function(){
+
+document.getElementById("backButton").classList.add("hidden");
 
 var data=google.visualization.arrayToDataTable([
 ['Country','Demand'],
@@ -420,12 +436,109 @@ var data=google.visualization.arrayToDataTable([
 ['United States',88],
 ['Germany',85],
 ['United Kingdom',83],
-['Canada',78]
+['Canada',78],
+['India',90]
 ]);
 
-var options={colorAxis:{colors:['#93c5fd','#4f46e5']}};
+var options={
+colorAxis:{colors:['#93c5fd','#4f46e5']},
+backgroundColor:'#0f172a',
+datalessRegionColor:'#1e293b'
+};
 
-var chart=new google.visualization.GeoChart(document.getElementById('regions_div'));
+var chart=new google.visualization.GeoChart(
+document.getElementById('regions_div')
+);
+
+chart.draw(data,options);
+
+
+/* COUNTRY CLICK EVENT */
+
+google.visualization.events.addListener(chart,'select',function(){
+
+var selection=chart.getSelection();
+
+if(selection.length>0){
+
+var country=data.getValue(selection[0].row,0);
+
+drawStateMap(country);
+
+}
+
+});
+
+};
+
+
+/* STATE / PROVINCE MAP */
+
+async function drawStateMap(country){
+
+currentCountry=country;
+
+document.getElementById("backButton").classList.remove("hidden");
+
+/* GET FIRESTORE DATA */
+
+const snapshot=await getDocs(collection(db,"regional_demand"));
+
+let dataArray=[['State','Demand']];
+
+snapshot.forEach(doc=>{
+
+const r=doc.data();
+
+if(r.country===country){
+
+dataArray.push([
+r.state,
+r.demand_score
+]);
+
+}
+
+});
+
+if(dataArray.length===1){
+
+alert("No regional data available for "+country);
+return;
+
+}
+
+var data=google.visualization.arrayToDataTable(dataArray);
+
+
+/* COUNTRY REGION CODE */
+
+let regionCode="";
+
+if(country==="Germany") regionCode="DE";
+if(country==="India") regionCode="IN";
+if(country==="United States") regionCode="US";
+if(country==="Canada") regionCode="CA";
+if(country==="United Kingdom") regionCode="GB";
+if(country==="United Arab Emirates") regionCode="AE";
+
+
+var options={
+
+region:regionCode,
+displayMode:'regions',
+resolution:'provinces',
+
+colorAxis:{colors:['#93c5fd','#4f46e5']},
+
+backgroundColor:'#0f172a',
+datalessRegionColor:'#1e293b'
+
+};
+
+var chart=new google.visualization.GeoChart(
+document.getElementById('regions_div')
+);
 
 chart.draw(data,options);
 
@@ -483,3 +596,4 @@ window.location.href="login.html";
 
 </body>
 </html>
+
