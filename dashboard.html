@@ -267,7 +267,7 @@ Logout
 
 function showSection(section){
 
-const sections=[
+const sections = [
 "overview",
 "trending",
 "scanner",
@@ -281,15 +281,16 @@ const sections=[
 ];
 
 sections.forEach(id=>{
-const el=document.getElementById(id);
+const el = document.getElementById(id);
 if(el){
-el.classList.add("hidden");
+el.style.display = "none";
 }
 });
 
-const active=document.getElementById(section);
+const active = document.getElementById(section);
+
 if(active){
-active.classList.remove("hidden");
+active.style.display = "block";
 }
 
 if(section==="heatmap"){
@@ -339,3 +340,4 @@ localStorage.clear();
 window.location.href="login.html";
 
 }
+
