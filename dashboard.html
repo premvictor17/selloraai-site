@@ -1,28 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>SELLORA Dashboard</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-
-.hidden{
-display:none;
-}
-
-.card{
-background:#1e293b;
-padding:24px;
-border-radius:12px;
-}
-
+.hidden{display:none}
+.card{background:#1e293b;padding:20px;border-radius:12px}
 </style>
 
 </head>
@@ -40,24 +29,12 @@ border-radius:12px;
 <nav class="space-y-4 text-gray-300">
 
 <button onclick="showSection('overview')" class="block hover:text-white">Overview</button>
-
 <button onclick="showSection('trending')" class="block hover:text-white">Trending Products</button>
-
-<button onclick="showSection('scanner')" class="block hover:text-white">Product Opportunity Scanner</button>
-
 <button onclick="showSection('imports')" class="block hover:text-white">Global Import Tracker</button>
-
 <button onclick="showSection('alerts')" class="block hover:text-white">AI Opportunity Alerts</button>
-
 <button onclick="showSection('radar')" class="block hover:text-white">Global Export Radar</button>
-
-<button onclick="showSection('predictor')" class="block hover:text-white">AI Market Predictor</button>
-
 <button onclick="showSection('suppliers')" class="block hover:text-white">Supplier Intelligence</button>
-
 <button onclick="showSection('heatmap')" class="block hover:text-white">Global Demand Map</button>
-
-<button onclick="showSection('ai')" class="block hover:text-white">AI Export Advisor</button>
 
 <button onclick="logout()" class="text-red-400 mt-10">Logout</button>
 
@@ -65,9 +42,12 @@ border-radius:12px;
 
 </div>
 
+
 <!-- MAIN -->
 
 <div class="flex-1 p-10">
+
+<!-- OVERVIEW -->
 
 <div id="overview">
 
@@ -77,17 +57,17 @@ border-radius:12px;
 
 <div class="card">
 <p class="text-gray-400">Active Products</p>
-<h2 class="text-3xl font-bold">128</h2>
+<h2 id="productCount" class="text-3xl font-bold">0</h2>
 </div>
 
 <div class="card">
 <p class="text-gray-400">Suppliers</p>
-<h2 class="text-3xl font-bold">542</h2>
+<h2 id="supplierCount" class="text-3xl font-bold">0</h2>
 </div>
 
 <div class="card">
 <p class="text-gray-400">Markets</p>
-<h2 class="text-3xl font-bold">38</h2>
+<h2 id="marketCount" class="text-3xl font-bold">0</h2>
 </div>
 
 <div class="card">
@@ -99,80 +79,262 @@ border-radius:12px;
 
 </div>
 
+
+<!-- TRENDING PRODUCTS -->
+
 <div id="trending" class="hidden">
+
 <h2 class="text-3xl font-bold mb-6">Trending Products</h2>
+
+<div id="productsList" class="grid grid-cols-3 gap-6"></div>
+
 </div>
 
-<div id="scanner" class="hidden">
-<h2 class="text-3xl font-bold mb-6">Product Opportunity Scanner</h2>
-</div>
+
+<!-- GLOBAL IMPORT TRACKER -->
 
 <div id="imports" class="hidden">
+
 <h2 class="text-3xl font-bold mb-6">Global Import Tracker</h2>
+
+<div id="importsList" class="grid grid-cols-3 gap-6"></div>
+
 </div>
+
+
+<!-- AI ALERTS -->
 
 <div id="alerts" class="hidden">
+
 <h2 class="text-3xl font-bold mb-6">AI Opportunity Alerts</h2>
+
+<div id="alertsList" class="grid grid-cols-3 gap-6"></div>
+
 </div>
+
+
+<!-- EXPORT RADAR -->
 
 <div id="radar" class="hidden">
+
 <h2 class="text-3xl font-bold mb-6">Global Export Radar</h2>
+
+<div id="radarList" class="grid grid-cols-3 gap-6"></div>
+
 </div>
 
-<div id="predictor" class="hidden">
-<h2 class="text-3xl font-bold mb-6">AI Market Predictor</h2>
-</div>
+
+<!-- SUPPLIERS -->
 
 <div id="suppliers" class="hidden">
+
 <h2 class="text-3xl font-bold mb-6">Supplier Intelligence</h2>
+
+<div id="supplierList" class="grid grid-cols-3 gap-6"></div>
+
 </div>
+
+
+<!-- DEMAND MAP -->
 
 <div id="heatmap" class="hidden">
 
 <h2 class="text-3xl font-bold mb-6">Global Demand Map</h2>
 
-<div id="regions_div" style="width:100%; height:70vh;"></div>
+<div id="regions_div" style="width:100%;height:70vh;"></div>
 
 </div>
 
-<div id="ai" class="hidden">
-<h2 class="text-3xl font-bold mb-6">AI Export Advisor</h2>
-</div>
 
 </div>
-
 </div>
 
-<script>
 
-function showSection(section){
+<script type="module">
 
-const sections=[
-"overview",
-"trending",
-"scanner",
-"imports",
-"alerts",
-"radar",
-"predictor",
-"suppliers",
-"heatmap",
-"ai"
-];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+apiKey: "YOUR_KEY",
+authDomain: "sellora-ai.firebaseapp.com",
+projectId: "sellora-ai",
+storageBucket: "sellora-ai.appspot.com",
+messagingSenderId: "7850591690",
+appId: "1:7850591690:web:346fccc5531288fb2a3b33"
+};
+
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+
+/* SECTION SWITCHER */
+
+window.showSection=function(section){
+
+const sections=["overview","trending","imports","alerts","radar","suppliers","heatmap"];
 
 sections.forEach(id=>{
 const el=document.getElementById(id);
 if(el) el.classList.add("hidden");
 });
 
-const active=document.getElementById(section);
-if(active) active.classList.remove("hidden");
+document.getElementById(section).classList.remove("hidden");
 
-if(section==="heatmap"){
-google.charts.setOnLoadCallback(drawMap);
+if(section==="trending") loadProducts();
+if(section==="imports") loadImports();
+if(section==="alerts") loadAlerts();
+if(section==="radar") loadRadar();
+if(section==="suppliers") loadSuppliers();
+if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
+
+};
+
+
+/* PRODUCTS */
+
+async function loadProducts(){
+
+const snapshot = await getDocs(collection(db,"products"));
+
+const container=document.getElementById("productsList");
+container.innerHTML="";
+
+document.getElementById("productCount").innerText=snapshot.size;
+
+snapshot.forEach(doc=>{
+
+const d=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3 class="text-xl font-bold">${d.product}</h3>
+<p>Best Market: ${d.best_market}</p>
+<p>Demand Score: ${d.demand_score}</p>
+<p>Margin: ${d.margin}</p>
+</div>
+`;
+
+});
+
 }
 
+
+/* IMPORTS */
+
+async function loadImports(){
+
+const snapshot = await getDocs(collection(db,"global_demand"));
+
+const container=document.getElementById("importsList");
+container.innerHTML="";
+
+document.getElementById("marketCount").innerText=snapshot.size;
+
+snapshot.forEach(doc=>{
+
+const d=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3>${d.product}</h3>
+<p>Country: ${d.country}</p>
+<p>Demand Growth: +${d.demand_growth}%</p>
+</div>
+`;
+
+});
+
 }
+
+
+/* ALERTS */
+
+async function loadAlerts(){
+
+const snapshot = await getDocs(collection(db,"ai_alerts"));
+
+const container=document.getElementById("alertsList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const d=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3>${d.product}</h3>
+<p>Country: ${d.country}</p>
+<p>${d.reason}</p>
+<p class="text-yellow-400">${d.severity}</p>
+</div>
+`;
+
+});
+
+}
+
+
+/* RADAR */
+
+async function loadRadar(){
+
+const snapshot = await getDocs(collection(db,"export_radar"));
+
+const container=document.getElementById("radarList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const d=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3>${d.product}</h3>
+<p>Country: ${d.country}</p>
+<p>Demand Score: ${d.demand_score}</p>
+<p>Market Size: ${d.market_size}</p>
+</div>
+`;
+
+});
+
+}
+
+
+/* SUPPLIERS */
+
+async function loadSuppliers(){
+
+const snapshot = await getDocs(collection(db,"suppliers"));
+
+const container=document.getElementById("supplierList");
+container.innerHTML="";
+
+document.getElementById("supplierCount").innerText=snapshot.size;
+
+snapshot.forEach(doc=>{
+
+const s=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3>${s.supplier_name || "Unknown Supplier"}</h3>
+<p>Product: ${s.product || "-"}</p>
+<p>Location: ${s.location || "-"}</p>
+<p>MOQ: ${s.moq || "-"}</p>
+<p>Contact: ${s.contact || "-"}</p>
+</div>
+`;
+
+});
+
+}
+
+
+/* MAP */
 
 google.charts.load('current',{packages:['geochart']});
 
@@ -181,28 +343,23 @@ function drawMap(){
 var data=google.visualization.arrayToDataTable([
 ['Country','Demand'],
 ['United Arab Emirates',92],
-['United States',88],
 ['Germany',85],
-['United Kingdom',83],
+['United States',88],
 ['Canada',78],
 ['India',90]
 ]);
 
-var options={
-colorAxis:{colors:['#93c5fd','#4f46e5']},
-backgroundColor:'#0f172a',
-datalessRegionColor:'#1e293b'
-};
+var options={colorAxis:{colors:['#93c5fd','#4f46e5']}};
 
-var chart=new google.visualization.GeoChart(
-document.getElementById('regions_div')
-);
-
+var chart=new google.visualization.GeoChart(document.getElementById('regions_div'));
 chart.draw(data,options);
 
 }
 
-function logout(){
+
+/* LOGOUT */
+
+window.logout=function(){
 localStorage.clear();
 window.location.href="login.html";
 }
