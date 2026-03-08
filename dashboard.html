@@ -37,6 +37,8 @@
 
 <button onclick="showSection('radar')" class="block hover:text-white">Global Export Radar</button>
 
+<button onclick="showSection('predictor')" class="block hover:text-white">AI Market Predictor</button>
+
 <button onclick="showSection('suppliers')" class="block hover:text-white">Supplier Intelligence</button>
 
 <button onclick="showSection('heatmap')" class="block hover:text-white">Global Demand Map</button>
@@ -49,20 +51,16 @@
 
 </div>
 
-
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 
 <div class="flex-1 p-10">
 
 <div class="flex justify-end mb-10">
 
 <span id="userEmail" class="mr-4 text-gray-300"></span>
-
-<span id="userPlan"
-class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
+<span id="userPlan" class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 
 </div>
-
 
 <!-- OVERVIEW -->
 
@@ -139,7 +137,7 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 </div>
 
 
-<!-- GLOBAL IMPORT TRACKER -->
+<!-- IMPORT TRACKER -->
 
 <div id="imports" class="hidden">
 
@@ -161,13 +159,24 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 </div>
 
 
-<!-- GLOBAL EXPORT RADAR -->
+<!-- EXPORT RADAR -->
 
 <div id="radar" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">🌎 Global Export Radar</h2>
+<h2 class="text-3xl font-bold mb-6">🌍 Global Export Radar</h2>
 
-<div id="radarMap" style="width:100%; height:600px;"></div>
+<div id="radarMap" style="width:100%; height:70vh;"></div>
+
+</div>
+
+
+<!-- AI MARKET PREDICTOR -->
+
+<div id="predictor" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">AI Export Market Predictor</h2>
+
+<div id="predictorList" class="grid grid-cols-3 gap-6"></div>
 
 </div>
 
@@ -209,7 +218,7 @@ class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
 
 <h2 class="text-3xl font-bold mb-6">Global Demand Heatmap</h2>
 
-<div id="regions_div" style="width:100%; height:600px;"></div>
+<div id="regions_div" style="width:100%; height:70vh;"></div>
 
 </div>
 
@@ -263,7 +272,7 @@ const db = getFirestore(app);
 
 window.showSection=function(section){
 
-["overview","trending","opportunities","imports","alerts","radar","suppliers","heatmap","ai"].forEach(id=>{
+["overview","trending","opportunities","imports","alerts","radar","predictor","suppliers","heatmap","ai"].forEach(id=>{
 document.getElementById(id).classList.add("hidden");
 });
 
@@ -273,7 +282,8 @@ if(section==="trending") loadProducts();
 if(section==="opportunities") loadOpportunities();
 if(section==="imports") loadImports();
 if(section==="alerts") loadAlerts();
-if(section==="radar") loadRadar();
+if(section==="radar") drawRadar();
+if(section==="predictor") loadPredictor();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") drawMap();
 
@@ -309,40 +319,6 @@ table.innerHTML+=`
 }
 
 
-
-/* OPPORTUNITY SCANNER */
-
-async function loadOpportunities(){
-
-const snapshot=await getDocs(collection(db,"products"));
-
-const container=document.getElementById("opportunityList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const p=doc.data();
-
-container.innerHTML+=`
-<div class="bg-slate-800 p-6 rounded-xl">
-
-<h3 class="text-xl font-bold">${p.product}</h3>
-
-<p class="text-gray-400">Best Market: ${p.best_market}</p>
-
-<p class="text-gray-400">Demand Score: ${p.demand_score}</p>
-
-<p class="text-gray-400">Margin: ${p.margin}</p>
-
-</div>
-`;
-
-});
-
-}
-
-
-
 /* IMPORT TRACKER */
 
 async function loadImports(){
@@ -357,6 +333,7 @@ snapshot.forEach(doc=>{
 const d=doc.data();
 
 container.innerHTML+=`
+
 <div class="bg-slate-800 p-6 rounded-xl">
 
 <h3 class="text-xl font-bold">${d.product}</h3>
@@ -366,6 +343,7 @@ container.innerHTML+=`
 <p class="text-green-400 font-bold">Demand Growth: +${d.demand_growth}%</p>
 
 </div>
+
 `;
 
 });
@@ -373,105 +351,55 @@ container.innerHTML+=`
 }
 
 
+/* MARKET PREDICTOR */
 
-/* AI ALERTS */
+async function loadPredictor(){
 
-async function loadAlerts(){
+const snapshot = await getDocs(collection(db,"products"));
 
-const snapshot=await getDocs(collection(db,"ai_alerts"));
-
-const container=document.getElementById("alertsList");
+const container = document.getElementById("predictorList");
 container.innerHTML="";
 
 snapshot.forEach(doc=>{
 
-const a=doc.data();
+const p = doc.data();
+
+let marginScore=0;
+
+if(p.margin==="High") marginScore=40;
+if(p.margin==="Medium") marginScore=25;
+if(p.margin==="Low") marginScore=10;
+
+const competition = 100-(p.supplier_count||0);
+
+const prediction =
+(p.demand_score*0.6) +
+(marginScore*0.25) +
+(competition*0.15);
+
+let level="Medium";
+
+if(prediction>80) level="High";
+if(prediction<60) level="Low";
 
 container.innerHTML+=`
 
 <div class="bg-slate-800 p-6 rounded-xl">
 
-<h3 class="text-xl font-bold">${a.product}</h3>
+<h3 class="text-xl font-bold">${p.product}</h3>
 
-<p class="text-gray-400">Country: ${a.country}</p>
+<p class="text-gray-400">Market: ${p.best_market}</p>
 
-<p class="text-gray-400">${a.reason}</p>
+<p class="text-green-400 font-bold">
+Predicted Growth: +${Math.round(prediction)}%
+</p>
 
-<p class="text-red-400 font-bold mt-2">Severity: ${a.severity}</p>
+<p class="text-purple-400 font-bold">
+Opportunity Level: ${level}
+</p>
 
 </div>
 
-`;
-
-});
-
-}
-
-
-
-/* EXPORT RADAR */
-
-async function loadRadar(){
-
-google.charts.load('current',{'packages':['geochart']});
-
-google.charts.setOnLoadCallback(drawRadar);
-
-async function drawRadar(){
-
-const snapshot = await getDocs(collection(db,"export_radar"));
-
-let dataArray=[['Country','Demand']];
-
-snapshot.forEach(doc=>{
-
-const r=doc.data();
-
-dataArray.push([
-r.country,
-r.market_size
-]);
-
-});
-
-var data=google.visualization.arrayToDataTable(dataArray);
-
-var options={
-colorAxis:{colors:['#60a5fa','#7c3aed','#ef4444']},
-backgroundColor:'#0f172a'
-};
-
-var chart=new google.visualization.GeoChart(document.getElementById('radarMap'));
-
-chart.draw(data,options);
-
-}
-
-}
-
-
-
-/* SUPPLIERS */
-
-async function loadSuppliers(){
-
-const snapshot=await getDocs(collection(db,"suppliers"));
-
-const table=document.getElementById("suppliersTable");
-table.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const s=doc.data();
-
-table.innerHTML+=`
-<tr class="border-b border-gray-700">
-<td>${s.supplier_name}</td>
-<td>${s.product}</td>
-<td>${s.location}</td>
-<td>${s.moq}</td>
-<td>${s.contact}</td>
-</tr>
 `;
 
 });
@@ -502,7 +430,6 @@ var chart=new google.visualization.GeoChart(document.getElementById('regions_div
 chart.draw(data,options);
 
 }
-
 
 
 /* AI EXPORT ADVISOR */
@@ -548,10 +475,8 @@ document.getElementById("userPlan").innerText=
 
 
 window.logout=function(){
-
 localStorage.clear();
 window.location.href="login.html";
-
 }
 
 </script>
