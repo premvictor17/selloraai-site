@@ -25,12 +25,49 @@
 
 <nav class="space-y-4 text-gray-300">
 
-<button onclick="showSection('overview')" class="block hover:text-white">Overview</button>
-<button onclick="showSection('scanner')" class="block hover:text-white">Product Opportunity Scanner</button>
-<button onclick="showSection('alerts')" class="block hover:text-white">AI Opportunity Alerts</button>
-<button onclick="showSection('radar')" class="block hover:text-white">Global Export Radar</button>
-<button onclick="showSection('suppliers')" class="block hover:text-white">Supplier Intelligence</button>
-<button onclick="showSection('heatmap')" class="block hover:text-white">Global Demand Map</button>
+<button onclick="showSection('overview')" class="block hover:text-white">
+Overview
+</button>
+
+<button onclick="showSection('trending')" class="block hover:text-white">
+Trending Products
+</button>
+
+<button onclick="showSection('scanner')" class="block hover:text-white">
+Product Opportunity Scanner
+</button>
+
+<button onclick="showSection('imports')" class="block hover:text-white">
+Global Import Tracker
+</button>
+
+<button onclick="showSection('alerts')" class="block hover:text-white">
+AI Opportunity Alerts
+</button>
+
+<button onclick="showSection('radar')" class="block hover:text-white">
+Global Export Radar
+</button>
+
+<button onclick="showSection('predictor')" class="block hover:text-white">
+AI Market Predictor
+</button>
+
+<button onclick="showSection('suppliers')" class="block hover:text-white">
+Supplier Intelligence
+</button>
+
+<button onclick="showSection('heatmap')" class="block hover:text-white">
+Global Demand Map
+</button>
+
+<button onclick="showSection('ai')" class="block hover:text-white">
+AI Export Advisor
+</button>
+
+<button onclick="logout()" class="text-red-400 mt-10">
+Logout
+</button>
 
 </nav>
 
@@ -226,22 +263,45 @@
 
 <script>
 
+/* SECTION SWITCHER */
+
 function showSection(section){
 
-["overview","scanner","alerts","radar","suppliers","heatmap"].forEach(id=>{
-document.getElementById(id).classList.add("hidden")
-})
+const sections=[
+"overview",
+"trending",
+"scanner",
+"imports",
+"alerts",
+"radar",
+"predictor",
+"suppliers",
+"heatmap",
+"ai"
+];
 
-document.getElementById(section).classList.remove("hidden")
+sections.forEach(id=>{
+const el=document.getElementById(id);
+if(el){
+el.classList.add("hidden");
+}
+});
+
+const active=document.getElementById(section);
+if(active){
+active.classList.remove("hidden");
+}
 
 if(section==="heatmap"){
-google.charts.setOnLoadCallback(drawMap)
+google.charts.setOnLoadCallback(drawMap);
 }
 
 }
 
 
-google.charts.load('current',{packages:['geochart']})
+/* GLOBAL DEMAND MAP */
+
+google.charts.load('current',{packages:['geochart']});
 
 function drawMap(){
 
@@ -253,23 +313,29 @@ var data=google.visualization.arrayToDataTable([
 ['United Kingdom',83],
 ['Canada',78],
 ['India',90]
-])
+]);
 
 var options={
 colorAxis:{colors:['#93c5fd','#4f46e5']},
 backgroundColor:'#0f172a',
 datalessRegionColor:'#1e293b'
-}
+};
 
 var chart=new google.visualization.GeoChart(
 document.getElementById('regions_div')
-)
+);
 
-chart.draw(data,options)
+chart.draw(data,options);
 
 }
 
-</script>
 
-</body>
-</html>
+/* LOGOUT */
+
+function logout(){
+
+localStorage.clear();
+
+window.location.href="login.html";
+
+}
