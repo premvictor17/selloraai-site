@@ -26,41 +26,18 @@
 <nav class="space-y-4 text-gray-300">
 
 <button onclick="showSection('overview')" class="block hover:text-white">Overview</button>
-
-<button onclick="showSection('trending')" class="block hover:text-white">Trending Products</button>
-
-<button onclick="showSection('opportunities')" class="block hover:text-white">Opportunity Scanner</button>
-
-<button onclick="showSection('imports')" class="block hover:text-white">Global Import Tracker</button>
-
+<button onclick="showSection('scanner')" class="block hover:text-white">Product Opportunity Scanner</button>
 <button onclick="showSection('alerts')" class="block hover:text-white">AI Opportunity Alerts</button>
-
 <button onclick="showSection('radar')" class="block hover:text-white">Global Export Radar</button>
-
-<button onclick="showSection('predictor')" class="block hover:text-white">AI Market Predictor</button>
-
 <button onclick="showSection('suppliers')" class="block hover:text-white">Supplier Intelligence</button>
-
 <button onclick="showSection('heatmap')" class="block hover:text-white">Global Demand Map</button>
-
-<button onclick="showSection('ai')" class="block hover:text-white">AI Export Advisor</button>
-
-<button onclick="logout()" class="text-red-400 mt-10">Logout</button>
 
 </nav>
 
 </div>
 
-<!-- MAIN -->
 
 <div class="flex-1 p-10">
-
-<div class="flex justify-end mb-10">
-
-<span id="userEmail" class="mr-4 text-gray-300"></span>
-<span id="userPlan" class="bg-purple-600 px-3 py-1 rounded-full text-sm"></span>
-
-</div>
 
 <!-- OVERVIEW -->
 
@@ -76,13 +53,13 @@
 </div>
 
 <div class="bg-slate-800 p-6 rounded-xl">
-<p class="text-gray-400">High Demand</p>
-<p class="text-3xl font-bold">37</p>
+<p class="text-gray-400">Suppliers</p>
+<p class="text-3xl font-bold">542</p>
 </div>
 
 <div class="bg-slate-800 p-6 rounded-xl">
-<p class="text-gray-400">Suppliers</p>
-<p class="text-3xl font-bold">542</p>
+<p class="text-gray-400">Markets</p>
+<p class="text-3xl font-bold">38</p>
 </div>
 
 <div class="bg-slate-800 p-6 rounded-xl">
@@ -95,55 +72,36 @@
 </div>
 
 
-<!-- TRENDING PRODUCTS -->
-
-<div id="trending" class="hidden">
-
-<h2 class="text-3xl font-bold mb-6">Trending Export Opportunities</h2>
-
-<div class="bg-slate-800 rounded-xl p-6">
-
-<table class="w-full text-left">
-
-<thead class="border-b border-gray-700 text-gray-400">
-
-<tr>
-<th>Product</th>
-<th>Demand Score</th>
-<th>Best Market</th>
-<th>Margin</th>
-<th>Suppliers</th>
-</tr>
-
-</thead>
-
-<tbody id="productsTable"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-
 <!-- OPPORTUNITY SCANNER -->
 
-<div id="opportunities" class="hidden">
+<div id="scanner" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">🔥 Product Opportunity Scanner</h2>
+<h2 class="text-3xl font-bold mb-6">Product Opportunity Scanner</h2>
 
-<div id="opportunityList" class="grid grid-cols-3 gap-6"></div>
+<div class="grid grid-cols-3 gap-6">
 
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Millet Snacks</h3>
+<p>Best Market: UAE</p>
+<p>Demand Score: 92</p>
+<p class="text-green-400">Opportunity Score: 88</p>
 </div>
 
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Copper Bottles</h3>
+<p>Best Market: Germany</p>
+<p>Demand Score: 85</p>
+<p class="text-green-400">Opportunity Score: 82</p>
+</div>
 
-<!-- IMPORT TRACKER -->
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Herbal Tea</h3>
+<p>Best Market: Canada</p>
+<p>Demand Score: 78</p>
+<p class="text-green-400">Opportunity Score: 74</p>
+</div>
 
-<div id="imports" class="hidden">
-
-<h2 class="text-3xl font-bold mb-6">🌍 Global Import Demand Tracker</h2>
-
-<div id="importList" class="grid grid-cols-3 gap-6"></div>
+</div>
 
 </div>
 
@@ -152,9 +110,29 @@
 
 <div id="alerts" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">🚨 AI Opportunity Alerts</h2>
+<h2 class="text-3xl font-bold mb-6">AI Opportunity Alerts</h2>
 
-<div id="alertsList" class="grid grid-cols-3 gap-6"></div>
+<div class="grid grid-cols-3 gap-6">
+
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Moringa Powder</h3>
+<p>Germany demand spike detected</p>
+<p class="text-red-400">High Opportunity</p>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Turmeric Extract</h3>
+<p>US imports increasing</p>
+<p class="text-yellow-400">Medium Opportunity</p>
+</div>
+
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Organic Millet</h3>
+<p>UAE demand rising</p>
+<p class="text-green-400">Stable Growth</p>
+</div>
+
+</div>
 
 </div>
 
@@ -163,20 +141,29 @@
 
 <div id="radar" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">🌍 Global Export Radar</h2>
+<h2 class="text-3xl font-bold mb-6">Global Export Radar</h2>
 
-<div id="radarMap" style="width:100%; height:70vh;"></div>
+<div class="grid grid-cols-3 gap-6">
 
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Millet Snacks</h3>
+<p>Country: UAE</p>
+<p class="text-green-400">Market Size: High</p>
 </div>
 
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Copper Bottles</h3>
+<p>Country: Germany</p>
+<p class="text-green-400">Market Size: Medium</p>
+</div>
 
-<!-- AI MARKET PREDICTOR -->
+<div class="bg-slate-800 p-6 rounded-xl">
+<h3 class="text-xl font-bold">Herbal Tea</h3>
+<p>Country: Canada</p>
+<p class="text-green-400">Market Size: Medium</p>
+</div>
 
-<div id="predictor" class="hidden">
-
-<h2 class="text-3xl font-bold mb-6">AI Export Market Predictor</h2>
-
-<div id="predictorList" class="grid grid-cols-3 gap-6"></div>
+</div>
 
 </div>
 
@@ -185,15 +172,13 @@
 
 <div id="suppliers" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">Verified Suppliers</h2>
+<h2 class="text-3xl font-bold mb-6">Supplier Intelligence</h2>
 
 <div class="bg-slate-800 rounded-xl p-6">
 
 <table class="w-full text-left">
 
-<thead class="border-b border-gray-700 text-gray-400">
-
-<tr>
+<tr class="border-b border-gray-700">
 <th>Supplier</th>
 <th>Product</th>
 <th>Location</th>
@@ -201,9 +186,21 @@
 <th>Contact</th>
 </tr>
 
-</thead>
+<tr>
+<td>Copper Craft India</td>
+<td>Copper Bottles</td>
+<td>Moradabad</td>
+<td>300</td>
+<td>sales@coppercraft.in</td>
+</tr>
 
-<tbody id="suppliersTable"></tbody>
+<tr>
+<td>Organic India Exports</td>
+<td>Millet Snacks</td>
+<td>Bangalore</td>
+<td>500</td>
+<td>export@organicindia.com</td>
+</tr>
 
 </table>
 
@@ -212,223 +209,41 @@
 </div>
 
 
+<!-- HEATMAP -->
+
 <div id="heatmap" class="hidden">
 
-<h2 class="text-3xl font-bold mb-6">
-Interactive Global Demand Map
-</h2>
+<h2 class="text-3xl font-bold mb-6">Global Demand Map</h2>
 
-<div id="regions_div"
-style="width:100%; height:70vh;"></div>
-
-<button id="backButton"
-onclick="drawWorldMap()"
-class="mt-4 bg-purple-600 px-4 py-2 rounded hidden">
-Back to World Map
-</button>
+<div id="regions_div" style="width:100%; height:70vh;"></div>
 
 </div>
 
 
-<!-- AI EXPORT ADVISOR -->
-
-<div id="ai" class="hidden">
-
-<h2 class="text-3xl font-bold mb-6">AI Export Advisor</h2>
-
-<input id="aiQuery"
-placeholder="Example: export to UAE"
-class="w-full p-4 rounded-lg text-black mb-4">
-
-<button onclick="runAI()" class="bg-purple-600 px-6 py-3 rounded-lg">
-Analyze Market
-</button>
-
-<div id="aiResults" class="mt-6"></div>
-
 </div>
-
-</div>
-
 </div>
 
 
-<script type="module">
+<script>
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, getDocs, query, orderBy, limit }
-from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+function showSection(section){
 
-const firebaseConfig = {
+["overview","scanner","alerts","radar","suppliers","heatmap"].forEach(id=>{
+document.getElementById(id).classList.add("hidden")
+})
 
-apiKey: "YOUR_API_KEY",
-authDomain: "sellora-ai.firebaseapp.com",
-projectId: "sellora-ai",
-storageBucket: "sellora-ai.firebasestorage.app",
-messagingSenderId: "7850591690",
-appId: "1:7850591690:web:346fccc5531288fb2a3b33"
+document.getElementById(section).classList.remove("hidden")
 
-};
-
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-
-
-
-/* SECTION SWITCHER */
-
-window.showSection=function(section){
-
-["overview","trending","opportunities","imports","alerts","radar","predictor","suppliers","heatmap","ai"].forEach(id=>{
-document.getElementById(id).classList.add("hidden");
-});
-
-document.getElementById(section).classList.remove("hidden");
-
-if(section==="trending") loadProducts();
-if(section==="opportunities") loadOpportunities();
-if(section==="imports") loadImports();
-if(section==="alerts") loadAlerts();
-if(section==="radar") drawRadar();
-if(section==="predictor") loadPredictor();
-if(section==="suppliers") loadSuppliers();
-
-if(section==="heatmap")
-google.charts.setOnLoadCallback(drawWorldMap);
+if(section==="heatmap"){
+google.charts.setOnLoadCallback(drawMap)
+}
 
 }
 
 
+google.charts.load('current',{packages:['geochart']})
 
-/* TRENDING PRODUCTS */
-
-async function loadProducts(){
-
-const q=query(collection(db,"products"),orderBy("demand_score","desc"),limit(20));
-const snapshot=await getDocs(q);
-
-const table=document.getElementById("productsTable");
-table.innerHTML="";
-
-snapshot.forEach(doc=>{
-const d=doc.data();
-
-table.innerHTML+=`
-<tr class="border-b border-gray-700">
-<td>${d.product}</td>
-<td>${d.demand_score}</td>
-<td>${d.best_market}</td>
-<td>${d.margin}</td>
-<td>${d.supplier_count}</td>
-</tr>
-`;
-
-});
-
-}
-
-
-/* IMPORT TRACKER */
-
-async function loadImports(){
-
-const snapshot=await getDocs(collection(db,"global_demand"));
-
-const container=document.getElementById("importList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const d=doc.data();
-
-container.innerHTML+=`
-
-<div class="bg-slate-800 p-6 rounded-xl">
-
-<h3 class="text-xl font-bold">${d.product}</h3>
-
-<p class="text-gray-400">Country: ${d.country}</p>
-
-<p class="text-green-400 font-bold">Demand Growth: +${d.demand_growth}%</p>
-
-</div>
-
-`;
-
-});
-
-}
-
-
-/* MARKET PREDICTOR */
-
-async function loadPredictor(){
-
-const snapshot = await getDocs(collection(db,"products"));
-
-const container = document.getElementById("predictorList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const p = doc.data();
-
-let marginScore=0;
-
-if(p.margin==="High") marginScore=40;
-if(p.margin==="Medium") marginScore=25;
-if(p.margin==="Low") marginScore=10;
-
-const competition = 100-(p.supplier_count||0);
-
-const prediction =
-(p.demand_score*0.6) +
-(marginScore*0.25) +
-(competition*0.15);
-
-let level="Medium";
-
-if(prediction>80) level="High";
-if(prediction<60) level="Low";
-
-container.innerHTML+=`
-
-<div class="bg-slate-800 p-6 rounded-xl">
-
-<h3 class="text-xl font-bold">${p.product}</h3>
-
-<p class="text-gray-400">Market: ${p.best_market}</p>
-
-<p class="text-green-400 font-bold">
-Predicted Growth: +${Math.round(prediction)}%
-</p>
-
-<p class="text-purple-400 font-bold">
-Opportunity Level: ${level}
-</p>
-
-</div>
-
-`;
-
-});
-
-}
-
-
-
-/* INTERACTIVE DEMAND MAP */
-
-google.charts.load('current', { packages:['geochart'] });
-
-let currentCountry=null;
-
-
-/* WORLD MAP */
-
-window.drawWorldMap=function(){
-
-document.getElementById("backButton").classList.add("hidden");
+function drawMap(){
 
 var data=google.visualization.arrayToDataTable([
 ['Country','Demand'],
@@ -438,162 +253,23 @@ var data=google.visualization.arrayToDataTable([
 ['United Kingdom',83],
 ['Canada',78],
 ['India',90]
-]);
+])
 
 var options={
 colorAxis:{colors:['#93c5fd','#4f46e5']},
 backgroundColor:'#0f172a',
 datalessRegionColor:'#1e293b'
-};
+}
 
 var chart=new google.visualization.GeoChart(
 document.getElementById('regions_div')
-);
+)
 
-chart.draw(data,options);
+chart.draw(data,options)
 
-
-/* COUNTRY CLICK EVENT */
-
-google.visualization.events.addListener(chart,'select',function(){
-
-var selection=chart.getSelection();
-
-if(selection.length>0){
-
-var country=data.getValue(selection[0].row,0);
-
-drawStateMap(country);
-
-}
-
-});
-
-};
-
-
-/* STATE / PROVINCE MAP */
-
-async function drawStateMap(country){
-
-currentCountry=country;
-
-document.getElementById("backButton").classList.remove("hidden");
-
-/* GET FIRESTORE DATA */
-
-const snapshot=await getDocs(collection(db,"regional_demand"));
-
-let dataArray=[['State','Demand']];
-
-snapshot.forEach(doc=>{
-
-const r=doc.data();
-
-if(r.country===country){
-
-dataArray.push([
-r.state,
-r.demand_score
-]);
-
-}
-
-});
-
-if(dataArray.length===1){
-
-alert("No regional data available for "+country);
-return;
-
-}
-
-var data=google.visualization.arrayToDataTable(dataArray);
-
-
-/* COUNTRY REGION CODE */
-
-let regionCode="";
-
-if(country==="Germany") regionCode="DE";
-if(country==="India") regionCode="IN";
-if(country==="United States") regionCode="US";
-if(country==="Canada") regionCode="CA";
-if(country==="United Kingdom") regionCode="GB";
-if(country==="United Arab Emirates") regionCode="AE";
-
-
-var options={
-
-region:regionCode,
-displayMode:'regions',
-resolution:'provinces',
-
-colorAxis:{colors:['#93c5fd','#4f46e5']},
-
-backgroundColor:'#0f172a',
-datalessRegionColor:'#1e293b'
-
-};
-
-var chart=new google.visualization.GeoChart(
-document.getElementById('regions_div')
-);
-
-chart.draw(data,options);
-
-}
-
-
-/* AI EXPORT ADVISOR */
-
-window.runAI=async function(){
-
-const q=document.getElementById("aiQuery").value.toLowerCase();
-
-const snapshot=await getDocs(collection(db,"products"));
-
-let output="";
-
-snapshot.forEach(doc=>{
-
-const d=doc.data();
-
-if(q.includes(d.best_market.toLowerCase())){
-
-output+=`
-<div class="mb-4 border-b border-gray-700 pb-2">
-<strong>${d.product}</strong><br>
-Demand Score: ${d.demand_score}<br>
-Market: ${d.best_market}
-</div>
-`;
-
-}
-
-});
-
-document.getElementById("aiResults").innerHTML=output;
-
-}
-
-
-/* USER INFO */
-
-document.getElementById("userEmail").innerText=
-localStorage.getItem("sellora_email")||"User";
-
-document.getElementById("userPlan").innerText=
-(localStorage.getItem("sellora_plan")||"FREE").toUpperCase();
-
-
-window.logout=function(){
-localStorage.clear();
-window.location.href="login.html";
 }
 
 </script>
 
 </body>
 </html>
-
