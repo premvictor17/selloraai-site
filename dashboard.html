@@ -11,6 +11,20 @@
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://www.gstatic.com/charts/loader.js"></script>
 
+<style>
+
+.hidden{
+display:none;
+}
+
+.card{
+background:#1e293b;
+padding:24px;
+border-radius:12px;
+}
+
+</style>
+
 </head>
 
 <body class="bg-slate-900 text-white">
@@ -25,58 +39,35 @@
 
 <nav class="space-y-4 text-gray-300">
 
-<button onclick="showSection('overview')" class="block hover:text-white">
-Overview
-</button>
+<button onclick="showSection('overview')" class="block hover:text-white">Overview</button>
 
-<button onclick="showSection('trending')" class="block hover:text-white">
-Trending Products
-</button>
+<button onclick="showSection('trending')" class="block hover:text-white">Trending Products</button>
 
-<button onclick="showSection('scanner')" class="block hover:text-white">
-Product Opportunity Scanner
-</button>
+<button onclick="showSection('scanner')" class="block hover:text-white">Product Opportunity Scanner</button>
 
-<button onclick="showSection('imports')" class="block hover:text-white">
-Global Import Tracker
-</button>
+<button onclick="showSection('imports')" class="block hover:text-white">Global Import Tracker</button>
 
-<button onclick="showSection('alerts')" class="block hover:text-white">
-AI Opportunity Alerts
-</button>
+<button onclick="showSection('alerts')" class="block hover:text-white">AI Opportunity Alerts</button>
 
-<button onclick="showSection('radar')" class="block hover:text-white">
-Global Export Radar
-</button>
+<button onclick="showSection('radar')" class="block hover:text-white">Global Export Radar</button>
 
-<button onclick="showSection('predictor')" class="block hover:text-white">
-AI Market Predictor
-</button>
+<button onclick="showSection('predictor')" class="block hover:text-white">AI Market Predictor</button>
 
-<button onclick="showSection('suppliers')" class="block hover:text-white">
-Supplier Intelligence
-</button>
+<button onclick="showSection('suppliers')" class="block hover:text-white">Supplier Intelligence</button>
 
-<button onclick="showSection('heatmap')" class="block hover:text-white">
-Global Demand Map
-</button>
+<button onclick="showSection('heatmap')" class="block hover:text-white">Global Demand Map</button>
 
-<button onclick="showSection('ai')" class="block hover:text-white">
-AI Export Advisor
-</button>
+<button onclick="showSection('ai')" class="block hover:text-white">AI Export Advisor</button>
 
-<button onclick="logout()" class="text-red-400 mt-10">
-Logout
-</button>
+<button onclick="logout()" class="text-red-400 mt-10">Logout</button>
 
 </nav>
 
 </div>
 
+<!-- MAIN -->
 
 <div class="flex-1 p-10">
-
-<!-- OVERVIEW -->
 
 <div id="overview">
 
@@ -84,169 +75,57 @@ Logout
 
 <div class="grid grid-cols-4 gap-6">
 
-<div class="bg-slate-800 p-6 rounded-xl">
+<div class="card">
 <p class="text-gray-400">Active Products</p>
-<p class="text-3xl font-bold">128</p>
+<h2 class="text-3xl font-bold">128</h2>
 </div>
 
-<div class="bg-slate-800 p-6 rounded-xl">
+<div class="card">
 <p class="text-gray-400">Suppliers</p>
-<p class="text-3xl font-bold">542</p>
+<h2 class="text-3xl font-bold">542</h2>
 </div>
 
-<div class="bg-slate-800 p-6 rounded-xl">
+<div class="card">
 <p class="text-gray-400">Markets</p>
-<p class="text-3xl font-bold">38</p>
+<h2 class="text-3xl font-bold">38</h2>
 </div>
 
-<div class="bg-slate-800 p-6 rounded-xl">
+<div class="card">
 <p class="text-gray-400">Export Score</p>
-<p class="text-3xl font-bold">89%</p>
+<h2 class="text-3xl font-bold">89%</h2>
 </div>
 
 </div>
 
 </div>
 
-
-<!-- OPPORTUNITY SCANNER -->
+<div id="trending" class="hidden">
+<h2 class="text-3xl font-bold mb-6">Trending Products</h2>
+</div>
 
 <div id="scanner" class="hidden">
-
 <h2 class="text-3xl font-bold mb-6">Product Opportunity Scanner</h2>
-
-<div class="grid grid-cols-3 gap-6">
-
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Millet Snacks</h3>
-<p>Best Market: UAE</p>
-<p>Demand Score: 92</p>
-<p class="text-green-400">Opportunity Score: 88</p>
 </div>
 
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Copper Bottles</h3>
-<p>Best Market: Germany</p>
-<p>Demand Score: 85</p>
-<p class="text-green-400">Opportunity Score: 82</p>
+<div id="imports" class="hidden">
+<h2 class="text-3xl font-bold mb-6">Global Import Tracker</h2>
 </div>
-
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Herbal Tea</h3>
-<p>Best Market: Canada</p>
-<p>Demand Score: 78</p>
-<p class="text-green-400">Opportunity Score: 74</p>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- AI ALERTS -->
 
 <div id="alerts" class="hidden">
-
 <h2 class="text-3xl font-bold mb-6">AI Opportunity Alerts</h2>
-
-<div class="grid grid-cols-3 gap-6">
-
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Moringa Powder</h3>
-<p>Germany demand spike detected</p>
-<p class="text-red-400">High Opportunity</p>
 </div>
-
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Turmeric Extract</h3>
-<p>US imports increasing</p>
-<p class="text-yellow-400">Medium Opportunity</p>
-</div>
-
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Organic Millet</h3>
-<p>UAE demand rising</p>
-<p class="text-green-400">Stable Growth</p>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- EXPORT RADAR -->
 
 <div id="radar" class="hidden">
-
 <h2 class="text-3xl font-bold mb-6">Global Export Radar</h2>
-
-<div class="grid grid-cols-3 gap-6">
-
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Millet Snacks</h3>
-<p>Country: UAE</p>
-<p class="text-green-400">Market Size: High</p>
 </div>
 
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Copper Bottles</h3>
-<p>Country: Germany</p>
-<p class="text-green-400">Market Size: Medium</p>
+<div id="predictor" class="hidden">
+<h2 class="text-3xl font-bold mb-6">AI Market Predictor</h2>
 </div>
-
-<div class="bg-slate-800 p-6 rounded-xl">
-<h3 class="text-xl font-bold">Herbal Tea</h3>
-<p>Country: Canada</p>
-<p class="text-green-400">Market Size: Medium</p>
-</div>
-
-</div>
-
-</div>
-
-
-<!-- SUPPLIERS -->
 
 <div id="suppliers" class="hidden">
-
 <h2 class="text-3xl font-bold mb-6">Supplier Intelligence</h2>
-
-<div class="bg-slate-800 rounded-xl p-6">
-
-<table class="w-full text-left">
-
-<tr class="border-b border-gray-700">
-<th>Supplier</th>
-<th>Product</th>
-<th>Location</th>
-<th>MOQ</th>
-<th>Contact</th>
-</tr>
-
-<tr>
-<td>Copper Craft India</td>
-<td>Copper Bottles</td>
-<td>Moradabad</td>
-<td>300</td>
-<td>sales@coppercraft.in</td>
-</tr>
-
-<tr>
-<td>Organic India Exports</td>
-<td>Millet Snacks</td>
-<td>Bangalore</td>
-<td>500</td>
-<td>export@organicindia.com</td>
-</tr>
-
-</table>
-
 </div>
-
-</div>
-
-
-<!-- HEATMAP -->
 
 <div id="heatmap" class="hidden">
 
@@ -256,18 +135,19 @@ Logout
 
 </div>
 
+<div id="ai" class="hidden">
+<h2 class="text-3xl font-bold mb-6">AI Export Advisor</h2>
+</div>
 
 </div>
-</div>
 
+</div>
 
 <script>
 
-/* SECTION SWITCHER */
-
 function showSection(section){
 
-const sections = [
+const sections=[
 "overview",
 "trending",
 "scanner",
@@ -281,26 +161,18 @@ const sections = [
 ];
 
 sections.forEach(id=>{
-const el = document.getElementById(id);
-if(el){
-el.style.display = "none";
-}
+const el=document.getElementById(id);
+if(el) el.classList.add("hidden");
 });
 
-const active = document.getElementById(section);
-
-if(active){
-active.style.display = "block";
-}
+const active=document.getElementById(section);
+if(active) active.classList.remove("hidden");
 
 if(section==="heatmap"){
 google.charts.setOnLoadCallback(drawMap);
 }
 
 }
-
-
-/* GLOBAL DEMAND MAP */
 
 google.charts.load('current',{packages:['geochart']});
 
@@ -330,18 +202,12 @@ chart.draw(data,options);
 
 }
 
-
-/* LOGOUT */
-
 function logout(){
-
 localStorage.clear();
-
 window.location.href="login.html";
-
 }
+
 </script>
 
 </body>
 </html>
-
