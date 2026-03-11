@@ -201,7 +201,7 @@ import { getFirestore, collection, getDocs } from "https://www.gstatic.com/fireb
 
 
 const firebaseConfig = {
-apiKey: "YOUR_KEY",
+apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
 authDomain: "sellora-ai.firebaseapp.com",
 projectId: "sellora-ai",
 storageBucket: "sellora-ai.appspot.com",
@@ -218,7 +218,18 @@ const db = getFirestore(app);
 
 window.showSection=function(section){
 
-const sections=["overview","trending","imports","alerts","radar","suppliers","heatmap"];
+const sections=[
+"overview",
+"trending",
+"scanner",
+"imports",
+"alerts",
+"radar",
+"predictor",
+"suppliers",
+"heatmap",
+"ai"
+];
 
 sections.forEach(id=>{
 const el=document.getElementById(id);
@@ -228,9 +239,11 @@ if(el) el.classList.add("hidden");
 document.getElementById(section).classList.remove("hidden");
 
 if(section==="trending") loadProducts();
+if(section==="scanner") loadProducts();
 if(section==="imports") loadImports();
 if(section==="alerts") loadAlerts();
 if(section==="radar") loadRadar();
+if(section==="predictor") loadProducts();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
 
@@ -441,6 +454,7 @@ window.location.href="login.html";
 
 </body>
 </html>
+
 
 
 
