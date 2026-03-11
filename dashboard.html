@@ -112,7 +112,122 @@ Logout
 </div>
 
 </div>
+<!-- PRODUCT OPPORTUNITY SCANNER -->
 
+<div id="scanner" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🔥 Product Opportunity Scanner
+</h2>
+
+<div id="scannerList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
+
+<!-- GLOBAL IMPORT TRACKER -->
+
+<div id="imports" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🌍 Global Import Tracker
+</h2>
+
+<div id="importsList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
+
+<!-- AI OPPORTUNITY ALERTS -->
+
+<div id="alerts" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🚨 AI Opportunity Alerts
+</h2>
+
+<div id="alertsList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
+
+<!-- GLOBAL EXPORT RADAR -->
+
+<div id="radar" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+📡 Global Export Radar
+</h2>
+
+<div id="radarList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
+
+<!-- AI MARKET PREDICTOR -->
+
+<div id="predictor" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🤖 AI Market Predictor
+</h2>
+
+<div id="predictorList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
+
+<!-- SUPPLIER INTELLIGENCE -->
+
+<div id="suppliers" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🏭 Supplier Intelligence
+</h2>
+
+<div id="supplierList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+
+
+
+<!-- GLOBAL DEMAND MAP -->
+
+<div id="heatmap" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🌎 Global Demand Map
+</h2>
+
+<div id="regions_div" style="width:100%; height:70vh;"></div>
+
+</div>
+
+<!-- AI EXPORT ADVISOR -->
+
+<div id="ai" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+🧠 AI Export Advisor
+</h2>
+
+<input id="aiQuery"
+placeholder="Example: Export Millet to UAE"
+class="w-full p-4 rounded text-black mb-4">
+
+<button onclick="runAI()"
+class="bg-purple-600 px-6 py-3 rounded">
+Analyze Market
+</button>
+
+<div id="aiResults" class="mt-6"></div>
+
+</div>
 
 <!-- TRENDING PRODUCTS -->
 
@@ -389,7 +504,36 @@ var chart=new google.visualization.GeoChart(document.getElementById('regions_div
 chart.draw(data,options);
 
 }
+window.runAI = async function(){
 
+const q=document.getElementById("aiQuery").value.toLowerCase()
+
+const snapshot=await getDocs(collection(db,"products"))
+
+let output=""
+
+snapshot.forEach(doc=>{
+
+const d=doc.data()
+
+if(d.product.toLowerCase().includes(q) || 
+   d.best_market.toLowerCase().includes(q)){
+
+output+=`
+<div class="mb-4 border-b border-gray-700 pb-2">
+<strong>${d.product}</strong><br>
+Best Market: ${d.best_market}<br>
+Demand Score: ${d.demand_score}
+</div>
+`
+
+}
+
+})
+
+document.getElementById("aiResults").innerHTML=output
+
+}
 
 /* LOGOUT */
 
@@ -402,4 +546,5 @@ window.location.href="login.html";
 
 </body>
 </html>
+
 
