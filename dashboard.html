@@ -19,6 +19,16 @@
 <body class="bg-slate-900 text-white">
 
 <div class="flex">
+   
+   <div id="deal" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+💼 AI Deal Engine
+</h2>
+
+<div id="dealList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
 
 <!-- SIDEBAR -->
 
@@ -27,6 +37,8 @@
 <h1 class="text-xl font-bold mb-10">SELLORA</h1>
 
 <nav class="space-y-4 text-gray-300">
+   
+   <button onclick="showSection('deal')">AI Deal Engine</button>
 
 <button onclick="showSection('overview')" class="block hover:text-white">
 Overview
@@ -212,7 +224,62 @@ appId: "1:7850591690:web:346fccc5531288fb2a3b33"
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+async function loadDeals(){
 
+const productsSnap = await getDocs(collection(db,"products"))
+const suppliersSnap = await getDocs(collection(db,"suppliers"))
+
+const container = document.getElementById("dealList")
+container.innerHTML = ""
+
+productsSnap.forEach(p=>{
+
+const product = p.data()
+
+let bestSupplier = null
+
+suppliersSnap.forEach(s=>{
+const sup = s.data()
+if(sup.product === product.product){
+bestSupplier = sup
+}
+})
+
+if(bestSupplier){
+
+container.innerHTML += `
+<div class="card">
+<h3 class="text-xl font-bold">${product.product}</h3>
+
+<p>🌍 Market: ${product.best_market}</p>
+<p>📊 Demand: ${product.demand_score}</p>
+<p>🏭 Supplier: ${bestSupplier.supplier_name}</p>
+<p>📍 Location: ${bestSupplier.location}</p>
+<p>📦 MOQ: ${bestSupplier.moq}</p>
+
+<div class="mt-3 space-y-2">
+
+<a href="mailto:${bestSupplier.contact}"
+class="bg-purple-600 px-3 py-1 rounded block text-center">
+Send Email
+</a>
+
+<a href="https://wa.me/"
+target="_blank"
+class="bg-green-500 px-3 py-1 rounded block text-center">
+WhatsApp Supplier
+</a>
+
+</div>
+
+</div>
+`
+
+}
+
+})
+
+}
 
 /* SECTION SWITCHER */
 
@@ -246,7 +313,7 @@ if(section==="radar") loadRadar();
 if(section==="predictor") loadProducts();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
-
+if(section==="deal") loadDeals();
 };
 
 
