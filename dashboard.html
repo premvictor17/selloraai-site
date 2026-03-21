@@ -11,7 +11,18 @@
 
 <style>
 .hidden{display:none}
-.card{background:#1e293b;padding:20px;border-radius:12px}
+
+.card{
+background:#1e293b;
+padding:20px;
+border-radius:12px;
+box-shadow:0 10px 30px rgba(0,0,0,0.3);
+transition:0.3s;
+}
+
+.card:hover{
+transform:translateY(-5px);
+}
 </style>
 
 </head>
@@ -161,6 +172,8 @@ Analyze Market
 </div> <!-- END MAIN -->
 
 </div> <!-- END FLEX -->
+
+   
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
@@ -477,7 +490,9 @@ window.logout=function(){
 localStorage.clear();
 window.location.href="login.html";
 }
-
+// Load default section on page load
+showSection("overview");
+   
 </script>
 
 </body>
