@@ -281,7 +281,7 @@ active.style.display="block"; // FORCE show
 
 if(section==="deal") loadDeals();
 if(section==="trending") loadProducts();
-if(section==="scanner") loadProducts();
+if(section==="scanner") loadScanner();
 if(section==="imports") loadImports();
 if(section==="alerts") loadAlerts();
 if(section==="radar") loadRadar();
@@ -328,6 +328,59 @@ if(predictorContainer) predictorContainer.innerHTML += card;
 
 }
 
+   async function loadScanner(){
+
+const snapshot = await getDocs(collection(db,"products"));
+
+const container = document.getElementById("scannerList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const d = doc.data();
+
+/* CONVERT MARGIN TO SCORE */
+let marginScore = 0;
+
+if(d.margin === "High") marginScore = 30;
+else if(d.margin === "Medium") marginScore = 20;
+else marginScore = 10;
+
+/* SUPPLIER SCORE */
+let supplierScore = Math.min(d.supplier_count * 2, 20);
+
+/* FINAL SCORE */
+let opportunityScore = 
+(d.demand_score * 0.5) +
+marginScore +
+supplierScore;
+
+/* FILTER ONLY GOOD OPPORTUNITIES */
+if(opportunityScore >= 70){
+
+container.innerHTML += `
+<div class="card">
+
+<h3 class="text-xl font-bold">${d.product}</h3>
+
+<p>🌍 Market: ${d.best_market}</p>
+<p>📊 Demand: ${d.demand_score}</p>
+<p>💰 Margin: ${d.margin}</p>
+<p>🏭 Suppliers: ${d.supplier_count}</p>
+
+<p class="text-green-400 font-bold mt-2">
+Opportunity Score: ${Math.round(opportunityScore)}
+</p>
+
+</div>
+`;
+
+}
+
+});
+
+}
+   
 /* IMPORTS */
 
 async function loadImports(){
