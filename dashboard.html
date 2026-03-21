@@ -114,8 +114,17 @@ Logout
 
 <!-- SCANNER -->
 <div id="scanner" class="hidden">
-<h2 class="text-3xl font-bold mb-6">🔥 Product Opportunity Scanner</h2>
+
+<h2 class="text-3xl font-bold mb-6">
+🔥 Product Opportunity Scanner
+</h2>
+
+<!-- BEST OPPORTUNITY -->
+<div id="bestOpportunity" class="mb-6"></div>
+
+<!-- SCANNER LIST -->
 <div id="scannerList" class="grid grid-cols-3 gap-6"></div>
+
 </div>
 
 <!-- IMPORTS -->
@@ -232,7 +241,9 @@ class="bg-purple-600 px-3 py-1 rounded block text-center">
 Send Email
 </a>
 
-<a href="https://wa.me/"
+<a href="https://wa.me/?text=${encodeURIComponent(
+`Hello, I am interested in ${product.product} for export to ${product.best_market}. Please share pricing, MOQ flexibility, and shipping details.`
+)}"
 target="_blank"
 class="bg-green-500 px-3 py-1 rounded block text-center">
 WhatsApp Supplier
@@ -267,21 +278,24 @@ const sections=[
 "ai"
 ];
 
+// 🔴 STEP 1: Hide all sections
 sections.forEach(id=>{
 const el=document.getElementById(id);
 if(el){
-el.style.display="none";   // FORCE hide
+el.style.display="none";
 }
 });
 
+// 🟢 STEP 2: Show selected section
 const active=document.getElementById(section);
 if(active){
-active.style.display="block"; // FORCE show
+active.style.display="block";
 }
 
+// 🚀 STEP 3: Load data
 if(section==="deal") loadDeals();
 if(section==="trending") loadProducts();
-if(section==="scanner") loadScanner();
+if(section==="scanner"){ loadScanner(); loadBestOpportunity(); }
 if(section==="imports") loadImports();
 if(section==="alerts") loadAlerts();
 if(section==="radar") loadRadar();
@@ -289,8 +303,8 @@ if(section==="predictor") loadProducts();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
 
-};
-
+}
+   
 /* PRODUCTS */
 
 async function loadProducts(){
@@ -328,6 +342,7 @@ if(predictorContainer) predictorContainer.innerHTML += card;
 
 }
 
+   /* LOAD SCANNER */
    async function loadScanner(){
 
 const snapshot = await getDocs(collection(db,"products"));
@@ -380,7 +395,52 @@ Opportunity Score: ${Math.round(opportunityScore)}
 });
 
 }
-   
+
+   /* BEST OPPORTUNITIES */
+   async function loadBestOpportunity(){
+
+const snapshot = await getDocs(collection(db,"products"));
+
+let best = null;
+let bestScore = 0;
+
+snapshot.forEach(doc=>{
+
+const d = doc.data();
+
+let marginScore = d.margin === "High" ? 30 : d.margin === "Medium" ? 20 : 10;
+let supplierScore = Math.min(d.supplier_count * 2, 20);
+
+let score = (d.demand_score * 0.5) + marginScore + supplierScore;
+
+if(score > bestScore){
+bestScore = score;
+best = d;
+}
+
+});
+
+if(best){
+
+document.getElementById("bestOpportunity").innerHTML = `
+<div class="card border border-green-500">
+
+<h2 class="text-xl font-bold text-green-400 mb-2">
+🔥 BEST OPPORTUNITY TODAY
+</h2>
+
+<p class="text-lg font-semibold">${best.product}</p>
+
+<p>🌍 Market: ${best.best_market}</p>
+<p>📊 Demand: ${best.demand_score}</p>
+<p>💰 Margin: ${best.margin}</p>
+
+</div>
+`;
+
+}
+
+}
 /* IMPORTS */
 
 async function loadImports(){
