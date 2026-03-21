@@ -297,8 +297,13 @@ async function loadProducts(){
 
 const snapshot = await getDocs(collection(db,"products"));
 
-const container=document.getElementById("productsList");
-container.innerHTML="";
+const productsContainer = document.getElementById("productsList");
+const scannerContainer = document.getElementById("scannerList");
+const predictorContainer = document.getElementById("predictorList");
+
+if(productsContainer) productsContainer.innerHTML="";
+if(scannerContainer) scannerContainer.innerHTML="";
+if(predictorContainer) predictorContainer.innerHTML="";
 
 document.getElementById("productCount").innerText=snapshot.size;
 
@@ -306,7 +311,7 @@ snapshot.forEach(doc=>{
 
 const d=doc.data();
 
-container.innerHTML+=`
+const card = `
 <div class="card">
 <h3 class="text-xl font-bold">${d.product}</h3>
 <p>Best Market: ${d.best_market}</p>
@@ -315,10 +320,13 @@ container.innerHTML+=`
 </div>
 `;
 
+if(productsContainer) productsContainer.innerHTML += card;
+if(scannerContainer) scannerContainer.innerHTML += card;
+if(predictorContainer) predictorContainer.innerHTML += card;
+
 });
 
 }
-
 
 /* IMPORTS */
 
