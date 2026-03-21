@@ -19,84 +19,43 @@
 <body class="bg-slate-900 text-white">
 
 <div class="flex">
-   
-   <div id="deal" class="hidden">
-
-<h2 class="text-3xl font-bold mb-6">
-💼 AI Deal Engine
-</h2>
-
-<div id="dealList" class="grid grid-cols-3 gap-6"></div>
-
-</div>
 
 <!-- SIDEBAR -->
-
 <div class="w-64 h-screen bg-black p-6">
 
 <h1 class="text-xl font-bold mb-10">SELLORA</h1>
 
 <nav class="space-y-4 text-gray-300">
-   
-   <button onclick="showSection('deal')">AI Deal Engine</button>
 
-<button onclick="showSection('overview')" class="block hover:text-white">
-Overview
-</button>
+<button onclick="showSection('deal')">AI Deal Engine</button>
+<button onclick="showSection('overview')">Overview</button>
+<button onclick="showSection('trending')">Trending Products</button>
+<button onclick="showSection('scanner')">Product Opportunity Scanner</button>
+<button onclick="showSection('imports')">Global Import Tracker</button>
+<button onclick="showSection('alerts')">AI Opportunity Alerts</button>
+<button onclick="showSection('radar')">Global Export Radar</button>
+<button onclick="showSection('predictor')">AI Market Predictor</button>
+<button onclick="showSection('suppliers')">Supplier Intelligence</button>
+<button onclick="showSection('heatmap')">Global Demand Map</button>
+<button onclick="showSection('ai')">AI Export Advisor</button>
 
-<button onclick="showSection('trending')" class="block hover:text-white">
-Trending Products
-</button>
-
-<button onclick="showSection('scanner')" class="block hover:text-white">
-Product Opportunity Scanner
-</button>
-
-<button onclick="showSection('imports')" class="block hover:text-white">
-Global Import Tracker
-</button>
-
-<button onclick="showSection('alerts')" class="block hover:text-white">
-AI Opportunity Alerts
-</button>
-
-<button onclick="showSection('radar')" class="block hover:text-white">
-Global Export Radar
-</button>
-
-<button onclick="showSection('predictor')" class="block hover:text-white">
-AI Market Predictor
-</button>
-
-<button onclick="showSection('suppliers')" class="block hover:text-white">
-Supplier Intelligence
-</button>
-
-<button onclick="showSection('heatmap')" class="block hover:text-white">
-Global Demand Map
-</button>
-
-<button onclick="showSection('ai')" class="block hover:text-white">
-AI Export Advisor
-</button>
-
-<button onclick="logout()" class="text-red-400 mt-10">
-Logout
-</button>
+<button onclick="logout()" class="text-red-400 mt-10">Logout</button>
 
 </nav>
 
 </div>
 
-
-<!-- MAIN -->
-
+<!-- MAIN CONTENT -->
 <div class="flex-1 p-10">
 
+<!-- AI DEAL ENGINE -->
+<div id="deal" class="hidden">
+<h2 class="text-3xl font-bold mb-6">💼 AI Deal Engine</h2>
+<div id="dealList" class="grid grid-cols-3 gap-6"></div>
+</div>
+
 <!-- OVERVIEW -->
-
 <div id="overview">
-
 <h1 class="text-4xl font-bold mb-8">Dashboard Overview</h1>
 
 <div class="grid grid-cols-4 gap-6">
@@ -122,76 +81,58 @@ Logout
 </div>
 
 </div>
-
 </div>
-<!-- TRENDING PRODUCTS -->
 
+<!-- TRENDING -->
 <div id="trending" class="hidden">
 <h2 class="text-3xl font-bold mb-6">Trending Products</h2>
 <div id="productsList" class="grid grid-cols-3 gap-6"></div>
 </div>
 
-
-<!-- PRODUCT OPPORTUNITY SCANNER -->
-
+<!-- SCANNER -->
 <div id="scanner" class="hidden">
 <h2 class="text-3xl font-bold mb-6">🔥 Product Opportunity Scanner</h2>
 <div id="scannerList" class="grid grid-cols-3 gap-6"></div>
 </div>
 
-
-<!-- GLOBAL IMPORT TRACKER -->
-
+<!-- IMPORTS -->
 <div id="imports" class="hidden">
 <h2 class="text-3xl font-bold mb-6">🌍 Global Import Tracker</h2>
 <div id="importsList" class="grid grid-cols-3 gap-6"></div>
 </div>
 
-
-<!-- AI OPPORTUNITY ALERTS -->
-
+<!-- ALERTS -->
 <div id="alerts" class="hidden">
 <h2 class="text-3xl font-bold mb-6">🚨 AI Opportunity Alerts</h2>
 <div id="alertsList" class="grid grid-cols-3 gap-6"></div>
 </div>
 
-
-<!-- GLOBAL EXPORT RADAR -->
-
+<!-- RADAR -->
 <div id="radar" class="hidden">
 <h2 class="text-3xl font-bold mb-6">📡 Global Export Radar</h2>
 <div id="radarList" class="grid grid-cols-3 gap-6"></div>
 </div>
 
-
-<!-- AI MARKET PREDICTOR -->
-
+<!-- PREDICTOR -->
 <div id="predictor" class="hidden">
 <h2 class="text-3xl font-bold mb-6">🤖 AI Market Predictor</h2>
 <div id="predictorList" class="grid grid-cols-3 gap-6"></div>
 </div>
 
-
-<!-- SUPPLIER INTELLIGENCE -->
-
+<!-- SUPPLIERS -->
 <div id="suppliers" class="hidden">
 <h2 class="text-3xl font-bold mb-6">🏭 Supplier Intelligence</h2>
 <div id="supplierList" class="grid grid-cols-3 gap-6"></div>
 </div>
 
-
-<!-- GLOBAL DEMAND MAP -->
-
+<!-- MAP -->
 <div id="heatmap" class="hidden">
 <h2 class="text-3xl font-bold mb-6">🌎 Global Demand Map</h2>
 <div id="regions_div" style="width:100%; height:70vh;"></div>
 </div>
 
-
-<!-- AI EXPORT ADVISOR -->
-
+<!-- AI -->
 <div id="ai" class="hidden">
-
 <h2 class="text-3xl font-bold mb-6">🧠 AI Export Advisor</h2>
 
 <input id="aiQuery"
@@ -203,9 +144,11 @@ Analyze Market
 </button>
 
 <div id="aiResults" class="mt-6"></div>
-
 </div>
 
+</div> <!-- END MAIN -->
+
+</div> <!-- END FLEX -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
