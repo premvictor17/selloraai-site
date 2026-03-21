@@ -27,19 +27,31 @@
 
 <nav class="space-y-4 text-gray-300">
 
-<button onclick="showSection('deal')">AI Deal Engine</button>
-<button onclick="showSection('overview')">Overview</button>
-<button onclick="showSection('trending')">Trending Products</button>
-<button onclick="showSection('scanner')">Product Opportunity Scanner</button>
-<button onclick="showSection('imports')">Global Import Tracker</button>
-<button onclick="showSection('alerts')">AI Opportunity Alerts</button>
-<button onclick="showSection('radar')">Global Export Radar</button>
-<button onclick="showSection('predictor')">AI Market Predictor</button>
-<button onclick="showSection('suppliers')">Supplier Intelligence</button>
-<button onclick="showSection('heatmap')">Global Demand Map</button>
-<button onclick="showSection('ai')">AI Export Advisor</button>
+<button onclick="showSection('deal')" class="block w-full text-left">AI Deal Engine</button>
 
-<button onclick="logout()" class="text-red-400 mt-10">Logout</button>
+<button onclick="showSection('overview')" class="block w-full text-left">Overview</button>
+
+<button onclick="showSection('trending')" class="block w-full text-left">Trending Products</button>
+
+<button onclick="showSection('scanner')" class="block w-full text-left">Product Opportunity Scanner</button>
+
+<button onclick="showSection('imports')" class="block w-full text-left">Global Import Tracker</button>
+
+<button onclick="showSection('alerts')" class="block w-full text-left">AI Opportunity Alerts</button>
+
+<button onclick="showSection('radar')" class="block w-full text-left">Global Export Radar</button>
+
+<button onclick="showSection('predictor')" class="block w-full text-left">AI Market Predictor</button>
+
+<button onclick="showSection('suppliers')" class="block w-full text-left">Supplier Intelligence</button>
+
+<button onclick="showSection('heatmap')" class="block w-full text-left">Global Demand Map</button>
+
+<button onclick="showSection('ai')" class="block w-full text-left">AI Export Advisor</button>
+
+<button onclick="logout()" class="block w-full text-left text-red-400 mt-10">
+Logout
+</button>
 
 </nav>
 
@@ -229,6 +241,7 @@ WhatsApp Supplier
 window.showSection=function(section){
 
 const sections=[
+"deal",
 "overview",
 "trending",
 "scanner",
@@ -243,11 +256,17 @@ const sections=[
 
 sections.forEach(id=>{
 const el=document.getElementById(id);
-if(el) el.classList.add("hidden");
+if(el){
+el.style.display="none";   // FORCE hide
+}
 });
 
-document.getElementById(section).classList.remove("hidden");
+const active=document.getElementById(section);
+if(active){
+active.style.display="block"; // FORCE show
+}
 
+if(section==="deal") loadDeals();
 if(section==="trending") loadProducts();
 if(section==="scanner") loadProducts();
 if(section==="imports") loadImports();
@@ -256,9 +275,8 @@ if(section==="radar") loadRadar();
 if(section==="predictor") loadProducts();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
-if(section==="deal") loadDeals();
-};
 
+};
 
 /* PRODUCTS */
 
