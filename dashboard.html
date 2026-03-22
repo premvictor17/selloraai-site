@@ -200,7 +200,7 @@ Analyze Market
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-
+/* FIREBASE */
 const firebaseConfig = {
 apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
 authDomain: "sellora-ai.firebaseapp.com",
@@ -210,9 +210,45 @@ messagingSenderId: "7850591690",
 appId: "1:7850591690:web:346fccc5531288fb2a3b33"
 };
 
-
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+/* ===================== */
+/* SECTION SWITCHER */
+/* ===================== */
+
+window.showSection = function(section){
+
+const sections = [
+"deal","overview","trending","scanner","imports",
+"alerts","radar","predictor","suppliers","heatmap","ai"
+];
+
+sections.forEach(id=>{
+const el=document.getElementById(id);
+if(el) el.style.display="none";
+});
+
+const active=document.getElementById(section);
+if(active) active.style.display="block";
+
+/* LOAD DATA */
+if(section==="deal") loadDeals();
+if(section==="trending") loadProducts();
+if(section==="scanner"){ loadScanner(); loadBestOpportunity(); }
+if(section==="imports") loadImports();
+if(section==="alerts") loadAlerts();
+if(section==="radar") loadRadar();
+if(section==="predictor") loadPredictor();
+if(section==="suppliers") loadSuppliers();
+if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
+
+};
+
+/* ===================== */
+/* DEAL ENGINE */
+/* ===================== */
+
 async function loadDeals(){
 
 const productsSnap = await getDocs(collection(db,"products"));
@@ -224,7 +260,6 @@ container.innerHTML = "";
 productsSnap.forEach(p=>{
 
 const product = p.data();
-
 let bestSupplier = null;
 
 suppliersSnap.forEach(s=>{
@@ -248,7 +283,6 @@ container.innerHTML += `
 <p>📍 Location: ${bestSupplier.location}</p>
 <p>📦 MOQ: ${bestSupplier.moq}</p>
 
-<!-- PROFIT INPUT -->
 <input type="number" 
 placeholder="Enter cost per unit"
 class="mt-2 p-2 w-full text-black rounded"
@@ -264,23 +298,20 @@ Send Email
 </a>
 
 <a href="https://wa.me/?text=${encodeURIComponent(
-`Hello, I am interested in ${product.product} for export to ${product.best_market}. Please share pricing, MOQ flexibility, and shipping details.`
+`Hello, I am interested in ${product.product} for export to ${product.best_market}.`
 )}"
 target="_blank"
 class="bg-green-500 px-3 py-1 rounded block text-center">
 WhatsApp Supplier
 </a>
 
-<!-- SAVE BUTTON -->
 <button 
 class="bg-blue-600 px-3 py-1 rounded block text-center mt-2 save-btn"
-
 data-product="${product.product}"
 data-market="${product.best_market}"
 data-supplier="${bestSupplier.supplier_name}"
 data-location="${bestSupplier.location}"
 data-moq="${bestSupplier.moq}">
-
 Save Deal
 </button>
 
@@ -294,484 +325,21 @@ Save Deal
 });
 
 }
-   /* SAVE DEAL */
+
+/* SAVE DEAL */
 window.saveDeal = function(product, market, supplier, location, moq){
 
 let saved = JSON.parse(localStorage.getItem("sellora_saved")) || [];
 
-saved.push({
-product,
-market,
-supplier,
-location,
-moq
-});
+saved.push({product,market,supplier,location,moq});
 
 localStorage.setItem("sellora_saved", JSON.stringify(saved));
 
 alert("Deal Saved ✅");
 
-}
-  
-if(bestSupplier){
+};
 
-container.innerHTML += `
-<div class="card">
-<h3 class="text-xl font-bold">${product.product}</h3>
-
-<p>🌍 Market: ${product.best_market}</p>
-<p>📊 Demand: ${product.demand_score}</p>
-<p>🏭 Supplier: ${bestSupplier.supplier_name}</p>
-<p>📍 Location: ${bestSupplier.location}</p>
-<p>📦 MOQ: ${bestSupplier.moq}</p>
-
-<input type="number" 
-placeholder="Enter cost per unit"
-class="mt-2 p-2 w-full text-black rounded"
-oninput="calculateProfit(this, ${product.demand_score})">
-
-<p class="text-green-400 mt-2 profit"></p>
-
-<div class="mt-3 space-y-2">
-
-<a href="mailto:${bestSupplier.contact}"
-class="bg-purple-600 px-3 py-1 rounded block text-center">
-Send Email
-</a>
-
-<a href="https://wa.me/?text=${encodeURIComponent(
-`Hello, I am interested in ${product.product} for export to ${product.best_market}. Please share pricing, MOQ flexibility, and shipping details.`
-)}"
-target="_blank"
-class="bg-green-500 px-3 py-1 rounded block text-center">
-WhatsApp Supplier
-</a>
-
-</div>
-
-</div>
-`
-
-}
-
-})
-
-}
-
-/* SECTION SWITCHER */
-
-window.showSection=function(section){
-
-const sections=[
-"deal",
-"overview",
-"trending",
-"scanner",
-"imports",
-"alerts",
-"radar",
-"predictor",
-"suppliers",
-"heatmap",
-"ai"
-];
-
-// 🔴 STEP 1: Hide all sections
-sections.forEach(id=>{
-const el=document.getElementById(id);
-if(el){
-el.style.display="none";
-}
-});
-
-// 🟢 STEP 2: Show selected section
-const active=document.getElementById(section);
-if(active){
-active.style.display="block";
-}
-
-// 🚀 STEP 3: Load data
-if(section==="deal") loadDeals();
-if(section==="trending") loadProducts();
-if(section==="scanner"){ loadScanner(); loadBestOpportunity(); }
-if(section==="imports") loadImports();
-if(section==="alerts") loadAlerts();
-if(section==="radar") loadRadar();
-if(section==="predictor") loadProducts();
-if(section==="suppliers") loadSuppliers();
-if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
-if(section==="predictor") loadPredictor();
-}
-
-/* PRODUCTS */
-
-async function loadProducts(){
-
-const snapshot = await getDocs(collection(db,"products"));
-
-const productsContainer = document.getElementById("productsList");
-const scannerContainer = document.getElementById("scannerList");
-const predictorContainer = document.getElementById("predictorList");
-
-if(productsContainer) productsContainer.innerHTML="";
-if(scannerContainer) scannerContainer.innerHTML="";
-if(predictorContainer) predictorContainer.innerHTML="";
-
-document.getElementById("productCount").innerText=snapshot.size;
-
-snapshot.forEach(doc=>{
-
-const d=doc.data();
-
-const card = `
-<div class="card">
-<h3 class="text-xl font-bold">${d.product}</h3>
-<p>Best Market: ${d.best_market}</p>
-<p>Demand Score: ${d.demand_score}</p>
-<p>Margin: ${d.margin}</p>
-</div>
-`;
-
-if(productsContainer) productsContainer.innerHTML += card;
-if(scannerContainer) scannerContainer.innerHTML += card;
-if(predictorContainer) predictorContainer.innerHTML += card;
-
-});
-
-}
-
-/* loadPredictor */   
-async function loadPredictor(){
-
-const snapshot = await getDocs(collection(db,"products"));
-
-const container = document.getElementById("predictorList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const d = doc.data();
-
-/* SIMULATED TREND LOGIC */
-let trend = Math.floor(Math.random()*30)+10; // 10%–40%
-let confidence = trend > 25 ? "High" : "Medium";
-
-/* SHOW ONLY STRONG PREDICTIONS */
-if(trend > 20){
-
-container.innerHTML += `
-<div class="card">
-
-<h3 class="text-xl font-bold">${d.product}</h3>
-
-<p>🌍 Market: ${d.best_market}</p>
-
-<p class="text-blue-400 mt-2">
-📈 Predicted Growth: +${trend}%
-</p>
-
-<p class="text-green-400">
-Confidence: ${confidence}
-</p>
-
-<p class="text-gray-400 text-sm mt-2">
-Based on demand patterns & market signals
-</p>
-
-</div>
-`;
-
-}
-
-});
-
-}
-   /* LOAD SCANNER */
-   async function loadScanner(){
-
-const snapshot = await getDocs(collection(db,"products"));
-
-const container = document.getElementById("scannerList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const d = doc.data();
-
-/* CONVERT MARGIN TO SCORE */
-let marginScore = 0;
-
-if(d.margin === "High") marginScore = 30;
-else if(d.margin === "Medium") marginScore = 20;
-else marginScore = 10;
-
-/* SUPPLIER SCORE */
-let supplierScore = Math.min(d.supplier_count * 2, 20);
-
-/* FINAL SCORE */
-let opportunityScore = 
-(d.demand_score * 0.5) +
-marginScore +
-supplierScore;
-
-/* FILTER ONLY GOOD OPPORTUNITIES */
-if(opportunityScore >= 70){
-
-container.innerHTML += `
-<div class="card">
-
-<h3 class="text-xl font-bold">${d.product}</h3>
-
-<p>🌍 Market: ${d.best_market}</p>
-<p>📊 Demand: ${d.demand_score}</p>
-<p>💰 Margin: ${d.margin}</p>
-<p>🏭 Suppliers: ${d.supplier_count}</p>
-
-<p class="text-green-400 font-bold mt-2">
-Opportunity Score: ${Math.round(opportunityScore)}
-</p>
-
-</div>
-`;
-
-}
-
-});
-
-}
-
-   /* BEST OPPORTUNITIES */
-   async function loadBestOpportunity(){
-
-const snapshot = await getDocs(collection(db,"products"));
-
-let best = null;
-let bestScore = 0;
-
-snapshot.forEach(doc=>{
-
-const d = doc.data();
-
-let marginScore = d.margin === "High" ? 30 : d.margin === "Medium" ? 20 : 10;
-let supplierScore = Math.min(d.supplier_count * 2, 20);
-
-let score = (d.demand_score * 0.5) + marginScore + supplierScore;
-
-if(score > bestScore){
-bestScore = score;
-best = d;
-}
-
-});
-
-if(best){
-
-document.getElementById("bestOpportunity").innerHTML = `
-<div class="card border border-green-500">
-
-<h2 class="text-xl font-bold text-green-400 mb-2">
-🔥 BEST OPPORTUNITY TODAY
-</h2>
-
-<p class="text-lg font-semibold">${best.product}</p>
-
-<p>🌍 Market: ${best.best_market}</p>
-<p>📊 Demand: ${best.demand_score}</p>
-<p>💰 Margin: ${best.margin}</p>
-
-</div>
-`;
-
-}
-
-}
-/* IMPORTS */
-
-async function loadImports(){
-
-const snapshot = await getDocs(collection(db,"global_demand"));
-
-const container=document.getElementById("importsList");
-container.innerHTML="";
-
-document.getElementById("marketCount").innerText=snapshot.size;
-
-snapshot.forEach(doc=>{
-
-const d=doc.data();
-
-container.innerHTML+=`
-<div class="card">
-<h3>${d.product}</h3>
-<p>Country: ${d.country}</p>
-<p>Demand Growth: +${d.demand_growth}%</p>
-</div>
-`;
-
-});
-
-}
-
-
-/* ALERTS */
-
-async function loadAlerts(){
-
-const snapshot = await getDocs(collection(db,"ai_alerts"));
-
-const container=document.getElementById("alertsList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const d=doc.data();
-
-container.innerHTML+=`
-<div class="card">
-<h3>${d.product}</h3>
-<p>Country: ${d.country}</p>
-<p>${d.reason}</p>
-<p class="text-yellow-400">${d.severity}</p>
-</div>
-`;
-
-});
-
-}
-
-
-/* RADAR */
-
-async function loadRadar(){
-
-const snapshot = await getDocs(collection(db,"export_radar"));
-
-const container=document.getElementById("radarList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-
-const d=doc.data();
-
-container.innerHTML+=`
-<div class="card">
-<h3>${d.product}</h3>
-<p>Country: ${d.country}</p>
-<p>Demand Score: ${d.demand_score}</p>
-<p>Market Size: ${d.market_size}</p>
-</div>
-`;
-
-});
-
-}
-
-
-/* SUPPLIERS */
-
-async function loadSuppliers(){
-
-const snapshot = await getDocs(collection(db,"suppliers"));
-
-const container=document.getElementById("supplierList");
-container.innerHTML="";
-
-document.getElementById("supplierCount").innerText=snapshot.size;
-
-snapshot.forEach(doc=>{
-
-const s=doc.data();
-
-container.innerHTML+=`
-<div class="card">
-
-<h3 class="text-xl font-bold">${s.supplier_name || "Unknown Supplier"}</h3>
-
-<p>Product: ${s.product || "-"}</p>
-<p>Location: ${s.location || "-"}</p>
-<p>MOQ: ${s.moq || "-"}</p>
-
-<p class="text-yellow-400 mt-2">
-⭐ ${Math.floor(Math.random()*2)+4}.0 / 5
-</p>
-
-<p class="text-gray-400 text-sm mt-1">
-Verified Supplier
-</p>
-
-</div>
-`;
-
-});
-
-}
-
-
-/* MAP */
-
-google.charts.load('current',{packages:['geochart']});
-
-function drawMap(){
-
-var data=google.visualization.arrayToDataTable([
-['Country','Demand'],
-['United Arab Emirates',92],
-['Germany',85],
-['United States',88],
-['Canada',78],
-['India',90]
-]);
-
-var options={colorAxis:{colors:['#93c5fd','#4f46e5']}};
-
-var chart=new google.visualization.GeoChart(document.getElementById('regions_div'));
-chart.draw(data,options);
-
-}
-window.runAI = async function(){
-
-const q=document.getElementById("aiQuery").value.toLowerCase()
-
-const snapshot=await getDocs(collection(db,"products"))
-
-let output=""
-
-snapshot.forEach(doc=>{
-
-const d=doc.data()
-
-if(d.product.toLowerCase().includes(q) || 
-   d.best_market.toLowerCase().includes(q)){
-
-output+=`
-<div class="mb-4 border-b border-gray-700 pb-2">
-<strong>${d.product}</strong><br>
-Best Market: ${d.best_market}<br>
-Demand Score: ${d.demand_score}
-</div>
-`
-
-}
-
-})
-
-document.getElementById("aiResults").innerHTML=output
-
-}
-// PROFIT FUNCTION
-window.calculateProfit = function(input, demand){
-
-const cost = Number(input.value);
-
-if(!cost) return;
-
-const sellingPrice = cost * (1 + (demand / 100));
-const profit = sellingPrice - cost;
-
-input.parentElement.querySelector(".profit").innerText =
-"Estimated Profit: ₹" + profit.toFixed(2);
-
-}
+/* CLICK HANDLER */
 document.addEventListener("click", function(e){
 
 if(e.target.classList.contains("save-btn")){
@@ -789,23 +357,298 @@ btn.dataset.moq
 }
 
 });
-// LOGOUT
-window.logout=function(){
-localStorage.clear();
-window.location.href="login.html";
+
+/* ===================== */
+/* PRODUCTS */
+/* ===================== */
+
+async function loadProducts(){
+
+const snapshot = await getDocs(collection(db,"products"));
+
+const productsContainer = document.getElementById("productsList");
+const scannerContainer = document.getElementById("scannerList");
+
+if(productsContainer) productsContainer.innerHTML="";
+if(scannerContainer) scannerContainer.innerHTML="";
+
+document.getElementById("productCount").innerText=snapshot.size;
+
+snapshot.forEach(doc=>{
+const d=doc.data();
+
+const card = `
+<div class="card">
+<h3>${d.product}</h3>
+<p>Best Market: ${d.best_market}</p>
+<p>Demand Score: ${d.demand_score}</p>
+<p>Margin: ${d.margin}</p>
+</div>
+`;
+
+if(productsContainer) productsContainer.innerHTML += card;
+if(scannerContainer) scannerContainer.innerHTML += card;
+
+});
+
 }
 
-// DEFAULT LOAD
-showSection("overview");
+/* ===================== */
+/* PREDICTOR */
+/* ===================== */
+
+async function loadPredictor(){
+
+const snapshot = await getDocs(collection(db,"products"));
+const container = document.getElementById("predictorList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+
+const d = doc.data();
+let trend = Math.floor(Math.random()*30)+10;
+
+if(trend > 20){
+
+container.innerHTML += `
+<div class="card">
+<h3>${d.product}</h3>
+<p>📈 Growth: +${trend}%</p>
+</div>
+`;
+
+}
+
+});
+
+}
+
+/* ===================== */
+/* SCANNER */
+/* ===================== */
+
+async function loadScanner(){
+
+const snapshot = await getDocs(collection(db,"products"));
+const container = document.getElementById("scannerList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+const d = doc.data();
+
+let score = d.demand_score + (d.margin==="High"?30:20);
+
+if(score > 70){
+
+container.innerHTML += `
+<div class="card">
+<h3>${d.product}</h3>
+<p>Score: ${score}</p>
+</div>
+`;
+
+}
+
+});
+
+}
+
+/* BEST */
+async function loadBestOpportunity(){
+
+const snapshot = await getDocs(collection(db,"products"));
+let best=null, bestScore=0;
+
+snapshot.forEach(doc=>{
+const d = doc.data();
+let score = d.demand_score;
+
+if(score > bestScore){
+bestScore=score;
+best=d;
+}
+});
+
+if(best){
+document.getElementById("bestOpportunity").innerHTML = `
+<div class="card border border-green-500">
+🔥 ${best.product} (Top Opportunity)
+</div>`;
+}
+
+}
+
+/* ===================== */
+/* IMPORTS */
+/* ===================== */
+
+async function loadImports(){
+
+const snapshot = await getDocs(collection(db,"global_demand"));
+const container=document.getElementById("importsList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+const d=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3>${d.product}</h3>
+<p>${d.country}</p>
+</div>
+`;
+
+});
+
+}
+
+/* ===================== */
+/* ALERTS */
+/* ===================== */
+
+async function loadAlerts(){
+
+const snapshot = await getDocs(collection(db,"ai_alerts"));
+const container=document.getElementById("alertsList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+const d=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3>${d.product}</h3>
+<p>${d.reason}</p>
+</div>
+`;
+
+});
+
+}
+
+/* ===================== */
+/* RADAR */
+/* ===================== */
+
+async function loadRadar(){
+
+const snapshot = await getDocs(collection(db,"export_radar"));
+const container=document.getElementById("radarList");
+container.innerHTML="";
+
+snapshot.forEach(doc=>{
+const d=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3>${d.product}</h3>
+<p>${d.country}</p>
+</div>
+`;
+
+});
+
+}
+
+/* ===================== */
+/* SUPPLIERS */
+/* ===================== */
+
+async function loadSuppliers(){
+
+const snapshot = await getDocs(collection(db,"suppliers"));
+const container=document.getElementById("supplierList");
+container.innerHTML="";
+
+document.getElementById("supplierCount").innerText=snapshot.size;
+
+snapshot.forEach(doc=>{
+const s=doc.data();
+
+container.innerHTML+=`
+<div class="card">
+<h3>${s.supplier_name}</h3>
+<p>${s.location}</p>
+</div>
+`;
+
+});
+
+}
+
+/* ===================== */
+/* MAP */
+/* ===================== */
+
+google.charts.load('current',{packages:['geochart']});
+
+function drawMap(){
+
+var data=google.visualization.arrayToDataTable([
+['Country','Demand'],
+['India',90],
+['USA',88]
+]);
+
+var chart=new google.visualization.GeoChart(document.getElementById('regions_div'));
+chart.draw(data,{});
+
+}
+
+/* ===================== */
+/* AI */
+/* ===================== */
+
+window.runAI = async function(){
+
+const q=document.getElementById("aiQuery").value.toLowerCase();
+const snapshot=await getDocs(collection(db,"products"));
+
+let output="";
+
+snapshot.forEach(doc=>{
+const d=doc.data();
+
+if(d.product.toLowerCase().includes(q)){
+output+=`<div>${d.product}</div>`;
+}
+});
+
+document.getElementById("aiResults").innerHTML=output;
+
+};
+
+/* ===================== */
+/* PROFIT */
+/* ===================== */
+
+window.calculateProfit = function(input, demand){
+
+const cost = Number(input.value);
+if(!cost) return;
+
+const profit = cost * (demand/100);
+
+input.parentElement.querySelector(".profit").innerText =
+"Profit: ₹"+profit.toFixed(2);
+
+};
+
+/* ===================== */
 /* LOGOUT */
+/* ===================== */
 
 window.logout=function(){
 localStorage.clear();
 window.location.href="login.html";
-}
-// Load default section on page load
+};
+
+/* ===================== */
+/* LOAD */
+/* ===================== */
+
 showSection("overview");
-   
+
 </script>
 
 </body>
