@@ -785,6 +785,10 @@ banner.classList.remove("hidden");
 
 window.goToPricing = function(){
 window.location.href = "index.html#pricing";
+
+setTimeout(()=>{
+window.scrollTo(0, document.body.scrollHeight);
+},100);
 };
 
 
