@@ -633,14 +633,31 @@ google.charts.load('current',{packages:['geochart']});
 
 function drawMap(){
 
-var data=google.visualization.arrayToDataTable([
+function drawMap(){
+
+var data = google.visualization.arrayToDataTable([
 ['Country','Demand'],
 ['India',90],
-['USA',88]
+['United States',88],
+['Germany',85],
+['United Arab Emirates',92],
+['United Kingdom',83],
+['Canada',78]
 ]);
 
-var chart=new google.visualization.GeoChart(document.getElementById('regions_div'));
-chart.draw(data,{});
+var options = {
+colorAxis: {colors: ['#93c5fd','#4f46e5']},
+backgroundColor: '#0f172a',
+datalessRegionColor: '#1e293b'
+};
+
+// ✅ CREATE CHART (YOU MISSED THIS)
+var chart = new google.visualization.GeoChart(
+document.getElementById('regions_div')
+);
+
+// ✅ NOW DRAW
+chart.draw(data, options);
 
 }
 
