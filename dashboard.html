@@ -105,7 +105,7 @@ Logout
 <h2 class="text-3xl font-bold">89%</h2>
 </div>
 
-<div id="saved" class="hidden">
+<div id="saved" style="display:none">
 
 <h2 class="text-3xl font-bold mb-6">
 📌 Saved Deals
@@ -242,7 +242,7 @@ if(section==="radar") loadRadar();
 if(section==="predictor") loadPredictor();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
-
+if(section==="saved") loadSavedDeals();
 };
 
 /* ===================== */
@@ -594,7 +594,54 @@ var chart=new google.visualization.GeoChart(document.getElementById('regions_div
 chart.draw(data,{});
 
 }
+function loadSavedDeals(){
 
+const container = document.getElementById("savedList");
+container.innerHTML = "";
+
+let saved = JSON.parse(localStorage.getItem("sellora_saved")) || [];
+
+if(saved.length === 0){
+container.innerHTML = `<p class="text-gray-400">No saved deals yet</p>`;
+return;
+}
+
+saved.forEach((d,index)=>{
+
+container.innerHTML += `
+<div class="card">
+
+<h3 class="text-xl font-bold">${d.product}</h3>
+
+<p>🌍 Market: ${d.market}</p>
+<p>🏭 Supplier: ${d.supplier}</p>
+<p>📍 Location: ${d.location}</p>
+<p>📦 MOQ: ${d.moq}</p>
+
+<button onclick="deleteDeal(${index})"
+class="bg-red-500 px-3 py-1 rounded mt-3 w-full">
+Remove
+</button>
+
+</div>
+`;
+
+});
+
+}
+
+   window.deleteDeal = function(index){
+
+let saved = JSON.parse(localStorage.getItem("sellora_saved")) || [];
+
+saved.splice(index,1);
+
+localStorage.setItem("sellora_saved", JSON.stringify(saved));
+
+loadSavedDeals();
+
+}
+      
 /* ===================== */
 /* AI */
 /* ===================== */
