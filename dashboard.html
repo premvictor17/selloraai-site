@@ -272,8 +272,15 @@ WhatsApp Supplier
 </a>
 
 <!-- SAVE BUTTON -->
-<button onclick="saveDeal('${product.product}', '${product.best_market}', '${bestSupplier.supplier_name}', '${bestSupplier.location}', '${bestSupplier.moq}')"
-class="bg-blue-600 px-3 py-1 rounded block text-center mt-2">
+<button 
+class="bg-blue-600 px-3 py-1 rounded block text-center mt-2 save-btn"
+
+data-product="${product.product}"
+data-market="${product.best_market}"
+data-supplier="${bestSupplier.supplier_name}"
+data-location="${bestSupplier.location}"
+data-moq="${bestSupplier.moq}">
+
 Save Deal
 </button>
 
@@ -765,7 +772,23 @@ input.parentElement.querySelector(".profit").innerText =
 "Estimated Profit: ₹" + profit.toFixed(2);
 
 }
+document.addEventListener("click", function(e){
 
+if(e.target.classList.contains("save-btn")){
+
+const btn = e.target;
+
+saveDeal(
+btn.dataset.product,
+btn.dataset.market,
+btn.dataset.supplier,
+btn.dataset.location,
+btn.dataset.moq
+);
+
+}
+
+});
 // LOGOUT
 window.logout=function(){
 localStorage.clear();
