@@ -633,8 +633,6 @@ google.charts.load('current',{packages:['geochart']});
 
 function drawMap(){
 
-function drawMap(){
-
 var data = google.visualization.arrayToDataTable([
 ['Country','Demand'],
 ['India',90],
@@ -651,12 +649,10 @@ backgroundColor: '#0f172a',
 datalessRegionColor: '#1e293b'
 };
 
-// ✅ CREATE CHART (YOU MISSED THIS)
 var chart = new google.visualization.GeoChart(
 document.getElementById('regions_div')
 );
 
-// ✅ NOW DRAW
 chart.draw(data, options);
 
 }
@@ -764,7 +760,7 @@ input.parentElement.querySelector(".profit").innerText =
 
 window.onload = function(){
 
-if(localStorage.getItem("demo_mode")){
+if(isDemo){
 const banner = document.getElementById("upgradeBanner");
 if(banner){
 banner.classList.remove("hidden");
@@ -772,6 +768,10 @@ banner.classList.remove("hidden");
 }
 
 };
+   
+/* ===================== */
+// DEMO MODE FLAG (CLEAN)
+const isDemo = localStorage.getItem("demo_mode") === "true";
 
 /* ===================== */
 /* PRICING NAVIGATION */
