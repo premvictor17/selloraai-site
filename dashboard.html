@@ -234,6 +234,13 @@ container.innerHTML += `
 <p>📍 Location: ${bestSupplier.location}</p>
 <p>📦 MOQ: ${bestSupplier.moq}</p>
 
+<input type="number" 
+placeholder="Enter cost per unit"
+class="mt-2 p-2 w-full text-black rounded"
+oninput="calculateProfit(this, ${product.demand_score})">
+
+<p class="text-green-400 mt-2 profit"></p>
+
 <div class="mt-3 space-y-2">
 
 <a href="mailto:${bestSupplier.contact}"
@@ -604,7 +611,29 @@ Demand Score: ${d.demand_score}
 document.getElementById("aiResults").innerHTML=output
 
 }
+// PROFIT FUNCTION
+window.calculateProfit = function(input, demand){
 
+const cost = Number(input.value);
+
+if(!cost) return;
+
+const sellingPrice = cost * (1 + (demand / 100));
+const profit = sellingPrice - cost;
+
+input.parentElement.querySelector(".profit").innerText =
+"Estimated Profit: $" + profit.toFixed(2);
+
+}
+
+// LOGOUT
+window.logout=function(){
+localStorage.clear();
+window.location.href="login.html";
+}
+
+// DEFAULT LOAD
+showSection("overview");
 /* LOGOUT */
 
 window.logout=function(){
