@@ -479,8 +479,29 @@ if(trend > 20){
 
 container.innerHTML += `
 <div class="card">
-<h3>${d.product}</h3>
-<p>📈 Growth: +${trend}%</p>
+
+<h3 class="text-xl font-bold">${d.product}</h3>
+
+<p>🌍 Market: ${d.best_market}</p>
+
+<p class="text-blue-400">
+📈 Growth: ${d.demand_growth || "-"}
+</p>
+
+<p>📊 Demand Score: ${d.demand_score}</p>
+
+<p>🏭 Suppliers: ${d.supplier_count || "-"}</p>
+
+<p>💰 Margin: ${d.margin}</p>
+
+<p class="text-yellow-400">
+🤖 AI Confidence: ${d.ai_confidence || "-"}
+</p>
+
+<p class="text-gray-400 text-xs mt-2">
+⏱ Updated: ${d.last_updated || "-"}
+</p>
+
 </div>
 `;
 
