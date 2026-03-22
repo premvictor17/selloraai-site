@@ -13,7 +13,7 @@
 
 <div class="bg-white rounded-3xl shadow-2xl w-full max-w-5xl grid md:grid-cols-2 overflow-hidden">
 
-  <!-- LEFT BRAND PANEL -->
+  <!-- LEFT PANEL -->
   <div class="bg-gradient-to-br from-indigo-600 to-purple-600 text-white p-12 hidden md:flex flex-col justify-center">
 
     <h1 class="text-4xl font-bold mb-6">SELLORA AI</h1>
@@ -30,11 +30,11 @@
 
   </div>
 
-  <!-- RIGHT FORM PANEL -->
+  <!-- RIGHT PANEL -->
   <div class="p-10">
 
     <!-- TABS -->
-    <div class="flex mb-8 border-b">
+    <div class="flex mb-6 border-b">
       <button onclick="switchTab('login')" id="loginTab"
         class="flex-1 py-3 font-semibold border-b-2 border-indigo-600">
         Login
@@ -61,10 +61,9 @@
           class="w-full mt-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none">
       </div>
 
-      <!-- PLAN SELECTION (SIGNUP ONLY) -->
+      <!-- PLAN -->
       <div id="planSelection" class="hidden">
         <label class="text-sm text-gray-600">Select Plan</label>
-
         <select id="plan"
           class="w-full mt-1 px-4 py-3 border rounded-lg focus:ring-2 focus:ring-indigo-500">
           <option value="pro">Pro – ₹2,999/month</option>
@@ -72,10 +71,17 @@
         </select>
       </div>
 
+      <!-- MAIN BUTTON -->
       <button id="mainButton"
         onclick="handleAuth()"
         class="w-full bg-indigo-600 text-white py-3 rounded-lg hover:bg-indigo-700 transition">
         Login
+      </button>
+
+      <!-- 🔥 DEMO BUTTON (FIXED POSITION) -->
+      <button onclick="enterDemo()" 
+        class="w-full border border-purple-500 text-purple-600 py-3 rounded-lg hover:bg-purple-50">
+        🚀 Try Demo (No Signup Required)
       </button>
 
     </div>
@@ -99,7 +105,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
   authDomain: "sellora-ai.firebaseapp.com",
   projectId: "sellora-ai",
-  storageBucket: "sellora-ai.firebasestorage.app",
+  storageBucket: "sellora-ai.appspot.com",
   messagingSenderId: "7850591690",
   appId: "1:7850591690:web:346fccc5531288fb2a3b33"
 };
@@ -113,22 +119,27 @@ let mode = "login";
 window.switchTab = function(tab) {
 
   mode = tab;
-
   document.getElementById("message").innerText = "";
 
   if(tab === "signup") {
     document.getElementById("planSelection").classList.remove("hidden");
     document.getElementById("mainButton").innerText = "Create Account & Continue";
-    document.getElementById("signupTab").classList.add("border-indigo-600","border-b-2");
-    document.getElementById("loginTab").classList.remove("border-indigo-600","border-b-2");
   } else {
     document.getElementById("planSelection").classList.add("hidden");
     document.getElementById("mainButton").innerText = "Login";
-    document.getElementById("loginTab").classList.add("border-indigo-600","border-b-2");
-    document.getElementById("signupTab").classList.remove("border-indigo-600","border-b-2");
   }
 };
 
+/* 🔥 DEMO MODE */
+window.enterDemo = function(){
+
+  localStorage.setItem("demo_mode", "true");
+  localStorage.setItem("user_email", "demo@sellora.ai");
+
+  window.location.href = "dashboard.html";
+};
+
+/* AUTH */
 window.handleAuth = async function() {
 
   const email = document.getElementById("email").value;
@@ -159,17 +170,16 @@ window.handleAuth = async function() {
 
       window.location.href = "index.html#pricing";
 
-  } else {
+    } else {
 
-  const userCredential = await signInWithEmailAndPassword(auth, email, password);
-  const user = userCredential.user;
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-  // ✅ SAVE USER EMAIL
-  localStorage.setItem("user_email", user.email);
+      localStorage.setItem("user_email", user.email);
 
-  window.location.href = "dashboard.html";
+      window.location.href = "dashboard.html";
 
-}
+    }
 
   } catch(error) {
     message.innerText = error.message;
