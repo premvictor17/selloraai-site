@@ -195,32 +195,35 @@ Analyze Market
    
 <script type="module">
 
-   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-   import { 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
+import { 
 getFirestore, 
 collection, 
 getDocs, 
 addDoc, 
 query, 
 where,
-deleteDoc,   // ✅ ADD THIS
-doc          // ✅ ADD THIS
+deleteDoc,
+doc
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
-   // 🔒 PROTECT DASHBOARD
+/* ===================== */
+/* 🔒 PROTECT DASHBOARD */
+/* ===================== */
+
 const isDemo = localStorage.getItem("demo_mode") === "true";
 const userEmail = localStorage.getItem("user_email");
 
-if(!userEmail && isDemo){
-alert("Please login to access full dashboard");
+// 🚨 BLOCK direct access if NOT logged in
+if(!userEmail){
+alert("Please login to access dashboard");
 window.location.href = "login.html";
 }
-  /* ===================== */
-// DEMO MODE FLAG (CLEAN)
- 
-const isDemo = localStorage.getItem("demo_mode") === "true";
 
-/* FIREBASE */
+/* ===================== */
+/* FIREBASE INIT */
+/* ===================== */
+
 const firebaseConfig = {
 apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
 authDomain: "sellora-ai.firebaseapp.com",
