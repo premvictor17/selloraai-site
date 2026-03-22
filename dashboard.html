@@ -60,6 +60,8 @@ transform:translateY(-5px);
 
 <button onclick="showSection('ai')" class="block w-full text-left">AI Export Advisor</button>
 
+<button onclick="showSection('saved')" class="block w-full text-left">Saved Deals</button>
+   
 <button onclick="logout()" class="block w-full text-left text-red-400 mt-10">
 Logout
 </button>
@@ -103,6 +105,16 @@ Logout
 <h2 class="text-3xl font-bold">89%</h2>
 </div>
 
+<div id="saved" class="hidden">
+
+<h2 class="text-3xl font-bold mb-6">
+📌 Saved Deals
+</h2>
+
+<div id="savedList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+   
 </div>
 </div>
 
@@ -203,25 +215,97 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 async function loadDeals(){
 
-const productsSnap = await getDocs(collection(db,"products"))
-const suppliersSnap = await getDocs(collection(db,"suppliers"))
+const productsSnap = await getDocs(collection(db,"products"));
+const suppliersSnap = await getDocs(collection(db,"suppliers"));
 
-const container = document.getElementById("dealList")
-container.innerHTML = ""
+const container = document.getElementById("dealList");
+container.innerHTML = "";
 
 productsSnap.forEach(p=>{
 
-const product = p.data()
+const product = p.data();
 
-let bestSupplier = null
+let bestSupplier = null;
 
 suppliersSnap.forEach(s=>{
-const sup = s.data()
+const sup = s.data();
 if(sup.product === product.product){
-bestSupplier = sup
+bestSupplier = sup;
 }
-})
+});
 
+if(bestSupplier){
+
+container.innerHTML += `
+<div class="card">
+
+<h3 class="text-xl font-bold">${product.product}</h3>
+
+<p>🌍 Market: ${product.best_market}</p>
+<p>📊 Demand: ${product.demand_score}</p>
+
+<p>🏭 Supplier: ${bestSupplier.supplier_name}</p>
+<p>📍 Location: ${bestSupplier.location}</p>
+<p>📦 MOQ: ${bestSupplier.moq}</p>
+
+<!-- PROFIT INPUT -->
+<input type="number" 
+placeholder="Enter cost per unit"
+class="mt-2 p-2 w-full text-black rounded"
+oninput="calculateProfit(this, ${product.demand_score})">
+
+<p class="text-green-400 mt-2 profit"></p>
+
+<div class="mt-3 space-y-2">
+
+<a href="mailto:${bestSupplier.contact}"
+class="bg-purple-600 px-3 py-1 rounded block text-center">
+Send Email
+</a>
+
+<a href="https://wa.me/?text=${encodeURIComponent(
+`Hello, I am interested in ${product.product} for export to ${product.best_market}. Please share pricing, MOQ flexibility, and shipping details.`
+)}"
+target="_blank"
+class="bg-green-500 px-3 py-1 rounded block text-center">
+WhatsApp Supplier
+</a>
+
+<!-- SAVE BUTTON -->
+<button onclick='saveDeal(${JSON.stringify(product)}, ${JSON.stringify(bestSupplier)})'
+class="bg-blue-600 px-3 py-1 rounded block text-center mt-2">
+Save Deal
+</button>
+
+</div>
+
+</div>
+`;
+
+}
+
+});
+
+}
+   /* SAVE DEAL */
+window.saveDeal = function(product, supplier){
+
+let saved = JSON.parse(localStorage.getItem("sellora_saved")) || [];
+
+saved.push({
+product: product.product,
+market: product.best_market,
+supplier: supplier.supplier_name,
+location: supplier.location,
+moq: supplier.moq
+});
+
+localStorage.setItem("sellora_saved", JSON.stringify(saved));
+
+alert("Deal Saved ✅");
+
+}
+   
 if(bestSupplier){
 
 container.innerHTML += `
@@ -311,7 +395,7 @@ if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
 if(section==="predictor") loadPredictor();
 }
-   
+
 /* PRODUCTS */
 
 async function loadProducts(){
