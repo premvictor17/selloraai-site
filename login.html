@@ -167,7 +167,7 @@ window.handleAuth = async function() {
         status: "inactive",
         createdAt: new Date()
       });
-
+localStorage.removeItem("demo_mode");
       window.location.href = "index.html#pricing";
 
     } else {
