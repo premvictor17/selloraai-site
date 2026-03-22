@@ -206,7 +206,7 @@ where,
 deleteDoc,   // ✅ ADD THIS
 doc          // ✅ ADD THIS
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-   const isDemo = localStorage.getItem("demo_mode");
+   const isDemo = isDemo.getItem("demo_mode");
 /* FIREBASE */
 const firebaseConfig = {
 apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
@@ -267,7 +267,7 @@ if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
 if(section==="saved"){
 
-if(localStorage.getItem("demo_mode")){
+if(isDemo.getItem("demo_mode")){
 alert("🔒 Upgrade to access saved deals");
 return;
 }
@@ -363,12 +363,12 @@ Save Deal
 window.saveDeal = async function(product, market, supplier, location, moq){
 
 // 🔒 DEMO LOCK
-if(localStorage.getItem("demo_mode")){
+if(isDemo.getItem("demo_mode")){
 alert("🔒 Upgrade to save deals");
 return;
 }
 
-const email = localStorage.getItem("user_email");
+const email = isDemo.getItem("user_email");
 
 if(!email){
 alert("Please login again");
@@ -659,7 +659,7 @@ chart.draw(data, options);
 
 async function loadSavedDeals(){
 
-const email = localStorage.getItem("user_email");
+const email = isDemo.getItem("user_email");
 
 const container = document.getElementById("savedDealsList");
 container.innerHTML = "Loading...";
@@ -771,7 +771,7 @@ banner.classList.remove("hidden");
    
 /* ===================== */
 // DEMO MODE FLAG (CLEAN)
-const isDemo = localStorage.getItem("demo_mode") === "true";
+const isDemo = isDemo.getItem("demo_mode") === "true";
 
 /* ===================== */
 /* PRICING NAVIGATION */
@@ -786,7 +786,7 @@ window.location.href = "index.html#pricing";
 /* ===================== */
 
 window.logout = function(){
-localStorage.clear();
+isDemo.clear();
 window.location.href = "login.html";
 };
 
@@ -796,7 +796,7 @@ window.location.href = "login.html";
 
 window.contactLock = function(){
 
-if(localStorage.getItem("demo_mode")){
+if(isDemo.getItem("demo_mode")){
 alert("🔒 Upgrade to contact suppliers");
 return false;
 }
