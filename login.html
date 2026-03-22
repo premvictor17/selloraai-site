@@ -159,12 +159,17 @@ window.handleAuth = async function() {
 
       window.location.href = "index.html#pricing";
 
-    } else {
+  } else {
 
-      await signInWithEmailAndPassword(auth, email, password);
-      window.location.href = "dashboard.html";
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
 
-    }
+  // ✅ SAVE USER EMAIL
+  localStorage.setItem("user_email", user.email);
+
+  window.location.href = "dashboard.html";
+
+}
 
   } catch(error) {
     message.innerText = error.message;
