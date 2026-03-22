@@ -288,21 +288,23 @@ Save Deal
 
 }
    /* SAVE DEAL */
-window.saveDeal = function(product, supplier){
+window.saveDeal = function(product, market, supplier, location, moq){
 
 let saved = JSON.parse(localStorage.getItem("sellora_saved")) || [];
 
 saved.push({
-product: product.product,
-market: product.best_market,
-supplier: supplier.supplier_name,
-location: supplier.location,
-moq: supplier.moq
+product,
+market,
+supplier,
+location,
+moq
 });
 
 localStorage.setItem("sellora_saved", JSON.stringify(saved));
 
 alert("Deal Saved ✅");
+
+}
 
 }
    
