@@ -272,7 +272,7 @@ WhatsApp Supplier
 </a>
 
 <!-- SAVE BUTTON -->
-<button onclick='saveDeal(${JSON.stringify(product)}, ${JSON.stringify(bestSupplier)})'
+<button onclick="saveDeal('${product.product}', '${product.best_market}', '${bestSupplier.supplier_name}', '${bestSupplier.location}', '${bestSupplier.moq}')"
 class="bg-blue-600 px-3 py-1 rounded block text-center mt-2">
 Save Deal
 </button>
