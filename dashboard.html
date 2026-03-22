@@ -185,16 +185,17 @@ Analyze Market
    
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { 
+   import { 
 getFirestore, 
 collection, 
 getDocs, 
 addDoc, 
 query, 
-where 
+where,
+deleteDoc,   // ✅ ADD THIS
+doc          // ✅ ADD THIS
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
+   
 /* FIREBASE */
 const firebaseConfig = {
 apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
@@ -445,7 +446,7 @@ container.innerHTML += `
 });
 
 }
-
+   
 /* ===================== */
 /* SCANNER */
 /* ===================== */
@@ -653,6 +654,12 @@ container.innerHTML += `
 <p>📍 Location: ${d.location}</p>
 <p>📦 MOQ: ${d.moq}</p>
 
+<button 
+onclick="deleteDeal('${doc.id}')"
+class="bg-red-600 px-3 py-1 rounded mt-3 w-full">
+Delete
+</button>
+
 </div>
 `;
 
@@ -660,13 +667,11 @@ container.innerHTML += `
 
 }
 
-   window.deleteDeal = function(index){
+ window.deleteDeal = async function(id){
 
-let saved = JSON.parse(localStorage.getItem("sellora_saved")) || [];
+await deleteDoc(doc(db, "saved_deals", id));
 
-saved.splice(index,1);
-
-localStorage.setItem("sellora_saved", JSON.stringify(saved));
+alert("Deleted ❌");
 
 loadSavedDeals();
 
