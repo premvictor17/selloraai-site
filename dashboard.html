@@ -177,7 +177,7 @@ Analyze Market
 <div id="saved" class="hidden">
 <h2 class="text-3xl font-bold mb-6">📌 Saved Deals</h2>
 
-<div id="savedList" class="grid grid-cols-3 gap-6 w-full"></div>
+<div id="savedDealsList" class="grid grid-cols-3 gap-6 w-full"></div>
 </div>
 
 </div> <!-- END MAIN -->
@@ -215,19 +215,35 @@ const db = getFirestore(app);
 window.showSection = function(section){
 
 const sections = [
-"deal","overview","trending","scanner","imports",
-"alerts","radar","predictor","suppliers","heatmap","ai"
+"deal",
+"overview",
+"trending",
+"scanner",
+"imports",
+"alerts",
+"radar",
+"predictor",
+"suppliers",
+"heatmap",
+"ai",
+"saved" // ✅ IMPORTANT FIX
 ];
 
+// 🔴 Hide all sections
 sections.forEach(id=>{
 const el=document.getElementById(id);
-if(el) el.style.display="none";
+if(el){
+el.style.display="none";
+}
 });
 
+// 🟢 Show selected section
 const active=document.getElementById(section);
-if(active) active.style.display="block";
+if(active){
+active.style.display="block";
+}
 
-/* LOAD DATA */
+// 🚀 Load data ONLY for that section
 if(section==="deal") loadDeals();
 if(section==="trending") loadProducts();
 if(section==="scanner"){ loadScanner(); loadBestOpportunity(); }
@@ -237,7 +253,8 @@ if(section==="radar") loadRadar();
 if(section==="predictor") loadPredictor();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
-if(section==="saved") loadSavedDeals();
+if(section==="saved") loadSavedDeals(); // ✅ KEY FIX
+
 };
 
 /* ===================== */
@@ -605,7 +622,7 @@ async function loadSavedDeals(){
 
 const email = localStorage.getItem("user_email");
 
-const container = document.getElementById("savedList");
+const container = document.getElementById("savedDealsList");
 container.innerHTML = "Loading...";
 
 const q = query(
