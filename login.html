@@ -172,14 +172,19 @@ window.handleAuth = async function() {
 
     } else {
 
-      const userCredential = await signInWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
+  const userCredential = await signInWithEmailAndPassword(auth, email, password);
+  const user = userCredential.user;
 
-      localStorage.setItem("user_email", user.email);
+  // 🔥 REMOVE DEMO MODE HERE
+  localStorage.removeItem("demo_mode");
 
-      window.location.href = "dashboard.html";
+  // ✅ SAVE USER EMAIL
+  localStorage.setItem("user_email", user.email);
 
-    }
+  // 🚀 GO TO DASHBOARD
+  window.location.href = "dashboard.html";
+
+}
 
   } catch(error) {
     message.innerText = error.message;
