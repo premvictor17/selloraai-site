@@ -206,7 +206,12 @@ where,
 deleteDoc,   // ✅ ADD THIS
 doc          // ✅ ADD THIS
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-   const isDemo = isDemo.getItem("demo_mode");
+
+  /* ===================== */
+// DEMO MODE FLAG (CLEAN)
+ 
+const isDemo = localStorage.getItem("demo_mode") === "true";
+
 /* FIREBASE */
 const firebaseConfig = {
 apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
@@ -267,7 +272,7 @@ if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
 if(section==="saved"){
 
-if(isDemo.getItem("demo_mode")){
+if(localStorage.getItem("demo_mode")){
 alert("🔒 Upgrade to access saved deals");
 return;
 }
@@ -362,13 +367,13 @@ Save Deal
 /* SAVE DEAL */
 window.saveDeal = async function(product, market, supplier, location, moq){
 
-// 🔒 DEMO LOCK
-if(isDemo.getItem("demo_mode")){
+// 🔒 DEMO LOCK (THIS IS WHERE IT BELONGS)
+if(isDemo){
 alert("🔒 Upgrade to save deals");
 return;
 }
 
-const email = isDemo.getItem("user_email");
+const email = localStorage.getItem("user_email");
 
 if(!email){
 alert("Please login again");
@@ -659,7 +664,7 @@ chart.draw(data, options);
 
 async function loadSavedDeals(){
 
-const email = isDemo.getItem("user_email");
+const email = localStorage.getItem("user_email");
 
 const container = document.getElementById("savedDealsList");
 container.innerHTML = "Loading...";
@@ -756,23 +761,16 @@ input.parentElement.querySelector(".profit").innerText =
 
 /* ===================== */
 /* DEMO BANNER */
-/* ===================== */
-
+   
 window.onload = function(){
-
 if(isDemo){
 const banner = document.getElementById("upgradeBanner");
 if(banner){
 banner.classList.remove("hidden");
 }
 }
-
 };
    
-/* ===================== */
-// DEMO MODE FLAG (CLEAN)
-const isDemo = isDemo.getItem("demo_mode") === "true";
-
 /* ===================== */
 /* PRICING NAVIGATION */
 /* ===================== */
@@ -781,26 +779,20 @@ window.goToPricing = function(){
 window.location.href = "index.html#pricing";
 };
 
-/* ===================== */
-/* LOGOUT */
-/* ===================== */
 
+/* LOGOUT */
 window.logout = function(){
-isDemo.clear();
+localStorage.clear();
 window.location.href = "login.html";
-};
+};;
 
 /* ===================== */
 /* CONTACT LOCK */
-/* ===================== */
-
 window.contactLock = function(){
-
-if(isDemo.getItem("demo_mode")){
+if(isDemo){
 alert("🔒 Upgrade to contact suppliers");
 return false;
 }
-
 };
 
 /* ===================== */
