@@ -207,6 +207,14 @@ deleteDoc,   // ✅ ADD THIS
 doc          // ✅ ADD THIS
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
+   // 🔒 PROTECT DASHBOARD
+const isDemo = localStorage.getItem("demo_mode") === "true";
+const userEmail = localStorage.getItem("user_email");
+
+if(!userEmail && isDemo){
+alert("Please login to access full dashboard");
+window.location.href = "login.html";
+}
   /* ===================== */
 // DEMO MODE FLAG (CLEAN)
  
