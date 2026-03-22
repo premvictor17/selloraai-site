@@ -186,7 +186,14 @@ Analyze Market
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
+import { 
+getFirestore, 
+collection, 
+getDocs, 
+addDoc, 
+query, 
+where 
+} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 /* FIREBASE */
 const firebaseConfig = {
@@ -315,17 +322,28 @@ Save Deal
 }
 
 /* SAVE DEAL */
-window.saveDeal = function(product, market, supplier, location, moq){
+window.saveDeal = async function(product, market, supplier, location, moq){
 
-let saved = JSON.parse(localStorage.getItem("sellora_saved")) || [];
+const email = localStorage.getItem("user_email");
 
-saved.push({product,market,supplier,location,moq});
+if(!email){
+alert("Please login again");
+return;
+}
 
-localStorage.setItem("sellora_saved", JSON.stringify(saved));
+await addDoc(collection(db,"saved_deals"),{
+email,
+product,
+market,
+supplier,
+location,
+moq,
+createdAt: new Date()
+});
 
-alert("Deal Saved ✅");
+alert("Saved to cloud ☁️");
 
-};
+}
 
 /* CLICK HANDLER */
 document.addEventListener("click", function(e){
@@ -582,19 +600,31 @@ var chart=new google.visualization.GeoChart(document.getElementById('regions_div
 chart.draw(data,{});
 
 }
-function loadSavedDeals(){
+
+async function loadSavedDeals(){
+
+const email = localStorage.getItem("user_email");
 
 const container = document.getElementById("savedList");
+container.innerHTML = "Loading...";
+
+const q = query(
+collection(db,"saved_deals"),
+where("email","==",email)
+);
+
+const snapshot = await getDocs(q);
+
 container.innerHTML = "";
 
-let saved = JSON.parse(localStorage.getItem("sellora_saved")) || [];
-
-if(saved.length === 0){
-container.innerHTML = `<p class="text-gray-400">No saved deals yet</p>`;
+if(snapshot.empty){
+container.innerHTML = `<p>No saved deals</p>`;
 return;
 }
 
-saved.forEach((d,index)=>{
+snapshot.forEach(doc=>{
+
+const d = doc.data();
 
 container.innerHTML += `
 <div class="card">
@@ -605,11 +635,6 @@ container.innerHTML += `
 <p>🏭 Supplier: ${d.supplier}</p>
 <p>📍 Location: ${d.location}</p>
 <p>📦 MOQ: ${d.moq}</p>
-
-<button onclick="deleteDeal(${index})"
-class="bg-red-500 px-3 py-1 rounded mt-3 w-full">
-Remove
-</button>
 
 </div>
 `;
