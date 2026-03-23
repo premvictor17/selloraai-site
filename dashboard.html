@@ -120,10 +120,14 @@ Upgrade Now
 
 <!-- TRENDING -->
 <div id="trending" class="hidden">
-<h2 class="text-3xl font-bold mb-6">Trending Products</h2>
-<div id="productsList" class="grid grid-cols-3 gap-6"></div>
-</div>
 
+<h2 class="text-3xl font-bold mb-6">Trending Products</h2>
+<!-- 🔥 TOP OPPORTUNITY (INSIDE SECTION) -->
+<div id="topOpportunity" class="mb-6"></div>
+<div id="productsList" class="grid grid-cols-3 gap-6"></div>
+
+</div>
+   
 <!-- SCANNER -->
 <div id="scanner" class="hidden">
 <h2 class="text-3xl font-bold mb-6">🔥 Product Opportunity Scanner</h2>
@@ -273,7 +277,10 @@ active.style.display="block";
 
 // 🚀 Load data ONLY for that section
 if(section==="deal") loadDeals();
-if(section==="trending") loadProducts();
+if(section==="trending"){
+  loadProducts();
+  loadTopOpportunity();
+}
 if(section==="scanner"){ loadScanner(); loadBestOpportunity(); }
 if(section==="imports") loadImports();
 if(section==="alerts") loadAlerts();
@@ -518,7 +525,57 @@ if(scannerContainer) scannerContainer.innerHTML += card;
 });
 
 }
+async function loadTopOpportunity(){
 
+const snapshot = await getDocs(collection(db,"products"));
+
+let best = null;
+let bestScore = 0;
+
+snapshot.forEach(doc => {
+
+const d = doc.data();
+
+const score = Math.round(
+(d.demand_score * 0.4) +
+((d.trend_score || 0) * 0.3) +
+((d.supplier_count || 0) * 1.5)
+);
+
+if(score > bestScore){
+bestScore = score;
+best = d;
+}
+
+});
+
+if(best){
+
+document.getElementById("topOpportunity").innerHTML = `
+<div class="card border border-green-500">
+
+<h2 class="text-xl font-bold text-green-400 mb-2">
+🔥 BEST OPPORTUNITY TODAY
+</h2>
+
+<p class="text-lg font-semibold">${best.product}</p>
+
+<p>🌍 Market: ${best.best_market}</p>
+
+<p>📊 Demand: ${best.demand_score}</p>
+
+<p>💰 Margin: ${best.margin}</p>
+
+<p class="text-green-400 font-bold mt-2">
+Score: ${bestScore}
+</p>
+
+</div>
+`;
+
+}
+
+}
 /* ===================== */
 /* PREDICTOR */
 /* ===================== */
