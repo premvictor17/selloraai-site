@@ -444,7 +444,21 @@ document.getElementById("productCount").innerText = snapshot.size;
 snapshot.forEach(doc => {
 
 const d = doc.data();
+   // 🔥 SIMULATE LIVE DATA
 
+function randomGrowth(){
+  return "+" + (Math.floor(Math.random()*10) + 10) + "%";
+}
+
+function randomTime(){
+  const times = ["Just now", "1 hour ago", "2 hours ago", "Today"];
+  return times[Math.floor(Math.random()*times.length)];
+}
+
+// override values (optional live effect)
+d.demand_growth = randomGrowth();
+d.last_updated = randomTime();
+   
 /* 🧠 AI SCORE CALCULATION */
 const aiScore = Math.round(
 (d.demand_score * 0.4) +
