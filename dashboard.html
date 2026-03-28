@@ -291,7 +291,7 @@ if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
 if(section==="saved"){
 
 if(localStorage.getItem("demo_mode")){
-alert("🔒 Upgrade to access saved deals");
+showUpgradeModal();
 return;
 }
 
@@ -389,7 +389,7 @@ window.saveDeal = async function(product, market, supplier, location, moq){
 
 // 🔒 DEMO LOCK (THIS IS WHERE IT BELONGS)
 if(isDemo){
-alert("🔒 Upgrade to save deals");
+showUpgradeModal();
 return;
 }
 
@@ -931,9 +931,19 @@ window.location.href = "index.html#pricing";
 setTimeout(()=>{
 window.scrollTo(0, document.body.scrollHeight);
 },100);
+
+window.showUpgradeModal = function(){
+document.getElementById("upgradeModal").classList.remove("hidden");
+}
+
+window.closeModal = function(){
+document.getElementById("upgradeModal").classList.add("hidden");
+}
+
+window.goToPricing = function(){
+window.location.href = "index.html#pricing";
+}
 };
-
-
 /* LOGOUT */
 window.logout = function(){
 localStorage.clear();
@@ -944,16 +954,14 @@ window.location.href = "login.html";
 /* CONTACT LOCK */
 window.contactLock = function(){
 
-const isDemo = localStorage.getItem("demo_mode") === "true";
-
-if(isDemo){
-alert("🔒 Upgrade to contact suppliers");
+if(localStorage.getItem("demo_mode")){
+showUpgradeModal();
 return false;
 }
 
 return true;
 
-};
+}
 
 /* ===================== */
 /* INITIAL LOAD */
@@ -985,7 +993,36 @@ el.style.display = "none"; // or lock style
 }
 
 </script>
+<!-- 🔒 UPGRADE MODAL -->
+<div id="upgradeModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
 
+<div class="bg-slate-800 p-8 rounded-xl text-center max-w-md">
+
+<h2 class="text-2xl font-bold mb-4 text-white">
+🔒 Unlock SELLORA Intelligence
+</h2>
+
+<p class="text-gray-300 mb-6">
+Access suppliers, save deals, and AI-powered insights.
+</p>
+
+<div class="space-x-4">
+
+<button onclick="goToPricing()"
+class="bg-purple-600 px-6 py-3 rounded text-white">
+Upgrade Now
+</button>
+
+<button onclick="closeModal()"
+class="bg-gray-600 px-6 py-3 rounded text-white">
+Cancel
+</button>
+
+</div>
+
+</div>
+
+</div>
 </body>
 </html>
 
