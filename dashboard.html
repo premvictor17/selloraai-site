@@ -62,7 +62,7 @@ transform:translateY(-5px);
 
 <button onclick="showSection('saved')" class="block w-full text-left">Saved Deals</button>
    
-<button onclick="logout()" class="block w-full text-left text-red-400 mt-10">
+<button id="logoutBtn" onclick="logout()" class="block w-full text-left text-red-400 mt-10">
 Logout
 </button>
 
@@ -301,6 +301,14 @@ loadSavedDeals();
 
 };
 
+// 🔒 HIDE LOGOUT IN DEMO MODE
+if(localStorage.getItem("demo_mode")){
+  const btn = document.getElementById("logoutBtn");
+  if(btn){
+    btn.style.display = "none";
+  }
+}
+   
 /* ===================== */
 /* DEAL ENGINE */
 /* ===================== */
