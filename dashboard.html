@@ -219,7 +219,7 @@ const isDemo = localStorage.getItem("demo_mode") === "true";
 const userEmail = localStorage.getItem("user_email");
 
 // 🚨 BLOCK direct access if NOT logged in
-if(!userEmail){
+if(!userEmail && !isDemo){
 alert("Please login to access dashboard");
 window.location.href = "login.html";
 }
@@ -933,12 +933,9 @@ banner.classList.remove("hidden");
 /* PRICING NAVIGATION */
 /* ===================== */
 
-window.goToPricing = function(){
-window.location.href = "index.html#pricing";
-
-setTimeout(()=>{
-window.scrollTo(0, document.body.scrollHeight);
-},100);
+/* ===================== */
+/* MODAL + PRICING */
+/* ===================== */
 
 window.showUpgradeModal = function(){
 document.getElementById("upgradeModal").classList.remove("hidden");
@@ -950,8 +947,8 @@ document.getElementById("upgradeModal").classList.add("hidden");
 
 window.goToPricing = function(){
 window.location.href = "index.html#pricing";
-}
 };
+  } 
 /* LOGOUT */
 window.logout = function(){
 localStorage.clear();
