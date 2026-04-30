@@ -113,7 +113,7 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/fireba
 import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSy...",
+apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
 authDomain: "sellora-ai.firebaseapp.com",
 projectId: "sellora-ai"
 };
@@ -138,11 +138,17 @@ if(el) el.style.display="none";
 const active = document.getElementById(section);
 if(active) active.style.display="block";
 
+// ✅ LOAD FUNCTIONS
 if(section==="deal") loadDeals();
 if(section==="trending") loadProducts();
 if(section==="scanner") loadScanner();
+if(section==="imports") loadImports();
+if(section==="alerts") loadAlerts();
+if(section==="radar") loadRadar();
+if(section==="predictor") loadPredictor();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") drawMap();
+if(section==="saved") loadSavedDeals();
 
 }
 
