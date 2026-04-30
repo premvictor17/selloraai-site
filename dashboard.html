@@ -328,12 +328,29 @@ let bestSupplier = null;
 
 suppliersSnap.forEach(s=>{
 const sup = s.data();
-if(sup.product === product.product){
+
+// ✅ FIX: safer matching
+if(
+sup.product &&
+product.product &&
+sup.product.trim().toLowerCase() === product.product.trim().toLowerCase()
+){
 bestSupplier = sup;
 }
 });
 
-if(bestSupplier){
+// ✅ FIX: fallback if no supplier found
+if(!bestSupplier){
+bestSupplier = {
+supplier_name: "Not Available",
+location: "N/A",
+moq: "N/A",
+contact: ""
+};
+}
+
+// ✅ ALWAYS render card
+{
 
 container.innerHTML += `
 <div class="card">
@@ -343,7 +360,9 @@ container.innerHTML += `
 <p>🌍 Market: ${product.best_market}</p>
 <p>📊 Demand: ${product.demand_score}</p>
 
-<p>🏭 Supplier: ${bestSupplier.supplier_name}</p>
+<p>🏭 Supplier: ${
+isDemo ? "🔒 Premium Supplier" : bestSupplier.supplier_name
+}</p>
 <p>📍 Location: ${bestSupplier.location}</p>
 <p>📦 MOQ: ${bestSupplier.moq}</p>
 
