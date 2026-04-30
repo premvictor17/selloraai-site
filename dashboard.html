@@ -212,21 +212,16 @@ doc
 } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 /* ===================== */
-/* 🔒 PROTECT DASHBOARD */
+/* CONFIG */
 /* ===================== */
 
 const isDemo = localStorage.getItem("demo_mode") === "true";
 const userEmail = localStorage.getItem("user_email");
 
-// 🚨 BLOCK direct access if NOT logged in
 if(!userEmail && !isDemo){
-alert("Please login to access dashboard");
+alert("Please login");
 window.location.href = "login.html";
 }
-
-/* ===================== */
-/* FIREBASE INIT */
-/* ===================== */
 
 const firebaseConfig = {
 apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
@@ -241,46 +236,27 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 /* ===================== */
-/* SECTION SWITCHER */
+/* SECTION SWITCH */
 /* ===================== */
 
 window.showSection = function(section){
 
 const sections = [
-"deal",
-"overview",
-"trending",
-"scanner",
-"imports",
-"alerts",
-"radar",
-"predictor",
-"suppliers",
-"heatmap",
-"ai",
-"saved" // ✅ IMPORTANT FIX
+"deal","overview","trending","scanner",
+"imports","alerts","radar","predictor",
+"suppliers","heatmap","ai","saved"
 ];
 
-// 🔴 Hide all sections
 sections.forEach(id=>{
 const el=document.getElementById(id);
-if(el){
-el.style.display="none";
-}
+if(el) el.style.display="none";
 });
 
-// 🟢 Show selected section
 const active=document.getElementById(section);
-if(active){
-active.style.display="block";
-}
+if(active) active.style.display="block";
 
-// 🚀 Load data ONLY for that section
 if(section==="deal") loadDeals();
-if(section==="trending"){
-  loadProducts();
-  loadTopOpportunity();
-}
+if(section==="trending"){ loadProducts(); loadTopOpportunity(); }
 if(section==="scanner"){ loadScanner(); loadBestOpportunity(); }
 if(section==="imports") loadImports();
 if(section==="alerts") loadAlerts();
@@ -289,26 +265,12 @@ if(section==="predictor") loadPredictor();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
 if(section==="saved"){
-
-if(localStorage.getItem("demo_mode")){
-showUpgradeModal();
-return;
-}
-
+if(isDemo){ showUpgradeModal(); return; }
 loadSavedDeals();
-
 }
 
 };
 
-// 🔒 HIDE LOGOUT IN DEMO MODE
-if(localStorage.getItem("demo_mode")){
-  const btn = document.getElementById("logoutBtn");
-  if(btn){
-    btn.style.display = "none";
-  }
-}
-   
 /* ===================== */
 /* DEAL ENGINE */
 /* ===================== */
@@ -323,13 +285,15 @@ container.innerHTML = "";
 
 productsSnap.forEach(p=>{
 
-const product = p.data();
+const product = p.data() || {};
+product.product ||= "Unknown";
+product.best_market ||= "N/A";
+product.demand_score ||= 0;
+
 let bestSupplier = null;
 
 suppliersSnap.forEach(s=>{
-const sup = s.data();
-
-// ✅ FIX: safer matching
+const sup = s.data() || {};
 if(
 sup.product &&
 product.product &&
@@ -339,125 +303,37 @@ bestSupplier = sup;
 }
 });
 
-// ✅ FIX: fallback if no supplier found
 if(!bestSupplier){
 bestSupplier = {
-supplier_name: "Not Available",
-location: "N/A",
-moq: "N/A",
-contact: ""
+supplier_name:"Not Available",
+location:"N/A",
+moq:"N/A",
+contact:""
 };
 }
-
-// ✅ ALWAYS render card
-{
 
 container.innerHTML += `
 <div class="card">
 
-<h3 class="text-xl font-bold">${product.product}</h3>
+<h3>${product.product}</h3>
+<p>🌍 ${product.best_market}</p>
+<p>📊 ${product.demand_score}</p>
 
-<p>🌍 Market: ${product.best_market}</p>
-<p>📊 Demand: ${product.demand_score}</p>
+<p>🏭 ${isDemo ? "🔒 Premium Supplier" : bestSupplier.supplier_name}</p>
+<p>📍 ${isDemo ? "🔒 Locked" : bestSupplier.location}</p>
 
-<p>🏭 Supplier: ${
-isDemo ? "🔒 Premium Supplier" : bestSupplier.supplier_name
-}</p>
-<p>📍 Location: ${bestSupplier.location}</p>
-<p>📦 MOQ: ${bestSupplier.moq}</p>
-
-<input type="number" 
-placeholder="Enter cost per unit"
-class="mt-2 p-2 w-full text-black rounded"
-oninput="calculateProfit(this, ${product.demand_score})">
-
-<p class="text-green-400 mt-2 profit"></p>
-
-<div class="mt-3 space-y-2">
-
-<a href="mailto:${bestSupplier.contact}"
-onclick="return contactLock()"
-class="bg-purple-600 px-3 py-1 rounded block text-center">
-Send Email
-</a>
-
-<a href="https://wa.me/?text=${encodeURIComponent(
-`Hello, I am interested in ${product.product}`
-)}"
-onclick="return contactLock()"
-target="_blank"
-class="bg-green-500 px-3 py-1 rounded block text-center">
-WhatsApp Supplier
-</a>
-
-<button 
-class="bg-blue-600 px-3 py-1 rounded block text-center mt-2 save-btn"
+<button class="save-btn bg-blue-500 p-2 mt-2 w-full"
 data-product="${product.product}"
 data-market="${product.best_market}"
-data-supplier="${bestSupplier.supplier_name}"
-data-location="${bestSupplier.location}"
-data-moq="${bestSupplier.moq}">
-Save Deal
-</button>
-
-</div>
+data-supplier="${bestSupplier.supplier_name}">
+Save Deal</button>
 
 </div>
 `;
 
-}
-
 });
 
 }
-
-/* SAVE DEAL */
-window.saveDeal = async function(product, market, supplier, location, moq){
-
-// 🔒 DEMO LOCK (THIS IS WHERE IT BELONGS)
-if(isDemo){
-showUpgradeModal();
-return;
-}
-
-const email = localStorage.getItem("user_email");
-
-if(!email){
-alert("Please login again");
-return;
-}
-
-await addDoc(collection(db,"saved_deals"),{
-email,
-product,
-market,
-supplier,
-location,
-moq,
-createdAt: new Date()
-});
-
-alert("Saved successfully ✅");
-
-}
-/* CLICK HANDLER */
-document.addEventListener("click", function(e){
-
-if(e.target.classList.contains("save-btn")){
-
-const btn = e.target;
-
-saveDeal(
-btn.dataset.product,
-btn.dataset.market,
-btn.dataset.supplier,
-btn.dataset.location,
-btn.dataset.moq
-);
-
-}
-
-});
 
 /* ===================== */
 /* PRODUCTS */
@@ -466,194 +342,35 @@ btn.dataset.moq
 async function loadProducts(){
 
 const snapshot = await getDocs(collection(db,"products"));
+const container = document.getElementById("productsList");
 
-const productsContainer = document.getElementById("productsList");
-const scannerContainer = document.getElementById("scannerList");
-
-if(productsContainer) productsContainer.innerHTML = "";
-if(scannerContainer) scannerContainer.innerHTML = "";
-
-document.getElementById("productCount").innerText = snapshot.size;
-
-snapshot.forEach(doc => {
-
-const d = doc.data();
-   // 🔥 SIMULATE LIVE DATA
-
-function randomGrowth(){
-  return "+" + (Math.floor(Math.random()*10) + 10) + "%";
-}
-
-function randomTime(){
-  const times = ["Just now", "1 hour ago", "2 hours ago", "Today"];
-  return times[Math.floor(Math.random()*times.length)];
-}
-
-// override values (optional live effect)
-d.demand_growth = randomGrowth();
-d.last_updated = randomTime();
-   
-/* 🧠 AI SCORE CALCULATION */
-const aiScore = Math.round(
-(d.demand_score * 0.4) +
-((d.trend_score || 0) * 0.3) +
-((d.supplier_count || 0) * 1.5)
-);
-
-/* 🎯 CARD UI */
-const card = `
-<div class="card">
-
-<h3 class="text-xl font-bold">${d.product}</h3>
-
-<p>🌍 Market: ${d.best_market}</p>
-
-<p class="text-blue-400">
-📈 Growth: ${d.demand_growth || "-"}
-</p>
-
-<p>📊 Demand Score: ${d.demand_score}</p>
-
-<p>🏭 Suppliers: ${d.supplier_count || "-"}</p>
-
-<p>💰 Margin: ${d.margin}</p>
-
-<p class="text-yellow-400">
-🤖 AI Confidence: ${d.ai_confidence || "-"}
-</p>
-
-<p class="text-gray-400 text-xs mt-2">
-⏱ Updated: ${d.last_updated || "-"}
-</p>
-
-<!-- 🔥 AI SIGNAL ENGINE -->
-<p class="text-green-400 font-bold mt-3">
-🔥 AI Opportunity Score: ${aiScore}
-</p>
-
-<div class="mt-2 text-sm text-gray-300">
-
-<p>📊 Trend Score: ${d.trend_score || "-"}</p>
-
-<p>🛒 Marketplace: ${d.marketplace_strength || "-"}</p>
-
-<p>🌍 Export Signal: ${d.export_signal || "-"}</p>
-
-<p>🏭 Supplier Strength: ${d.supplier_strength || "-"}</p>
-
-</div>
-
-</div>
-`;
-
-if(productsContainer) productsContainer.innerHTML += card;
-if(scannerContainer) scannerContainer.innerHTML += card;
-
-});
-
-}
-async function loadTopOpportunity(){
-
-const snapshot = await getDocs(collection(db,"products"));
-
-let best = null;
-let bestScore = 0;
-
-snapshot.forEach(doc => {
-
-const d = doc.data();
-
-const score = Math.round(
-(d.demand_score * 0.4) +
-((d.trend_score || 0) * 0.3) +
-((d.supplier_count || 0) * 1.5)
-);
-
-if(score > bestScore){
-bestScore = score;
-best = d;
-}
-
-});
-
-if(best){
-
-document.getElementById("topOpportunity").innerHTML = `
-<div class="card border border-green-500">
-
-<h2 class="text-xl font-bold text-green-400 mb-2">
-🔥 BEST OPPORTUNITY TODAY
-</h2>
-
-<p class="text-lg font-semibold">${best.product}</p>
-
-<p>🌍 Market: ${best.best_market}</p>
-
-<p>📊 Demand: ${best.demand_score}</p>
-
-<p>💰 Margin: ${best.margin}</p>
-
-<p class="text-green-400 font-bold mt-2">
-Score: ${bestScore}
-</p>
-
-</div>
-`;
-
-}
-
-}
-/* ===================== */
-/* PREDICTOR */
-/* ===================== */
-
-async function loadPredictor(){
-
-const snapshot = await getDocs(collection(db,"products"));
-const container = document.getElementById("predictorList");
 container.innerHTML="";
 
 snapshot.forEach(doc=>{
+const d = doc.data() || {};
 
-const d = doc.data();
-let trend = Math.floor(Math.random()*30)+10;
+d.product ||= "Unknown";
+d.best_market ||= "N/A";
+d.demand_score ||= 0;
+d.trend_score ||= 0;
+d.supplier_count ||= 0;
 
-if(trend > 20){
+const score = Math.round(
+(d.demand_score*0.4)+(d.trend_score*0.3)+(d.supplier_count*1.5)
+);
 
 container.innerHTML += `
 <div class="card">
-
-<h3 class="text-xl font-bold">${d.product}</h3>
-
-<p>🌍 Market: ${d.best_market}</p>
-
-<p class="text-blue-400">
-📈 Growth: ${d.demand_growth || "-"}
-</p>
-
-<p>📊 Demand Score: ${d.demand_score}</p>
-
-<p>🏭 Suppliers: ${d.supplier_count || "-"}</p>
-
-<p>💰 Margin: ${d.margin}</p>
-
-<p class="text-yellow-400">
-🤖 AI Confidence: ${d.ai_confidence || "-"}
-</p>
-
-<p class="text-gray-400 text-xs mt-2">
-⏱ Updated: ${d.last_updated || "-"}
-</p>
-
+<h3>${d.product}</h3>
+<p>${d.best_market}</p>
+<p>Score: ${score}</p>
 </div>
 `;
-
-}
 
 });
 
 }
-   
+
 /* ===================== */
 /* SCANNER */
 /* ===================== */
@@ -662,118 +379,19 @@ async function loadScanner(){
 
 const snapshot = await getDocs(collection(db,"products"));
 const container = document.getElementById("scannerList");
+
 container.innerHTML="";
 
 snapshot.forEach(doc=>{
-const d = doc.data();
+const d = doc.data() || {};
 
-let score = d.demand_score + (d.margin==="High"?30:20);
-
-if(score > 70){
+d.product ||= "Unknown";
+d.demand_score ||= 0;
 
 container.innerHTML += `
 <div class="card">
 <h3>${d.product}</h3>
-<p>Score: ${score}</p>
-</div>
-`;
-
-}
-
-});
-
-}
-
-/* BEST */
-async function loadBestOpportunity(){
-
-const snapshot = await getDocs(collection(db,"products"));
-let best=null, bestScore=0;
-
-snapshot.forEach(doc=>{
-const d = doc.data();
-let score = d.demand_score;
-
-if(score > bestScore){
-bestScore=score;
-best=d;
-}
-});
-
-if(best){
-document.getElementById("bestOpportunity").innerHTML = `
-<div class="card border border-green-500">
-🔥 ${best.product} (Top Opportunity)
-</div>`;
-}
-
-}
-
-/* ===================== */
-/* IMPORTS */
-/* ===================== */
-
-async function loadImports(){
-
-const snapshot = await getDocs(collection(db,"global_demand"));
-const container=document.getElementById("importsList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-const d=doc.data();
-
-container.innerHTML+=`
-<div class="card">
-<h3>${d.product}</h3>
-<p>${d.country}</p>
-</div>
-`;
-
-});
-
-}
-
-/* ===================== */
-/* ALERTS */
-/* ===================== */
-
-async function loadAlerts(){
-
-const snapshot = await getDocs(collection(db,"ai_alerts"));
-const container=document.getElementById("alertsList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-const d=doc.data();
-
-container.innerHTML+=`
-<div class="card">
-<h3>${d.product}</h3>
-<p>${d.reason}</p>
-</div>
-`;
-
-});
-
-}
-
-/* ===================== */
-/* RADAR */
-/* ===================== */
-
-async function loadRadar(){
-
-const snapshot = await getDocs(collection(db,"export_radar"));
-const container=document.getElementById("radarList");
-container.innerHTML="";
-
-snapshot.forEach(doc=>{
-const d=doc.data();
-
-container.innerHTML+=`
-<div class="card">
-<h3>${d.product}</h3>
-<p>${d.country}</p>
+<p>Score: ${d.demand_score}</p>
 </div>
 `;
 
@@ -788,98 +406,17 @@ container.innerHTML+=`
 async function loadSuppliers(){
 
 const snapshot = await getDocs(collection(db,"suppliers"));
-const container=document.getElementById("supplierList");
+const container = document.getElementById("supplierList");
+
 container.innerHTML="";
 
-document.getElementById("supplierCount").innerText=snapshot.size;
-
 snapshot.forEach(doc=>{
-const s=doc.data();
-
-container.innerHTML+=`
-<div class="card">
-<h3>${s.supplier_name}</h3>
-<p>${s.location}</p>
-</div>
-`;
-
-});
-
-}
-
-/* ===================== */
-/* MAP */
-/* ===================== */
-
-google.charts.load('current',{packages:['geochart']});
-
-function drawMap(){
-
-var data = google.visualization.arrayToDataTable([
-['Country','Demand'],
-['India',90],
-['United States',88],
-['Germany',85],
-['United Arab Emirates',92],
-['United Kingdom',83],
-['Canada',78]
-]);
-
-var options = {
-colorAxis: {colors: ['#93c5fd','#4f46e5']},
-backgroundColor: '#0f172a',
-datalessRegionColor: '#1e293b'
-};
-
-var chart = new google.visualization.GeoChart(
-document.getElementById('regions_div')
-);
-
-chart.draw(data, options);
-
-}
-
-async function loadSavedDeals(){
-
-const email = localStorage.getItem("user_email");
-
-const container = document.getElementById("savedDealsList");
-container.innerHTML = "Loading...";
-
-const q = query(
-collection(db,"saved_deals"),
-where("email","==",email)
-);
-
-const snapshot = await getDocs(q);
-
-container.innerHTML = "";
-
-if(snapshot.empty){
-container.innerHTML = `<p>No saved deals</p>`;
-return;
-}
-
-snapshot.forEach(doc=>{
-
-const d = doc.data();
+const s = doc.data() || {};
 
 container.innerHTML += `
 <div class="card">
-
-<h3 class="text-xl font-bold">${d.product}</h3>
-
-<p>🌍 Market: ${d.market}</p>
-<p>🏭 Supplier: ${d.supplier}</p>
-<p>📍 Location: ${d.location}</p>
-<p>📦 MOQ: ${d.moq}</p>
-
-<button 
-onclick="deleteDeal('${doc.id}')"
-class="bg-red-600 px-3 py-1 rounded mt-3 w-full">
-Delete
-</button>
-
+<h3>${s.supplier_name || "Unknown"}</h3>
+<p>${s.location || "N/A"}</p>
 </div>
 `;
 
@@ -887,134 +424,61 @@ Delete
 
 }
 
- window.deleteDeal = async function(id){
-
-await deleteDoc(doc(db, "saved_deals", id));
-
-alert("Deleted ❌");
-
-loadSavedDeals();
-
-}
-      
 /* ===================== */
-/* AI */
+/* OTHER SECTIONS */
 /* ===================== */
 
-window.runAI = async function(){
-
-const q=document.getElementById("aiQuery").value.toLowerCase();
-const snapshot=await getDocs(collection(db,"products"));
-
-let output="";
-
-snapshot.forEach(doc=>{
-const d=doc.data();
-
-if(d.product.toLowerCase().includes(q)){
-output+=`<div>${d.product}</div>`;
+async function loadImports(){
+const snap = await getDocs(collection(db,"global_demand"));
+document.getElementById("importsList").innerHTML = snap.size ? "Loaded" : "No Data";
 }
+
+async function loadAlerts(){
+const snap = await getDocs(collection(db,"ai_alerts"));
+document.getElementById("alertsList").innerHTML = snap.size ? "Loaded" : "No Data";
+}
+
+async function loadRadar(){
+const snap = await getDocs(collection(db,"export_radar"));
+document.getElementById("radarList").innerHTML = snap.size ? "Loaded" : "No Data";
+}
+
+/* ===================== */
+/* SAVED DEALS */
+/* ===================== */
+
+document.addEventListener("click", async function(e){
+
+if(e.target.classList.contains("save-btn")){
+
+if(isDemo){
+showUpgradeModal();
+return;
+}
+
+await addDoc(collection(db,"saved_deals"),{
+email:userEmail,
+product:e.target.dataset.product
 });
 
-document.getElementById("aiResults").innerHTML=output;
-
-};
-
-/* ===================== */
-/* PROFIT */
-/* ===================== */
-
-window.calculateProfit = function(input, demand){
-
-const cost = Number(input.value);
-if(!cost) return;
-
-const profit = cost * (demand/100);
-
-input.parentElement.querySelector(".profit").innerText =
-"Profit: ₹"+profit.toFixed(2);
-
-};
-
-/* ===================== */
-/* DEMO BANNER */
-   
-window.onload = function(){
-if(isDemo){
-const banner = document.getElementById("upgradeBanner");
-if(banner){
-banner.classList.remove("hidden");
-}
-}
-};
-   
-/* ===================== */
-/* PRICING NAVIGATION */
-/* ===================== */
-
-/* ===================== */
-/* MODAL + PRICING */
-/* ===================== */
-
-window.showUpgradeModal = function(){
-document.getElementById("upgradeModal").classList.remove("hidden");
-}
-
-window.closeModal = function(){
-document.getElementById("upgradeModal").classList.add("hidden");
-}
-
-window.goToPricing = function(){
-window.location.href = "index.html#pricing";
-};
-   
-/* LOGOUT */
-window.logout = function(){
-localStorage.clear();
-window.location.href = "login.html";
-};;
-
-/* ===================== */
-/* CONTACT LOCK */
-window.contactLock = function(){
-
-if(localStorage.getItem("demo_mode")){
-showUpgradeModal();
-return false;
-}
-
-return true;
+alert("Saved");
 
 }
 
+});
+
 /* ===================== */
-/* INITIAL LOAD */
+/* MODAL */
+/* ===================== */
+
+window.showUpgradeModal = ()=>document.getElementById("upgradeModal").classList.remove("hidden");
+window.closeModal = ()=>document.getElementById("upgradeModal").classList.add("hidden");
+
+/* ===================== */
+/* INIT */
 /* ===================== */
 
 showSection("overview");
-
-// 🔒 DEMO MODE MENU LOCK
-if(localStorage.getItem("demo_mode") === "true"){
-
-const items = [
-"scanner",
-"imports",
-"alerts",
-"radar",
-"predictor",
-"suppliers",
-"heatmap",
-"ai"
-];
-
-items.forEach(id=>{
-const el = document.querySelector(`[onclick="showSection('${id}')"]`);
-if(el){
-el.style.display = "none"; // or lock style
-}
-});
-
-}
 
 </script>
 <!-- 🔒 UPGRADE MODAL -->
