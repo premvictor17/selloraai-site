@@ -11,17 +11,11 @@
 
 <style>
 .hidden{display:none}
-
 .card{
 background:#1e293b;
 padding:20px;
 border-radius:12px;
 box-shadow:0 10px 30px rgba(0,0,0,0.3);
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-5px);
 }
 </style>
 
@@ -38,482 +32,154 @@ transform:translateY(-5px);
 
 <nav class="space-y-4 text-gray-300">
 
-<button onclick="showSection('deal')" class="block w-full text-left">AI Deal Engine</button>
-
-<button onclick="showSection('overview')" class="block w-full text-left">Overview</button>
-
-<button onclick="showSection('trending')" class="block w-full text-left">Trending Products</button>
-
-<button onclick="showSection('scanner')" class="block w-full text-left">Product Opportunity Scanner</button>
-
-<button onclick="showSection('imports')" class="block w-full text-left">Global Import Tracker</button>
-
-<button onclick="showSection('alerts')" class="block w-full text-left">AI Opportunity Alerts</button>
-
-<button onclick="showSection('radar')" class="block w-full text-left">Global Export Radar</button>
-
-<button onclick="showSection('predictor')" class="block w-full text-left">AI Market Predictor</button>
-
-<button onclick="showSection('suppliers')" class="block w-full text-left">Supplier Intelligence</button>
-
-<button onclick="showSection('heatmap')" class="block w-full text-left">Global Demand Map</button>
-
-<button onclick="showSection('ai')" class="block w-full text-left">AI Export Advisor</button>
-
-<button onclick="showSection('saved')" class="block w-full text-left">Saved Deals</button>
-   
-<button id="logoutBtn" onclick="logout()" class="block w-full text-left text-red-400 mt-10">
-Logout
-</button>
+<button onclick="showSection('deal')">AI Deal Engine</button>
+<button onclick="showSection('overview')">Overview</button>
+<button onclick="showSection('trending')">Trending</button>
+<button onclick="showSection('scanner')">Scanner</button>
+<button onclick="showSection('suppliers')">Suppliers</button>
+<button onclick="showSection('heatmap')">Map</button>
+<button onclick="showSection('ai')">AI</button>
 
 </nav>
 
 </div>
 
-<!-- MAIN CONTENT -->
+<!-- MAIN -->
 <div class="flex-1 p-10">
 
-<!-- AI DEAL ENGINE -->
-<div id="deal" class="hidden">
-<h2 class="text-3xl font-bold mb-6">💼 AI Deal Engine</h2>
-<div id="dealList" class="grid grid-cols-3 gap-6"></div>
-</div>
-
-   <div id="upgradeBanner" class="hidden bg-yellow-400 text-black p-3 mb-4 rounded flex justify-between items-center">
-
-<span>🚀 You are in Demo Mode — Upgrade to unlock full features</span>
-
-<button onclick="goToPricing()" class="bg-black text-white px-4 py-1 rounded">
-Upgrade Now
-</button>
-
-</div>
-   
-<!-- OVERVIEW -->
 <div id="overview">
-<h1 class="text-4xl font-bold mb-8">Dashboard Overview</h1>
-
-<div class="grid grid-cols-4 gap-6">
-
-<div class="card">
-<p class="text-gray-400">Active Products</p>
-<h2 id="productCount" class="text-3xl font-bold">0</h2>
+<h1 class="text-3xl mb-6">Overview</h1>
 </div>
 
-<div class="card">
-<p class="text-gray-400">Suppliers</p>
-<h2 id="supplierCount" class="text-3xl font-bold">0</h2>
+<div id="deal" class="hidden">
+<div id="dealList"></div>
 </div>
 
-<div class="card">
-<p class="text-gray-400">Markets</p>
-<h2 id="marketCount" class="text-3xl font-bold">0</h2>
-</div>
-
-<div class="card">
-<p class="text-gray-400">Export Score</p>
-<h2 class="text-3xl font-bold">89%</h2>
-</div>
-
-</div>
-</div>
-
-<!-- TRENDING -->
 <div id="trending" class="hidden">
-
-<h2 class="text-3xl font-bold mb-6">Trending Products</h2>
-<!-- 🔥 TOP OPPORTUNITY (INSIDE SECTION) -->
-<div id="topOpportunity" class="mb-6"></div>
-<div id="productsList" class="grid grid-cols-3 gap-6"></div>
-
+<div id="productsList"></div>
 </div>
-   
-<!-- SCANNER -->
+
 <div id="scanner" class="hidden">
-<h2 class="text-3xl font-bold mb-6">🔥 Product Opportunity Scanner</h2>
-
-<div id="bestOpportunity" class="mb-6"></div>
-<div id="scannerList" class="grid grid-cols-3 gap-6"></div>
+<div id="scannerList"></div>
 </div>
 
-<!-- IMPORTS -->
-<div id="imports" class="hidden">
-<h2 class="text-3xl font-bold mb-6">🌍 Global Import Tracker</h2>
-<div id="importsList" class="grid grid-cols-3 gap-6"></div>
-</div>
-
-<!-- ALERTS -->
-<div id="alerts" class="hidden">
-<h2 class="text-3xl font-bold mb-6">🚨 AI Opportunity Alerts</h2>
-<div id="alertsList" class="grid grid-cols-3 gap-6"></div>
-</div>
-
-<!-- RADAR -->
-<div id="radar" class="hidden">
-<h2 class="text-3xl font-bold mb-6">📡 Global Export Radar</h2>
-<div id="radarList" class="grid grid-cols-3 gap-6"></div>
-</div>
-
-<!-- PREDICTOR -->
-<div id="predictor" class="hidden">
-<h2 class="text-3xl font-bold mb-6">🤖 AI Market Predictor</h2>
-<div id="predictorList" class="grid grid-cols-3 gap-6"></div>
-</div>
-
-<!-- SUPPLIERS -->
 <div id="suppliers" class="hidden">
-<h2 class="text-3xl font-bold mb-6">🏭 Supplier Intelligence</h2>
-<div id="supplierList" class="grid grid-cols-3 gap-6"></div>
+<div id="supplierList"></div>
 </div>
 
-<!-- MAP -->
 <div id="heatmap" class="hidden">
-<h2 class="text-3xl font-bold mb-6">🌎 Global Demand Map</h2>
-<div id="regions_div" style="width:100%; height:70vh;"></div>
+<div id="regions_div" style="height:500px;"></div>
 </div>
 
-<!-- AI -->
 <div id="ai" class="hidden">
-<h2 class="text-3xl font-bold mb-6">🧠 AI Export Advisor</h2>
-
-<input id="aiQuery"
-placeholder="Example: Export Millet to UAE"
-class="w-full p-4 rounded text-black mb-4">
-
-<button onclick="runAI()" class="bg-purple-600 px-6 py-3 rounded">
-Analyze Market
-</button>
-
-<div id="aiResults" class="mt-6"></div>
+<input id="aiQuery">
+<button onclick="runAI()">Search</button>
+<div id="aiResults"></div>
 </div>
 
-<!-- ✅ SAVED DEALS (FIXED POSITION) -->
-<div id="saved" class="hidden">
-<h2 class="text-3xl font-bold mb-6">📌 Saved Deals</h2>
-
-<div id="savedDealsList" class="grid grid-cols-3 gap-6 w-full"></div>
+</div>
 </div>
 
-</div> <!-- END MAIN -->
-</div> <!-- END FLEX -->
-   
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
-import { 
-getFirestore, 
-collection, 
-getDocs, 
-addDoc, 
-query, 
-where,
-deleteDoc,
-doc
-} from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
-
-/* ===================== */
-/* CONFIG */
-/* ===================== */
-
-const isDemo = localStorage.getItem("demo_mode") === "true";
-const userEmail = localStorage.getItem("user_email");
-
-if(!userEmail && !isDemo){
-alert("Please login");
-window.location.href = "login.html";
-}
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-apiKey: "AIzaSyDJGPJmz2459zqdIRTQfrWNy83w2qYnK68",
+apiKey: "AIzaSy...",
 authDomain: "sellora-ai.firebaseapp.com",
-projectId: "sellora-ai",
-storageBucket: "sellora-ai.appspot.com",
-messagingSenderId: "7850591690",
-appId: "1:7850591690:web:346fccc5531288fb2a3b33"
+projectId: "sellora-ai"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* ===================== */
 /* SECTION SWITCH */
-/* ===================== */
-
 window.showSection = function(section){
 
-const sections = [
-"deal","overview","trending","scanner",
-"imports","alerts","radar","predictor",
-"suppliers","heatmap","ai","saved"
-];
-
-sections.forEach(id=>{
-const el=document.getElementById(id);
-if(el) el.style.display="none";
+["deal","overview","trending","scanner","suppliers","heatmap","ai"].forEach(id=>{
+document.getElementById(id).style.display="none";
 });
 
-const active=document.getElementById(section);
-if(active) active.style.display="block";
+document.getElementById(section).style.display="block";
 
 if(section==="deal") loadDeals();
-if(section==="trending"){ loadProducts(); loadTopOpportunity(); }
-if(section==="scanner"){ loadScanner(); loadBestOpportunity(); }
-if(section==="imports") loadImports();
-if(section==="alerts") loadAlerts();
-if(section==="radar") loadRadar();
-if(section==="predictor") loadPredictor();
+if(section==="trending") loadProducts();
+if(section==="scanner") loadScanner();
 if(section==="suppliers") loadSuppliers();
-if(section==="heatmap") google.charts.setOnLoadCallback(drawMap);
-if(section==="saved"){
-if(isDemo){ showUpgradeModal(); return; }
-loadSavedDeals();
-}
+if(section==="heatmap") drawMap();
 
 };
 
-/* ===================== */
-/* DEAL ENGINE */
-/* ===================== */
-
+/* DEALS */
 async function loadDeals(){
-
-const productsSnap = await getDocs(collection(db,"products"));
-const suppliersSnap = await getDocs(collection(db,"suppliers"));
-
+const products = await getDocs(collection(db,"products"));
 const container = document.getElementById("dealList");
-container.innerHTML = "";
+container.innerHTML="";
 
-productsSnap.forEach(p=>{
-
-const product = p.data() || {};
-product.product ||= "Unknown";
-product.best_market ||= "N/A";
-product.demand_score ||= 0;
-
-let bestSupplier = null;
-
-suppliersSnap.forEach(s=>{
-const sup = s.data() || {};
-if(
-sup.product &&
-product.product &&
-sup.product.trim().toLowerCase() === product.product.trim().toLowerCase()
-){
-bestSupplier = sup;
-}
+products.forEach(doc=>{
+const d = doc.data() || {};
+container.innerHTML += `<div class="card">${d.product || "No Data"}</div>`;
 });
-
-if(!bestSupplier){
-bestSupplier = {
-supplier_name:"Not Available",
-location:"N/A",
-moq:"N/A",
-contact:""
-};
 }
 
-container.innerHTML += `
-<div class="card">
-
-<h3>${product.product}</h3>
-<p>🌍 ${product.best_market}</p>
-<p>📊 ${product.demand_score}</p>
-
-<p>🏭 ${isDemo ? "🔒 Premium Supplier" : bestSupplier.supplier_name}</p>
-<p>📍 ${isDemo ? "🔒 Locked" : bestSupplier.location}</p>
-
-<button class="save-btn bg-blue-500 p-2 mt-2 w-full"
-data-product="${product.product}"
-data-market="${product.best_market}"
-data-supplier="${bestSupplier.supplier_name}">
-Save Deal</button>
-
-</div>
-`;
-
-});
-
-}
-
-/* ===================== */
 /* PRODUCTS */
-/* ===================== */
-
 async function loadProducts(){
-
-const snapshot = await getDocs(collection(db,"products"));
+const products = await getDocs(collection(db,"products"));
 const container = document.getElementById("productsList");
-
 container.innerHTML="";
 
-snapshot.forEach(doc=>{
+products.forEach(doc=>{
 const d = doc.data() || {};
-
-d.product ||= "Unknown";
-d.best_market ||= "N/A";
-d.demand_score ||= 0;
-d.trend_score ||= 0;
-d.supplier_count ||= 0;
-
-const score = Math.round(
-(d.demand_score*0.4)+(d.trend_score*0.3)+(d.supplier_count*1.5)
-);
-
-container.innerHTML += `
-<div class="card">
-<h3>${d.product}</h3>
-<p>${d.best_market}</p>
-<p>Score: ${score}</p>
-</div>
-`;
-
+container.innerHTML += `<div class="card">${d.product || "No Data"}</div>`;
 });
-
 }
 
-/* ===================== */
 /* SCANNER */
-/* ===================== */
-
 async function loadScanner(){
-
-const snapshot = await getDocs(collection(db,"products"));
+const products = await getDocs(collection(db,"products"));
 const container = document.getElementById("scannerList");
-
 container.innerHTML="";
 
-snapshot.forEach(doc=>{
+products.forEach(doc=>{
 const d = doc.data() || {};
-
-d.product ||= "Unknown";
-d.demand_score ||= 0;
-
-container.innerHTML += `
-<div class="card">
-<h3>${d.product}</h3>
-<p>Score: ${d.demand_score}</p>
-</div>
-`;
-
+container.innerHTML += `<div class="card">${d.product}</div>`;
 });
-
 }
 
-/* ===================== */
 /* SUPPLIERS */
-/* ===================== */
-
 async function loadSuppliers(){
-
-const snapshot = await getDocs(collection(db,"suppliers"));
+const suppliers = await getDocs(collection(db,"suppliers"));
 const container = document.getElementById("supplierList");
-
 container.innerHTML="";
 
-snapshot.forEach(doc=>{
+suppliers.forEach(doc=>{
 const s = doc.data() || {};
-
-container.innerHTML += `
-<div class="card">
-<h3>${s.supplier_name || "Unknown"}</h3>
-<p>${s.location || "N/A"}</p>
-</div>
-`;
-
+container.innerHTML += `<div class="card">${s.supplier_name || "No Supplier"}</div>`;
 });
-
 }
 
-/* ===================== */
-/* OTHER SECTIONS */
-/* ===================== */
-
-async function loadImports(){
-const snap = await getDocs(collection(db,"global_demand"));
-document.getElementById("importsList").innerHTML = snap.size ? "Loaded" : "No Data";
+/* MAP */
+google.charts.load('current',{packages:['geochart']});
+function drawMap(){
+var data = google.visualization.arrayToDataTable([
+['Country','Demand'],
+['India',90],
+['US',80]
+]);
+var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
+chart.draw(data);
 }
 
-async function loadAlerts(){
-const snap = await getDocs(collection(db,"ai_alerts"));
-document.getElementById("alertsList").innerHTML = snap.size ? "Loaded" : "No Data";
+/* AI */
+window.runAI = async function(){
+const q=document.getElementById("aiQuery").value;
+document.getElementById("aiResults").innerText="Searching for "+q;
 }
-
-async function loadRadar(){
-const snap = await getDocs(collection(db,"export_radar"));
-document.getElementById("radarList").innerHTML = snap.size ? "Loaded" : "No Data";
-}
-
-/* ===================== */
-/* SAVED DEALS */
-/* ===================== */
-
-document.addEventListener("click", async function(e){
-
-if(e.target.classList.contains("save-btn")){
-
-if(isDemo){
-showUpgradeModal();
-return;
-}
-
-await addDoc(collection(db,"saved_deals"),{
-email:userEmail,
-product:e.target.dataset.product
-});
-
-alert("Saved");
-
-}
-
-});
-
-/* ===================== */
-/* MODAL */
-/* ===================== */
-
-window.showUpgradeModal = ()=>document.getElementById("upgradeModal").classList.remove("hidden");
-window.closeModal = ()=>document.getElementById("upgradeModal").classList.add("hidden");
-
-/* ===================== */
-/* INIT */
-/* ===================== */
 
 showSection("overview");
 
 </script>
-<!-- 🔒 UPGRADE MODAL -->
-<div id="upgradeModal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
 
-<div class="bg-slate-800 p-8 rounded-xl text-center max-w-md">
-
-<h2 class="text-2xl font-bold mb-4 text-white">
-🔒 Unlock SELLORA Intelligence
-</h2>
-
-<p class="text-gray-300 mb-6">
-Access suppliers, save deals, and AI-powered insights.
-</p>
-
-<div class="space-x-4">
-
-<button onclick="goToPricing()"
-class="bg-purple-600 px-6 py-3 rounded text-white">
-Upgrade Now
-</button>
-
-<button onclick="closeModal()"
-class="bg-gray-600 px-6 py-3 rounded text-white">
-Cancel
-</button>
-
-</div>
-
-</div>
-
-</div>
 </body>
 </html>
-
-
-
-
