@@ -36,14 +36,21 @@ box-shadow:0 10px 30px rgba(0,0,0,0.3);
 <button onclick="showSection('overview')">Overview</button>
 <button onclick="showSection('trending')">Trending</button>
 <button onclick="showSection('scanner')">Scanner</button>
+<button onclick="showSection('imports')">Imports</button>
+<button onclick="showSection('alerts')">Alerts</button>
+<button onclick="showSection('radar')">Radar</button>
+<button onclick="showSection('predictor')">Predictor</button>
 <button onclick="showSection('suppliers')">Suppliers</button>
 <button onclick="showSection('heatmap')">Map</button>
 <button onclick="showSection('ai')">AI</button>
+<button onclick="showSection('saved')">Saved</button>
+
+<button id="logoutBtn" onclick="logout()" class="block w-full text-left text-red-400 mt-10">
+Logout
+</button>
 
 </nav>
-
 </div>
-
 <!-- MAIN -->
 <div class="flex-1 p-10">
 
@@ -63,6 +70,22 @@ box-shadow:0 10px 30px rgba(0,0,0,0.3);
 <div id="scannerList"></div>
 </div>
 
+<div id="imports" class="hidden">
+<div id="importsList"></div>
+</div>
+
+<div id="alerts" class="hidden">
+<div id="alertsList"></div>
+</div>
+
+<div id="radar" class="hidden">
+<div id="radarList"></div>
+</div>
+
+<div id="predictor" class="hidden">
+<div id="predictorList"></div>
+</div>
+
 <div id="suppliers" class="hidden">
 <div id="supplierList"></div>
 </div>
@@ -72,13 +95,17 @@ box-shadow:0 10px 30px rgba(0,0,0,0.3);
 </div>
 
 <div id="ai" class="hidden">
-<input id="aiQuery">
+<input id="aiQuery" class="text-black p-2">
 <button onclick="runAI()">Search</button>
 <div id="aiResults"></div>
 </div>
 
+<div id="saved" class="hidden">
+<div id="savedDealsList"></div>
 </div>
+
 </div>
+
 
 <script type="module">
 
@@ -97,11 +124,19 @@ const db = getFirestore(app);
 /* SECTION SWITCH */
 window.showSection = function(section){
 
-["deal","overview","trending","scanner","suppliers","heatmap","ai"].forEach(id=>{
-document.getElementById(id).style.display="none";
+const sections = [
+"deal","overview","trending","scanner",
+"imports","alerts","radar","predictor",
+"suppliers","heatmap","ai","saved"
+];
+
+sections.forEach(id=>{
+const el = document.getElementById(id);
+if(el) el.style.display="none";
 });
 
-document.getElementById(section).style.display="block";
+const active = document.getElementById(section);
+if(active) active.style.display="block";
 
 if(section==="deal") loadDeals();
 if(section==="trending") loadProducts();
@@ -109,7 +144,7 @@ if(section==="scanner") loadScanner();
 if(section==="suppliers") loadSuppliers();
 if(section==="heatmap") drawMap();
 
-};
+}
 
 /* DEALS */
 async function loadDeals(){
@@ -158,7 +193,30 @@ const s = doc.data() || {};
 container.innerHTML += `<div class="card">${s.supplier_name || "No Supplier"}</div>`;
 });
 }
+async function loadImports(){
+document.getElementById("importsList").innerHTML =
+"<div class='card'>Global demand rising for eco products</div>";
+}
 
+  async function loadAlerts(){
+document.getElementById("alertsList").innerHTML =
+"<div class='card'>AI Alert: UAE food demand increasing</div>";
+}
+
+  async function loadRadar(){
+document.getElementById("radarList").innerHTML =
+"<div class='card'>Top Market: Germany</div>";
+}
+
+  async function loadPredictor(){
+document.getElementById("predictorList").innerHTML =
+"<div class='card'>Predicted Growth: +22%</div>";
+}
+
+  async function loadSavedDeals(){
+document.getElementById("savedDealsList").innerHTML =
+"<div class='card'>Saved Deals will appear here</div>";
+}
 /* MAP */
 google.charts.load('current',{packages:['geochart']});
 function drawMap(){
