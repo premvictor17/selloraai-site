@@ -1,114 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>SELLORA Dashboard</title>
 
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://www.gstatic.com/charts/loader.js"></script>
 
 <style>
-.hidden{display:none}
 .card{
 background:#1e293b;
 padding:20px;
 border-radius:12px;
-box-shadow:0 10px 30px rgba(0,0,0,0.3);
+margin-bottom:10px;
 }
 </style>
-
 </head>
 
-<body class="bg-slate-900 text-white">
+<body class="bg-[#0f172a] text-white">
 
-<div class="flex">
+<div class="flex min-h-screen">
 
 <!-- SIDEBAR -->
-<div class="w-64 h-screen bg-black p-6">
+<aside class="w-64 bg-black p-6">
 
-<h1 class="text-xl font-bold mb-10">SELLORA</h1>
+<h1 class="text-xl font-bold mb-8">SELLORA</h1>
 
 <nav class="space-y-4 text-gray-300">
 
 <button onclick="showSection('deal')" class="block w-full text-left">AI Deal Engine</button>
 <button onclick="showSection('overview')" class="block w-full text-left">Overview</button>
-<button onclick="showSection('trending')" class="block w-full text-left">Trending</button>
-<button onclick="showSection('scanner')" class="block w-full text-left">Scanner</button>
-<button onclick="showSection('imports')" class="block w-full text-left">Imports</button>
-<button onclick="showSection('alerts')" class="block w-full text-left">Alerts</button>
-<button onclick="showSection('radar')" class="block w-full text-left">Radar</button>
-<button onclick="showSection('predictor')" class="block w-full text-left">Predictor</button>
-<button onclick="showSection('suppliers')" class="block w-full text-left">Suppliers</button>
-<button onclick="showSection('heatmap')" class="block w-full text-left">Map</button>
-<button onclick="showSection('ai')" class="block w-full text-left">AI</button>
-<button onclick="showSection('saved')" class="block w-full text-left">Saved</button>
-<button 
-id="logoutBtn" 
-onclick="logout()" 
-class="block w-full text-left text-red-400 mt-10 hover:text-red-300 transition"
->
-Logout
-</button>
+<button onclick="showSection('trending')" class="block w-full text-left">Trending Products</button>
+<button onclick="showSection('scanner')" class="block w-full text-left">Product Opportunity Scanner</button>
+<button onclick="showSection('imports')" class="block w-full text-left">Global Import Tracker</button>
+<button onclick="showSection('alerts')" class="block w-full text-left">AI Opportunity Alerts</button>
+<button onclick="showSection('radar')" class="block w-full text-left">Global Export Radar</button>
+<button onclick="showSection('predictor')" class="block w-full text-left">AI Market Predictor</button>
+<button onclick="showSection('suppliers')" class="block w-full text-left">Supplier Intelligence</button>
+<button onclick="showSection('heatmap')" class="block w-full text-left">Global Demand Map</button>
+<button onclick="showSection('ai')" class="block w-full text-left">AI Export Advisor</button>
+<button onclick="showSection('saved')" class="block w-full text-left">Saved Deals</button>
+
+<button onclick="logout()" class="block w-full text-left text-red-400 mt-10">Logout</button>
+
 </nav>
-</div>
+
+</aside>
+
 <!-- MAIN -->
 <div class="flex-1 p-10">
 
-<div id="overview">
-<h1 class="text-3xl mb-6">Overview</h1>
+<!-- DEMO BANNER -->
+<div id="upgradeBanner" class="hidden bg-yellow-400 text-black p-3 mb-6 rounded flex justify-between">
+<span>🚀 Demo Mode — Upgrade to unlock full features</span>
+<button onclick="goToPricing()" class="bg-black text-white px-3 py-1 rounded">Upgrade Now</button>
 </div>
 
-<div id="deal" style="display:none">
+<!-- DEAL -->
+<div id="deal">
+<h2 class="text-3xl mb-6">AI Deal Engine</h2>
 <div id="dealList"></div>
 </div>
 
+<!-- OVERVIEW -->
+<div id="overview" style="display:none">
+<h2 class="text-3xl mb-6">Overview</h2>
+<div id="overviewContent"></div>
+</div>
+
+<!-- TRENDING -->
 <div id="trending" style="display:none">
+<h2 class="text-3xl mb-6">Trending Products</h2>
+<div id="topOpportunity"></div>
 <div id="productsList"></div>
 </div>
 
-<div id="scanner" style="display:none">
-<div id="scannerList"></div>
-</div>
-
-<div id="imports" style="display:none">
-<div id="importsList"></div>
-</div>
-
-<div id="alerts" style="display:none">
-<div id="alertsList"></div>
-</div>
-
-<div id="radar" style="display:none">
-<div id="radarList"></div>
-</div>
-
-<div id="predictor" style="display:none">
-<div id="predictorList"></div>
-</div>
-
-<div id="suppliers" style="display:none">
-<div id="supplierList"></div>
-</div>
-
-<div id="heatmap" style="display:none">
-<div id="regions_div" style="height:500px;"></div>
-</div>
-
-<div id="ai" style="display:none">
-<input id="aiQuery" class="text-black p-2">
-<button onclick="runAI()">Search</button>
-<div id="aiResults"></div>
-</div>
-
-<div id="saved" style="display:none">
-<div id="savedDealsList"></div>
-</div>
+<!-- OTHER SECTIONS -->
+<div id="scanner" style="display:none"><div id="scannerList"></div></div>
+<div id="imports" style="display:none"><div id="importsList"></div></div>
+<div id="alerts" style="display:none"><div id="alertsList"></div></div>
+<div id="radar" style="display:none"><div id="radarList"></div></div>
+<div id="predictor" style="display:none"><div id="predictorList"></div></div>
+<div id="suppliers" style="display:none"><div id="supplierList"></div></div>
+<div id="heatmap" style="display:none"><div id="regions_div"></div></div>
+<div id="ai" style="display:none"><div id="aiResults"></div></div>
+<div id="saved" style="display:none"><div id="savedDealsList"></div></div>
 
 </div>
+</div>
 
-
+<!-- FIREBASE -->
 <script type="module">
 
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.10.0/firebase-app.js";
@@ -123,25 +104,25 @@ projectId: "sellora-ai"
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-/* SECTION SWITCH */
+/* DEMO */
+if(localStorage.getItem("demo_mode")){
+document.getElementById("upgradeBanner").classList.remove("hidden");
+}
+
+/* SWITCH */
 window.showSection = function(section){
 
-const sections = [
-"deal","overview","trending","scanner",
-"imports","alerts","radar","predictor",
-"suppliers","heatmap","ai","saved"
-];
+const sections = ["deal","overview","trending","scanner","imports","alerts","radar","predictor","suppliers","heatmap","ai","saved"];
 
 sections.forEach(id=>{
-const el = document.getElementById(id);
-if(el) el.style.display="none";
+document.getElementById(id).style.display="none";
 });
 
-const active = document.getElementById(section);
-if(active) active.style.display="block";
+document.getElementById(section).style.display="block";
 
-// ✅ LOAD FUNCTIONS
+/* LOADERS */
 if(section==="deal") loadDeals();
+if(section==="overview") loadOverview();
 if(section==="trending") loadProducts();
 if(section==="scanner") loadScanner();
 if(section==="imports") loadImports();
@@ -149,101 +130,88 @@ if(section==="alerts") loadAlerts();
 if(section==="radar") loadRadar();
 if(section==="predictor") loadPredictor();
 if(section==="suppliers") loadSuppliers();
-if(section==="heatmap") drawMap();
-if(section==="saved") loadSavedDeals();
-
-}
+};
 
 /* DEALS */
 async function loadDeals(){
-const products = await getDocs(collection(db,"products"));
 const container = document.getElementById("dealList");
+container.innerHTML="Loading...";
+
+const snap = await getDocs(collection(db,"products"));
+
 container.innerHTML="";
 
-products.forEach(doc=>{
-const d = doc.data() || {};
-container.innerHTML += `<div class="card">${d.product || "No Data"}</div>`;
+snap.forEach(doc=>{
+const d = doc.data();
+container.innerHTML += `<div class="card">${d.product} - ${d.best_market}</div>`;
 });
 }
 
-/* PRODUCTS */
+/* TRENDING */
 async function loadProducts(){
-const products = await getDocs(collection(db,"products"));
 const container = document.getElementById("productsList");
+const topBox = document.getElementById("topOpportunity");
+
+const snap = await getDocs(collection(db,"products"));
+
+let top=null;
 container.innerHTML="";
 
-products.forEach(doc=>{
-const d = doc.data() || {};
-container.innerHTML += `<div class="card">${d.product || "No Data"}</div>`;
+snap.forEach(doc=>{
+const d = doc.data();
+
+if(!top || d.trend_score > top.trend_score){
+top = d;
+}
+
+container.innerHTML += `<div class="card">${d.product} (${d.demand_score})</div>`;
 });
+
+if(top){
+topBox.innerHTML = `<div class="card">🔥 Best: ${top.product}</div>`;
+}
 }
 
-/* SCANNER */
-async function loadScanner(){
-const products = await getDocs(collection(db,"products"));
-const container = document.getElementById("scannerList");
-container.innerHTML="";
-
-products.forEach(doc=>{
-const d = doc.data() || {};
-container.innerHTML += `<div class="card">${d.product}</div>`;
-});
+/* OVERVIEW */
+async function loadOverview(){
+const snap = await getDocs(collection(db,"products"));
+document.getElementById("overviewContent").innerHTML =
+`<div class="card">Total Products: ${snap.size}</div>`;
 }
 
-/* SUPPLIERS */
-async function loadSuppliers(){
-const suppliers = await getDocs(collection(db,"suppliers"));
-const container = document.getElementById("supplierList");
-container.innerHTML="";
-
-suppliers.forEach(doc=>{
-const s = doc.data() || {};
-container.innerHTML += `<div class="card">${s.supplier_name || "No Supplier"}</div>`;
-});
+/* DUMMY LOADERS */
+function loadScanner(){
+document.getElementById("scannerList").innerHTML="<div class='card'>Scanning market...</div>";
 }
-async function loadImports(){
-document.getElementById("importsList").innerHTML =
-"<div class='card'>Global demand rising for eco products</div>";
+function loadImports(){
+document.getElementById("importsList").innerHTML="<div class='card'>Global imports rising</div>";
 }
-
-  async function loadAlerts(){
-document.getElementById("alertsList").innerHTML =
-"<div class='card'>AI Alert: UAE food demand increasing</div>";
+function loadAlerts(){
+document.getElementById("alertsList").innerHTML="<div class='card'>High demand alert</div>";
 }
-
-  async function loadRadar(){
-document.getElementById("radarList").innerHTML =
-"<div class='card'>Top Market: Germany</div>";
+function loadRadar(){
+document.getElementById("radarList").innerHTML="<div class='card'>Export radar active</div>";
+}
+function loadPredictor(){
+document.getElementById("predictorList").innerHTML="<div class='card'>AI predicting trends</div>";
+}
+function loadSuppliers(){
+document.getElementById("supplierList").innerHTML="<div class='card'>Supplier data available</div>";
 }
 
-  async function loadPredictor(){
-document.getElementById("predictorList").innerHTML =
-"<div class='card'>Predicted Growth: +22%</div>";
-}
+/* LOGOUT */
+window.logout=function(){
+localStorage.clear();
+window.location.href="login.html";
+};
 
-  async function loadSavedDeals(){
-document.getElementById("savedDealsList").innerHTML =
-"<div class='card'>Saved Deals will appear here</div>";
-}
-/* MAP */
-google.charts.load('current',{packages:['geochart']});
-function drawMap(){
-var data = google.visualization.arrayToDataTable([
-['Country','Demand'],
-['India',90],
-['US',80]
-]);
-var chart = new google.visualization.GeoChart(document.getElementById('regions_div'));
-chart.draw(data);
-}
+/* PRICING */
+window.goToPricing=function(){
+window.location.href="index.html#pricing";
+};
 
-/* AI */
-window.runAI = async function(){
-const q=document.getElementById("aiQuery").value;
-document.getElementById("aiResults").innerText="Searching for "+q;
-}
-
-showSection("overview");
+/* DEFAULT LOAD */
+loadDeals();
 
 </script>
 
